@@ -154,6 +154,7 @@ export class FilterDialog extends Dialog {
         spacing: 6,
         checkboxColor: ExoplanetsDatabaseColors.controlSurfaceTextColorProperty,
         checkboxColorBackground: ExoplanetsDatabaseColors.controlSurfaceColorProperty,
+        accessibleName: strings.requireValueStringProperty,
       },
     );
 
@@ -195,6 +196,7 @@ export class FilterDialog extends Dialog {
         maxWidth: 200,
       }),
       listener: () => criterion.reset(),
+      accessibleName: strings.clearFilterStringProperty,
     });
 
     const content = new VBox({

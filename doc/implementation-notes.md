@@ -1,135 +1,66 @@
-# Implementation Notes - Exoplanets Database
+# Implementation Notes — Exoplanets Database
 
-Developer-facing notes on the **SceneryStackTemplate** scaffold. **Replace and expand this file when
-forking** to describe your sim's real architecture (see Stern Gerlach or Light Propagation for
-target quality). Until then, this documents what the template provides out of the box.
-
-## Architecture Overview
-
-SceneryStackTemplate is the fleet-canonical starting point for new SceneryStack sims (one or N screens).
-It demonstrates Model–View separation, color profiles, localization, reset behavior, accessibility
-reference wiring, and reusable common components — **without** domain physics.
+## Architecture
 
 ```
 main.ts
-  └─ CountsScreen             (Screen<CountsModel, CountsScreenView>)
-       ├─ CountsModel          state + logic  (src/counts/model/)  ← stub: add physics here
-       └─ CountsScreenView     visuals        (src/counts/view/)
-            ├─ CountsScreenSummaryContent     (PDOM overview — reference a11y pattern)
-            └─ CountsKeyboardHelpContent      (keyboard help dialog)
+  ├─ ExoplanetDatabase (shared: filter, sort, selection)
+  ├─ CountsScreen       CountsModel (catalog, since-year)          → CountsScreenView
+  ├─ ExploreScreen      ExploreModel (database, visible columns)    → ExploreScreenView
+  ├─ PlotGalleryScreen  PlotGalleryModel (preset, Solar System)     → PlotGalleryScreenView
+  └─ PlotBuilderScreen  PlotBuilderModel (database, axes, colouring, showInTable) → PlotBuilderScreenView
 
-src/common/
-  ├─ ExoplanetsDatabasePanel.ts           pre-themed panel (uses ExoplanetsDatabaseColors)
-  ├─ ExoplanetsDatabaseButtonOptions.ts   flat button / combo-box option bundles
-  └─ TimeModel.ts          composable play/pause + elapsed time
-
-src/preferences/
-  ├─ ExoplanetsDatabasePreferencesModel   sim-specific pref state
-  ├─ ExoplanetsDatabasePreferencesNode    pref UI in Preferences → Simulation
-  └─ exoplanetsDatabaseQueryParameters    QueryStringMachine declarations
+src/common/model/  ExoplanetCatalog (CATALOG), Quantity, DiscoveryMethod, FacilityGroup, TableColumn,
+                   RangeCriterion, PlanetFilter, FilterPreset, sortPlanets, ExoplanetDatabase,
+                   physics, SolarSystem, plotPoints
+src/common/view/   PlotFrameNode, PointCloudNode, ScatterChartNode, StackedBarChartNode, LegendNode,
+                   pointColorings, guides, MarkerShape, dataStyles, format, FilterDialog,
+                   FilterSummaryNode, MethodCheckboxGroup, MatchCountNode, DataCreditNode
 ```
 
-Data flows Model → View through AXON `Property` objects (`.link()` / `.lazyLink()`). The view never
-integrates physics; the model never imports scenery.
+Nothing evolves in time; every model's `step` is empty.
 
-## Forking checklist
+## Decisions
 
-### Automated rename + scaffold (recommended)
+- **Bundled snapshot, not live queries.** The archive's TAP endpoint returns no
+  `Access-Control-Allow-Origin` header (checked 2026-11-05; the preflight returns 502), so a page on
+  GitHub Pages cannot read it, and a public CORS proxy would be unreliable in class. The user chose
+  a frozen snapshot refreshed by hand. The template CSP stays `connect-src 'self' blob:`.
+- **Column-oriented JSON** with categories as indices: one array per column keeps the file small
+  and fast to decode into `Float64Array`s (NaN for empty cells). The fetch script writes one column
+  per line so diffs stay readable; the data folder is excluded from Biome.
+- **Virtualised table.** `PlanetTableNode` builds `rowCount` rows once and rewrites their text on
+  scroll, sort and filter. Column nodes are cached per `TableColumn` and repositioned when the
+  visible columns change, so nothing is created or disposed while browsing. The scroll bar is a
+  `VSlider` on a 0–1 fraction (its range never changes as the match count does).
+- **Canvas point cloud.** About 6,500 markers are painted per frame in one path per group;
+  picking scans the view positions cached during the last paint.
+- **Shared filters.** Explore and Plot Builder share one `ExoplanetDatabase` so a filtered table
+  and its plot always agree; the Plot Builder's axis ranges come from all planets so the axes do not
+  jump while filtering.
+- **Gallery mass plots show measured masses only**, and radius plots measured radii only: plotting
+  the archive's estimates would draw the archive's own mass–radius formula as a fake trend.
+- **Mass vs orbit size is the default plot.** Microlensing and imaging planets rarely have periods
+  (12 of 292 microlensing planets), so mass vs period would hide them.
+- **Labels avoid each other.** Solar System labels try right, left, below and above their marker;
+  guide labels sit on a translucent backdrop above the points; Kepler-line labels follow their lines.
 
-```sh
-npm run rename -- --id my-sim --name "My Simulation"
-npm run scaffold-screens -- --screens Intro,Lab   # or omit --screens for one screen
-npm run check
+## Testing
+
+- `tests/catalog.test.ts` recomputes the activity's answers from the raw JSON (method counts, Sun-like
+  stars, recent transits, Earth-like orbits, `not null`, measured masses, extremes and Kepler's law),
+  so the tests keep passing after a refresh.
+- `tests/physics.test.ts`, `tests/plotPoints.test.ts` cover the formulas and chart points.
+- `tests/memory-leak.test.ts` checks the disposable view nodes against a long-lived shared database.
+- `npm run test:fuzz` runs the Playwright pointer and keyboard fuzz.
+
+## Refreshing the data
+
+```bash
+npm run fetch-data   # prints a summary to compare with the archive's Exoplanet Counts page
+npm test
 ```
 
-Or from the workspace: `Baton/scripts/create-sim.sh --repo MySim --name "My Simulation"`.
-
-`scripts/rename-sim.ts` updates sim-level identifiers (package id, Colors, Preferences).
-`scripts/scaffold-screens.ts` emits fleet-named screen folders and wires main/strings/icons.
-
-### Manual steps (after rename/scaffold or if skipping the scripts)
-
-1. **`doc/model.md`** — educator physics (equations, ranges, simplifications).
-2. **`doc/implementation-notes.md`** — this file, rewritten for your architecture.
-3. **Screen model(s)** — real Properties, `step(dt)`, `reset()`; compose `TimeModel` if animated.
-4. **Screen view(s)** — play area + controls; wire `ResetAllButton` to `model.reset()`.
-5. **`*Colors.ts`** — sim palette (default + projector profiles).
-6. **Locale JSON** — title, strings, `a11y` keys; register locales in `init.ts`.
-7. **`public/icons/icon.svg`** → `npm run icons`; align theme color in `index.html` / vite config.
-8. **`tests/setup.ts`** — `init({ name: … })` must match `package.json` name after rename.
-9. **`AGENTS.md`** — sim-specific file map and pitfalls for AI assistants.
-
-## Common components (keep when forking)
-
-### ExoplanetsDatabasePanel
-
-Every control panel should use `ExoplanetsDatabasePanel` so projector-mode switching is automatic:
-
-```typescript
-import { ExoplanetsDatabasePanel } from "../../common/ExoplanetsDatabasePanel.js";
-const panel = new ExoplanetsDatabasePanel(content);
-const panelWide = new ExoplanetsDatabasePanel(content, { xMargin: 20 });
-```
-
-### TimeModel
-
-Compose into your screen model for animation (do not subclass `TimeModel`):
-
-```typescript
-export class MyModel implements TModel {
-  public readonly timer = new TimeModel();  // pass true to auto-play on startup
-
-  public step(dt: number): void {
-    this.timer.step(dt);
-    // physics uses this.timer.timeProperty.value
-  }
-  public reset(): void { this.timer.reset(); /* restore initial state */ }
-}
-```
-
-Wire `TimeControlNode` to `model.timer.isPlayingProperty` in the view.
-
-### ExoplanetsDatabaseButtonOptions
-
-Spread flat button options into every push/round button and `TimeControlNode` (see `AGENTS.md`).
-Use `EXOPLANETS_DATABASE_COMBO_BOX_OPTIONS` + `LIGHT_SURFACE_TEXT_FILL` for light control surfaces on dark panels.
-
-## Accessibility (reference implementation)
-
-The template is the **canonical OpenLyceum a11y reference**:
-
-- PDOM `accessibleName` on interactive nodes (prefer live `StringProperty`s).
-- `CountsScreenSummaryContent` with a live `currentDetailsContent` `DerivedProperty` over model state.
-- Explicit `pdomOrder` + `CountsKeyboardHelpContent`.
-- Strings under `a11y` in locale JSON → `StringManager.getCountsA11yStrings()`.
-
-Full checklist: [Baton/ACCESSIBILITY.md](https://github.com/OpenLyceum/Baton/blob/main/ACCESSIBILITY.md).
-
-## Testing (fleet layout — keep when forking)
-
-| Path | Purpose |
-|---|---|
-| `vitest.config.ts` | `happy-dom`; `setupFiles: ["./tests/setup.ts"]`; `execArgv: ["--expose-gc"]` |
-| `tests/setup.ts` | Canvas/AudioContext mocks + `init()` before SceneryStack imports |
-| `tests/TimeModel.test.ts` | **Replace** with real model/physics tests mirroring `src/` |
-| `tests/memory-leak.test.ts` | WeakRef + `forceGC` dispose regression |
-| `tests/fuzz/fuzz.spec.ts` | Optional Playwright smoke via `?fuzz` |
-
-Run `npm test`. Expand `memory-leak.test.ts` when adding runtime-created nodes or Property links.
-
-## Multi-screen simulations
-
-Default is single-screen. To add screens, see **`doc/multi-screen.md`**: per-screen folders mirroring
-`src/counts/`, `StringManager` screen-name getters, optional shared root model, a shared
-`src/common/ExoplanetsDatabaseScreenIcons.ts` module (`create{Screen}Icon()` factories wired as
-`homeScreenIcon` / `navigationBarIcon`), and register all screens in `main.ts`.
-
-## PWA
-
-After `npm run build`, the sim is installable offline via Workbox (`dist/manifest.webmanifest`).
-
-## Known template stubs (remove when forking)
-
-- `CountsModel.step()` / `reset()` — empty placeholders until you add physics.
-- Placeholder play-area content in `CountsScreenView` — replace with real UI.
-- `tests/TimeModel.test.ts` — sample only; add tests for your model under `tests/`.
+Then commit `src/common/model/data/pscomppars.json`. If the archive renames a column, the script
+fails loudly; `Quantity.archiveTitle` holds the interactive table's column titles used in the
+archive-syntax panel.

@@ -75,6 +75,7 @@ export class ExploreScreenView extends ScreenView {
         xMargin: 6,
         yMargin: 4,
         listener,
+        accessibleName: label,
         ...extra,
       });
 

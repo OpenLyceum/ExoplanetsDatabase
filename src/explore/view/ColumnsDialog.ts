@@ -41,6 +41,10 @@ export class ColumnsDialog extends Dialog {
               maxWidth: 260,
             });
       return new Checkbox(property, label, {
+        accessibleName:
+          column === TableColumn.METHOD
+            ? strings.methodColumnStringProperty
+            : quantityLabelWithUnit(column.quantity as NonNullable<TableColumn["quantity"]>),
         boxWidth: 16,
         spacing: 6,
         checkboxColor: ExoplanetsDatabaseColors.controlSurfaceTextColorProperty,

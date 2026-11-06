@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "description": "A SceneryStack simulation: Exoplanets Database.",
+  "description": "A simplified, student-friendly view of the NASA Exoplanet Archive: filter and sort confirmed planets, compare them with Earth and the Sun, and explore preset plots of mass, period, radius and distance coloured by discovery method.",
   "license": "AGPL-3.0-or-later",
   "repository": {
     "type": "git",
@@ -15,7 +15,11 @@
     "interactive",
     "physics",
     "education",
-    "pwa"
+    "pwa",
+    "astronomy",
+    "exoplanets",
+    "nasa-exoplanet-archive",
+    "data-literacy"
   ],
   "scripts": {
     "start": "vite",
@@ -35,9 +39,9 @@
     "test:fuzz:quick": "node scripts/test-fuzz.ts 10",
     "test:fuzz:long": "node scripts/test-fuzz.ts 300",
     "icons": "node scripts/generate-icons.ts",
-    "fetch-data": "node scripts/archive/fetch-archive.ts",
     "clean": "rm -rf dist",
-    "prepare": "git rev-parse --is-inside-work-tree >/dev/null 2>&1 && git config core.hooksPath .githooks || true"
+    "prepare": "git rev-parse --is-inside-work-tree >/dev/null 2>&1 && git config core.hooksPath .githooks || true",
+    "fetch-data": "node scripts/archive/fetch-archive.ts"
   },
   "dependencies": {
     "scenerystack": "^3.0.0"

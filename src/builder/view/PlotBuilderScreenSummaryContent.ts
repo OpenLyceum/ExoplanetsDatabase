@@ -1,40 +1,47 @@
 /**
  * PlotBuilderScreenSummaryContent.ts
  *
- * The accessible screen summary read by screen readers (SceneryStack's
- * Interactive Description). It appears at the top of the parallel DOM and gives
- * a non-visual user a way to orient themselves and to re-read the simulation's
- * current state at any time.
- *
- * A summary has four regions (all optional, but provide at least the first
- * three in every sim for consistency across OpenLyceum):
- *   - playAreaContent       — what the play area contains
- *   - controlAreaContent    — what the controls do
- *   - currentDetailsContent — a LIVE paragraph describing current state
- *   - interactionHintContent — a short hint on how to get started
- *
- * ── Making "current details" live ─────────────────────────────────────────────
- * The template has no model state, so currentDetails is a static string. In a
- * real sim, build a DerivedProperty over the relevant model Properties and pass
- * it as `currentDetailsContent` so the paragraph updates as the sim runs.
- * See LunarLander/src/.../LunarLanderScreenSummaryContent.ts for the pattern.
- * If that DerivedProperty (or any Multilink) is owned by a short-lived object,
- * dispose it on teardown — see the commented dispose() stub in PlotBuilderScreenView.
+ * Screen-reader summary for the Plot Builder. The current details name the two plotted
+ * quantities, the number of planets passing the filters, and the selected planet.
  */
+
+import { DerivedProperty } from "scenerystack/axon";
 import { ScreenSummaryContent } from "scenerystack/sim";
+import { quantityName } from "../../common/view/dataStyles.js";
+import { formatCount } from "../../common/view/format.js";
 import { StringManager } from "../../i18n/StringManager.js";
 import type { PlotBuilderModel } from "../model/PlotBuilderModel.js";
 
 export class PlotBuilderScreenSummaryContent extends ScreenSummaryContent {
-  // `model` is unused in the template but kept in the signature so real sims can
-  // derive a live currentDetailsContent from it without changing call sites.
-  public constructor(_model: PlotBuilderModel) {
-    const a11y = StringManager.getInstance().getPlotBuilderA11yStrings();
-
+  public constructor(model: PlotBuilderModel) {
+    const strings = StringManager.getInstance();
+    const a11y = strings.getPlotBuilderA11yStrings();
+    const explore = strings.getExploreA11yStrings();
+    const database = model.database;
+    const currentDetails = new DerivedProperty(
+      [
+        model.xQuantityProperty,
+        model.yQuantityProperty,
+        database.matchingPlanetsProperty,
+        database.selectedPlanetProperty,
+        a11y.currentDetailsPatternStringProperty,
+        explore.selectedPatternStringProperty,
+        explore.noSelectionStringProperty,
+      ],
+      (x, y, matches, selected, pattern, selectedPattern, none) =>
+        pattern
+          .replace("{{x}}", quantityName(x).value)
+          .replace("{{y}}", quantityName(y).value)
+          .replace("{{count}}", formatCount(matches.length))
+          .replace(
+            "{{selection}}",
+            selected === null ? none : selectedPattern.replace("{{name}}", database.catalog.names[selected] ?? ""),
+          ),
+    );
     super({
       playAreaContent: a11y.screenSummary.playAreaStringProperty,
       controlAreaContent: a11y.screenSummary.controlAreaStringProperty,
-      currentDetailsContent: a11y.currentDetailsStringProperty,
+      currentDetailsContent: currentDetails,
       interactionHintContent: a11y.screenSummary.interactionHintStringProperty,
     });
   }

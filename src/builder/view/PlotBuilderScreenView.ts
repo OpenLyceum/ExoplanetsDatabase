@@ -128,6 +128,7 @@ export class PlotBuilderScreenView extends ScreenView {
       });
       const logCheckbox = new Checkbox(logProperty, label(strings.logScaleStringProperty, LEFT_WIDTH - 50), {
         ...EXOPLANETS_DATABASE_CHECKBOX_OPTIONS,
+        accessibleName: new PatternStringProperty(strings.logScaleForPatternStringProperty, { axis: title }),
         enabledProperty: new DerivedProperty([quantityProperty], (q) => q.canUseLog),
         accessibleHelpText: strings.logScaleHelpStringProperty,
       });
@@ -141,6 +142,7 @@ export class PlotBuilderScreenView extends ScreenView {
       model.colorByProperty,
       ColorBy.enumeration.values.map((colorBy) => ({
         value: colorBy,
+        options: { accessibleName: colorByNames[`${colorBy.key}StringProperty`] ?? null },
         createNode: () =>
           label(colorByNames[`${colorBy.key}StringProperty`] as TReadOnlyProperty<string>, LEFT_WIDTH - 50),
       })),
@@ -151,6 +153,7 @@ export class PlotBuilderScreenView extends ScreenView {
       label(common.showSolarSystemStringProperty, LEFT_WIDTH - 50),
       {
         ...EXOPLANETS_DATABASE_CHECKBOX_OPTIONS,
+        accessibleName: common.showSolarSystemStringProperty,
       },
     );
     const leftPanel = new ExoplanetsDatabasePanel(
@@ -187,26 +190,27 @@ export class PlotBuilderScreenView extends ScreenView {
     // ── Right panel: count, methods, filters, selection ─────────────────────
     const matchCount = new MatchCountNode(database, { maxWidth: RIGHT_WIDTH - 20 });
     const methodCheckboxes = new MethodCheckboxGroup(database.filter, RIGHT_WIDTH - 20);
-    const filterButton = (quantityProperty: typeof model.xQuantityProperty): RectangularPushButton =>
-      new RectangularPushButton({
-        ...FLAT_PANEL_PUSH_BUTTON_OPTIONS,
-        content: lightText(
-          new PatternStringProperty(strings.filterAxisPatternStringProperty, {
-            quantity: new DerivedProperty(
-              [quantityProperty, common.labelWithUnitPatternStringProperty],
-              (q) => quantityName(q).value,
-            ),
-          }),
-          RIGHT_WIDTH - 36,
+    const filterButton = (quantityProperty: typeof model.xQuantityProperty): RectangularPushButton => {
+      const text = new PatternStringProperty(strings.filterAxisPatternStringProperty, {
+        quantity: new DerivedProperty(
+          [quantityProperty, common.labelWithUnitPatternStringProperty],
+          (q) => quantityName(q).value,
         ),
+      });
+      return new RectangularPushButton({
+        ...FLAT_PANEL_PUSH_BUTTON_OPTIONS,
+        content: lightText(text, RIGHT_WIDTH - 36),
+        accessibleName: text,
         minWidth: RIGHT_WIDTH - 24,
         listener: () => showFilterDialog(database.filter.criterion(quantityProperty.value)),
       });
+    };
     const xFilterButton = filterButton(model.xQuantityProperty);
     const yFilterButton = filterButton(model.yQuantityProperty);
     const clearButton = new RectangularPushButton({
       ...FLAT_PANEL_PUSH_BUTTON_OPTIONS,
       content: lightText(common.clearAllFiltersStringProperty, RIGHT_WIDTH - 36),
+      accessibleName: common.clearAllFiltersStringProperty,
       minWidth: RIGHT_WIDTH - 24,
       listener: () => database.filter.reset(),
       enabledProperty: new DerivedProperty([database.matchingPlanetsProperty], () => database.filter.isActive),
@@ -225,6 +229,7 @@ export class PlotBuilderScreenView extends ScreenView {
     const showInTableButton = new RectangularPushButton({
       ...FLAT_PANEL_PUSH_BUTTON_OPTIONS,
       content: lightText(strings.showInTableStringProperty, RIGHT_WIDTH - 36),
+      accessibleName: strings.showInTableStringProperty,
       minWidth: RIGHT_WIDTH - 24,
       listener: () => model.showInTable(),
       enabledProperty: new DerivedProperty([database.selectedPlanetProperty], (index) => index !== null),

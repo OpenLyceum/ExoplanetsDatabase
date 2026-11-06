@@ -1,40 +1,38 @@
 /**
  * PlotGalleryScreenSummaryContent.ts
  *
- * The accessible screen summary read by screen readers (SceneryStack's
- * Interactive Description). It appears at the top of the parallel DOM and gives
- * a non-visual user a way to orient themselves and to re-read the simulation's
- * current state at any time.
- *
- * A summary has four regions (all optional, but provide at least the first
- * three in every sim for consistency across OpenLyceum):
- *   - playAreaContent       — what the play area contains
- *   - controlAreaContent    — what the controls do
- *   - currentDetailsContent — a LIVE paragraph describing current state
- *   - interactionHintContent — a short hint on how to get started
- *
- * ── Making "current details" live ─────────────────────────────────────────────
- * The template has no model state, so currentDetails is a static string. In a
- * real sim, build a DerivedProperty over the relevant model Properties and pass
- * it as `currentDetailsContent` so the paragraph updates as the sim runs.
- * See LunarLander/src/.../LunarLanderScreenSummaryContent.ts for the pattern.
- * If that DerivedProperty (or any Multilink) is owned by a short-lived object,
- * dispose it on teardown — see the commented dispose() stub in PlotGalleryScreenView.
+ * Screen-reader summary for the Plot Gallery. The current details name the plot shown; its
+ * caption is read with the plot.
  */
+
+import { DerivedProperty, type TReadOnlyProperty } from "scenerystack/axon";
 import { ScreenSummaryContent } from "scenerystack/sim";
 import { StringManager } from "../../i18n/StringManager.js";
+import { GalleryPreset } from "../model/GalleryPreset.js";
 import type { PlotGalleryModel } from "../model/PlotGalleryModel.js";
 
-export class PlotGalleryScreenSummaryContent extends ScreenSummaryContent {
-  // `model` is unused in the template but kept in the signature so real sims can
-  // derive a live currentDetailsContent from it without changing call sites.
-  public constructor(_model: PlotGalleryModel) {
-    const a11y = StringManager.getInstance().getPlotGalleryA11yStrings();
+type PresetStrings = Readonly<Record<string, { titleStringProperty: TReadOnlyProperty<string> }>>;
 
+export class PlotGalleryScreenSummaryContent extends ScreenSummaryContent {
+  public constructor(model: PlotGalleryModel) {
+    const strings = StringManager.getInstance();
+    const a11y = strings.getPlotGalleryA11yStrings();
+    const presets = strings.getPlotGalleryStrings().presets as unknown as PresetStrings;
+    const titles = GalleryPreset.enumeration.values.map(
+      (preset) => presets[preset.key]?.titleStringProperty as TReadOnlyProperty<string>,
+    );
+    const currentDetails = DerivedProperty.deriveAny(
+      [model.presetProperty, a11y.currentDetailsPatternStringProperty, ...titles],
+      () => {
+        const preset = model.presetProperty.value;
+        const title = presets[preset.key]?.titleStringProperty.value ?? "";
+        return a11y.currentDetailsPatternStringProperty.value.replace("{{plot}}", title);
+      },
+    );
     super({
       playAreaContent: a11y.screenSummary.playAreaStringProperty,
       controlAreaContent: a11y.screenSummary.controlAreaStringProperty,
-      currentDetailsContent: a11y.currentDetailsStringProperty,
+      currentDetailsContent: currentDetails,
       interactionHintContent: a11y.screenSummary.interactionHintStringProperty,
     });
   }

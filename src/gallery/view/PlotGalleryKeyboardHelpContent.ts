@@ -1,30 +1,34 @@
 /**
  * PlotGalleryKeyboardHelpContent.ts
  *
- * Content for the keyboard-help dialog (the "?" button in the navigation bar).
- * The template's only interactions are buttons and Reset All, so a single
- * basic-actions section covers the available keyboard controls. When the sim
- * grows, fill the right column (pattern stubbed below).
+ * Keyboard help for the Plot Gallery: stepping through planets on a scatter plot or bars on a
+ * bar chart, and the standard controls (radio buttons, checkbox).
  */
 
 import {
   BasicActionsKeyboardHelpSection,
-  // SliderControlsKeyboardHelpSection,
-  // TimeControlsKeyboardHelpSection,
+  KeyboardHelpIconFactory,
+  KeyboardHelpSection,
+  KeyboardHelpSectionRow,
   TwoColumnKeyboardHelpContent,
 } from "scenerystack/scenery-phet";
+import { StringManager } from "../../i18n/StringManager.js";
 
 export class PlotGalleryKeyboardHelpContent extends TwoColumnKeyboardHelpContent {
   public constructor() {
-    const leftColumn = [new BasicActionsKeyboardHelpSection()];
-
-    // Right column — uncomment when the sim adds sliders and/or TimeControlNode:
-    // const rightColumn = [
-    //   new SliderControlsKeyboardHelpSection(),
-    //   // new TimeControlsKeyboardHelpSection(),
-    // ];
-    const rightColumn: never[] = [];
-
-    super(leftColumn, rightColumn);
+    const strings = StringManager.getInstance().getCommonStrings().keyboardHelp;
+    const plotSection = new KeyboardHelpSection(strings.plotHeadingStringProperty, [
+      KeyboardHelpSectionRow.labelWithIcon(
+        strings.stepPlanetsStringProperty,
+        KeyboardHelpIconFactory.leftRightArrowKeysRowIcon(),
+      ),
+    ]);
+    const barsSection = new KeyboardHelpSection(strings.barsHeadingStringProperty, [
+      KeyboardHelpSectionRow.labelWithIcon(
+        strings.stepBarsStringProperty,
+        KeyboardHelpIconFactory.leftRightArrowKeysRowIcon(),
+      ),
+    ]);
+    super([plotSection, barsSection], [new BasicActionsKeyboardHelpSection({ withCheckboxContent: true })]);
   }
 }

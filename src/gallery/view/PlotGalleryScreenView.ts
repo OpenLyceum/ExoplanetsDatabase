@@ -82,6 +82,7 @@ export class PlotGalleryScreenView extends ScreenView {
       model.presetProperty,
       GalleryPreset.enumeration.values.map((preset) => ({
         value: preset,
+        options: { accessibleName: presetText(preset).titleStringProperty },
         createNode: () =>
           new Text(presetText(preset).titleStringProperty, {
             font: FONTS.LABEL,
@@ -89,7 +90,7 @@ export class PlotGalleryScreenView extends ScreenView {
             maxWidth: LIST_WIDTH - 50,
           }),
       })),
-      { spacing: 10, radioButtonOptions: { radius: 7 } },
+      { spacing: 10, radioButtonOptions: { radius: 7 }, accessibleName: strings.presetsTitleStringProperty },
     );
     const solarSystemCheckbox = new Checkbox(
       model.showSolarSystemProperty,
@@ -100,6 +101,7 @@ export class PlotGalleryScreenView extends ScreenView {
       }),
       {
         ...EXOPLANETS_DATABASE_CHECKBOX_OPTIONS,
+        accessibleName: common.showSolarSystemStringProperty,
         enabledProperty: new DerivedProperty([model.presetProperty], (preset) => preset.solarSystem),
       },
     );

@@ -1,40 +1,40 @@
 /**
  * ExploreScreenSummaryContent.ts
  *
- * The accessible screen summary read by screen readers (SceneryStack's
- * Interactive Description). It appears at the top of the parallel DOM and gives
- * a non-visual user a way to orient themselves and to re-read the simulation's
- * current state at any time.
- *
- * A summary has four regions (all optional, but provide at least the first
- * three in every sim for consistency across OpenLyceum):
- *   - playAreaContent       — what the play area contains
- *   - controlAreaContent    — what the controls do
- *   - currentDetailsContent — a LIVE paragraph describing current state
- *   - interactionHintContent — a short hint on how to get started
- *
- * ── Making "current details" live ─────────────────────────────────────────────
- * The template has no model state, so currentDetails is a static string. In a
- * real sim, build a DerivedProperty over the relevant model Properties and pass
- * it as `currentDetailsContent` so the paragraph updates as the sim runs.
- * See LunarLander/src/.../LunarLanderScreenSummaryContent.ts for the pattern.
- * If that DerivedProperty (or any Multilink) is owned by a short-lived object,
- * dispose it on teardown — see the commented dispose() stub in ExploreScreenView.
+ * Screen-reader summary for the Explore screen. The current details say how many planets pass
+ * the filters and which planet is selected, and update as they change.
  */
+
+import { DerivedProperty } from "scenerystack/axon";
 import { ScreenSummaryContent } from "scenerystack/sim";
+import { formatCount } from "../../common/view/format.js";
 import { StringManager } from "../../i18n/StringManager.js";
 import type { ExploreModel } from "../model/ExploreModel.js";
 
 export class ExploreScreenSummaryContent extends ScreenSummaryContent {
-  // `model` is unused in the template but kept in the signature so real sims can
-  // derive a live currentDetailsContent from it without changing call sites.
-  public constructor(_model: ExploreModel) {
+  public constructor(model: ExploreModel) {
     const a11y = StringManager.getInstance().getExploreA11yStrings();
-
+    const database = model.database;
+    const currentDetails = new DerivedProperty(
+      [
+        database.matchingPlanetsProperty,
+        database.selectedPlanetProperty,
+        a11y.currentDetailsPatternStringProperty,
+        a11y.selectedPatternStringProperty,
+        a11y.noSelectionStringProperty,
+      ],
+      (matches, selected, pattern, selectedPattern, none) =>
+        pattern
+          .replace("{{count}}", formatCount(matches.length))
+          .replace(
+            "{{selection}}",
+            selected === null ? none : selectedPattern.replace("{{name}}", database.catalog.names[selected] ?? ""),
+          ),
+    );
     super({
       playAreaContent: a11y.screenSummary.playAreaStringProperty,
       controlAreaContent: a11y.screenSummary.controlAreaStringProperty,
-      currentDetailsContent: a11y.currentDetailsStringProperty,
+      currentDetailsContent: currentDetails,
       interactionHintContent: a11y.screenSummary.interactionHintStringProperty,
     });
   }

@@ -11,6 +11,7 @@ import type { ChartTransform } from "scenerystack/bamboo";
 import { Bounds2 } from "scenerystack/dot";
 import { CanvasNode } from "scenerystack/scenery";
 import { EMPTY_POINTS, HIDDEN_GROUP, type PointSet } from "../../common/model/plotPoints.js";
+import ExoplanetsDatabaseColors from "../../ExoplanetsDatabaseColors.js";
 import type { MarkerShape } from "./MarkerShape.js";
 
 /** How one group of points is drawn. */
@@ -25,7 +26,7 @@ export class PointCloudNode extends CanvasNode {
   private readonly radius: number;
   private points: PointSet = EMPTY_POINTS;
   private styles: readonly PointStyle[] = [];
-  private ringColor: () => string = () => "#ffffff";
+  private ringColor: () => string = () => ExoplanetsDatabaseColors.textColorProperty.value.toCSS();
   private rings: number[] = [];
 
   /** View positions from the last paint, for picking. */

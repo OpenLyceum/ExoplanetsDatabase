@@ -1,30 +1,36 @@
 /**
  * PlotBuilderKeyboardHelpContent.ts
  *
- * Content for the keyboard-help dialog (the "?" button in the navigation bar).
- * The template's only interactions are buttons and Reset All, so a single
- * basic-actions section covers the available keyboard controls. When the sim
- * grows, fill the right column (pattern stubbed below).
+ * Keyboard help for the Plot Builder: stepping through the plotted planets, the axis combo
+ * boxes, typing filter values, and the standard controls.
  */
 
 import {
   BasicActionsKeyboardHelpSection,
-  // SliderControlsKeyboardHelpSection,
-  // TimeControlsKeyboardHelpSection,
+  ComboBoxKeyboardHelpSection,
+  KeyboardHelpIconFactory,
+  KeyboardHelpSection,
+  KeyboardHelpSectionRow,
+  TextKeyNode,
   TwoColumnKeyboardHelpContent,
 } from "scenerystack/scenery-phet";
+import { StringManager } from "../../i18n/StringManager.js";
 
 export class PlotBuilderKeyboardHelpContent extends TwoColumnKeyboardHelpContent {
   public constructor() {
-    const leftColumn = [new BasicActionsKeyboardHelpSection()];
-
-    // Right column — uncomment when the sim adds sliders and/or TimeControlNode:
-    // const rightColumn = [
-    //   new SliderControlsKeyboardHelpSection(),
-    //   // new TimeControlsKeyboardHelpSection(),
-    // ];
-    const rightColumn: never[] = [];
-
-    super(leftColumn, rightColumn);
+    const strings = StringManager.getInstance().getCommonStrings().keyboardHelp;
+    const plotSection = new KeyboardHelpSection(strings.plotHeadingStringProperty, [
+      KeyboardHelpSectionRow.labelWithIcon(
+        strings.stepPlanetsStringProperty,
+        KeyboardHelpIconFactory.leftRightArrowKeysRowIcon(),
+      ),
+    ]);
+    const keypadSection = new KeyboardHelpSection(strings.keypadHeadingStringProperty, [
+      KeyboardHelpSectionRow.labelWithIcon(strings.keypadTypeStringProperty, TextKeyNode.enter()),
+    ]);
+    super(
+      [plotSection, new ComboBoxKeyboardHelpSection(), keypadSection],
+      [new BasicActionsKeyboardHelpSection({ withCheckboxContent: true })],
+    );
   }
 }

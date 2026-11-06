@@ -36,6 +36,7 @@ export class MethodCheckboxGroup extends VBox {
           }),
           {
             ...EXOPLANETS_DATABASE_CHECKBOX_OPTIONS,
+            accessibleName: methodName(method),
             accessibleHelpText: method === DiscoveryMethod.OTHER ? common.otherMethodsListStringProperty : null,
           },
         ),
@@ -47,7 +48,11 @@ export class MethodCheckboxGroup extends VBox {
         fill: ExoplanetsDatabaseColors.textColorProperty,
         maxWidth: width - 30,
       }),
-      { ...EXOPLANETS_DATABASE_CHECKBOX_OPTIONS, accessibleHelpText: common.estimatedMassNoteStringProperty },
+      {
+        ...EXOPLANETS_DATABASE_CHECKBOX_OPTIONS,
+        accessibleName: common.measuredMassesOnlyStringProperty,
+        accessibleHelpText: common.estimatedMassNoteStringProperty,
+      },
     );
     super({ align: "left", spacing: 5, children: [...checkboxes, measuredMassCheckbox] });
     this.disposeMethodCheckboxGroup = () => {

@@ -2,23 +2,53 @@
 
 [![CI](../../actions/workflows/ci.yml/badge.svg)](../../actions/workflows/ci.yml)
 
-A reusable SceneryStack simulation template for one or N screens, built with
-[SceneryStack](https://scenerystack.org/), Vite 8, TypeScript 7, and Biome 2.
+A friendly front end to the [NASA Exoplanet Archive](https://exoplanetarchive.ipac.caltech.edu/).
+Students filter and sort the 6,000+ confirmed exoplanets in a simplified table, compare any planet
+with Earth and the Sun, and explore ready-made plots that show how discovery methods shape what we
+find. Every filter is also written the way the archive's own table expects it, so students can move
+on to the real archive. It supports the activity *Exploring Exoplanets with the NASA Exoplanet
+Archive* (introductory astronomy) and pairs with [Stellar Wobble](https://github.com/OpenLyceum/StellarWobble)
+and [Transit Hunter](https://github.com/OpenLyceum/TransitHunter). Built with
+[SceneryStack](https://scenerystack.org/); runs offline as a Progressive Web App.
 
 ## Features
 
-- SceneryStack scaffold with model/view separation (`rename` + `scaffold-screens` for one or N screens)
-- English, Spanish, and French localization via `StringManager`
-- Default and projector color profiles
-- Progressive Web App (installable, offline-capable)
-- Git hooks for Biome pre-commit checks
-- Shared GitHub Actions CI via `OpenLyceum/Baton`
+- **Counts.** The archive's headline numbers: confirmed planets, TESS and Kepler candidates still
+  waiting for confirmation, and planets found by TESS and by Kepler. Planets per discovery method
+  with percentages, optionally only those discovered since a chosen year, and the growth of the
+  confirmed count with the 4,000-planet mark of June 2019.
+- **Explore.** A table with plain-language columns (period, orbit size, radius, mass, temperatures,
+  star properties, distance, …). Press a header to sort, or its funnel to filter: type "at least" and
+  "at most" values on a keypad, or hide planets with no value. Quick filters match the activity's
+  steps (Sun-like stars, found since 2024, orbit and star known, Earth-like orbits), plus discovery
+  method checkboxes and "measured masses only". A live count shows how many planets match, and a
+  panel spells out the same filters in the archive's syntax (`between 0.95 and 1.05`, `'Transit'`,
+  `not null`, `!=calculated`). The selected planet's card compares it with Earth and the Sun and works
+  out Kepler's third law, its closest and farthest distances, the star's luminosity from R²T⁴ and the
+  planet's density. Values the archive estimated are marked ≈; radial-velocity minimum masses ≥.
+- **Plot Gallery.** Eight preset plots with "what to notice" captions, coloured by discovery method
+  with a marker shape per method: mass vs orbit size, mass vs period, discoveries per year, radius vs
+  period, mass vs radius (with iron, rock and water curves), Kepler's third law (coloured by star
+  mass, with lines for 0.1, 1 and 10 solar masses), a distance histogram, and planet size over time
+  (coloured by telescope). Solar System planets can be shown for comparison. Hover, click or use the
+  arrow keys to read any planet.
+- **Plot Builder.** Any quantity against any other, on linear or log axes, coloured by method,
+  telescope, discovery year or star mass, for the planets that pass the Explore filters. Selecting a
+  point selects the planet in the table; "Show in Table" jumps there.
+- **Real data, offline.** A snapshot of the archive's Planetary Systems Composite Parameters table
+  is bundled (the archive's API cannot be called from a web page). `npm run fetch-data` refreshes it.
+- **Accessible:**
+  - Every control works from the keyboard, including the table and the plots.
+  - Each screen has a live screen summary and a keyboard-help dialog.
+  - English, French and Spanish.
+  - Default and projector colour profiles; colour-blind-safe palette plus marker shapes.
+  - Installable PWA.
+  - A preference (or `?archiveSyntax=false`) hides the archive syntax.
 
 ## Quick Start
 
 ```bash
 npm install
-npm run icons    # generate PNG icons from public/icons/icon.svg
 npm start        # dev server → http://localhost:5173
 ```
 
@@ -39,12 +69,13 @@ npm start        # dev server → http://localhost:5173
 | `npm run format` | Auto-format all files |
 | `npm run fix` | Lint + auto-fix |
 | `npm run icons` | Regenerate PNG icons from `public/icons/icon.svg` |
-| `npm run rename` | Sim-level fork/rename (`--id`, `--name`) |
-| `npm run scaffold-screens` | Emit N fleet-named screen packages from `counts/` (`--shared-model` optional) |
+| `npm run fetch-data` | Take a new snapshot of the NASA Exoplanet Archive (needs network) |
 | `npm run release` | `check && lint && build && test`, then version patch + push tags |
 | `npm run clean` | Remove `dist/` |
 
-New sims start at `version: "0.0.0"` in `package.json`. Bump only when cutting a release (for example `npm version patch` and a matching git tag). Keep `name` in kebab-case; it is separate from the SceneryStack sim identifier in `src/init.ts`, which reads its `version` from `package.json`.
+The snapshot is frozen on purpose so that class answers stay put during a term. To refresh it, run
+`npm run fetch-data`, check the summary it prints against the archive's Exoplanet Counts page, run
+the tests, and commit `src/common/model/data/pscomppars.json`.
 
 ## Tech Stack
 
@@ -53,12 +84,13 @@ New sims start at `version: "0.0.0"` in `package.json`. Bump only when cutting a
 | [SceneryStack](https://scenerystack.org/) | ^3.0.0 | Simulation framework |
 | [Vite](https://vitejs.dev/) | ^8 | Build tool + dev server |
 | [TypeScript](https://www.typescriptlang.org/) | ^7 | Type-safe JavaScript |
-| [Biome](https://biomejs.dev/) | ^2.5 | Linting + formatting |
+| [Biome](https://biomejs.dev/) | ^2.6 | Linting + formatting |
 | [vite-plugin-pwa](https://vite-pwa-org.netlify.app/) | ^2 | PWA + service worker |
 
 ## License
 
 GNU Affero General Public License v3.0 — see [OpenLyceum org license](https://github.com/OpenLyceum/.github/blob/main/LICENSE).
+Data from the NASA Exoplanet Archive; see [CREDITS.md](CREDITS.md) for the acknowledgement.
 
 ## Contributing
 

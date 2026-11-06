@@ -115,7 +115,19 @@
       "massive": "Massive stars (over 1.4 M☉)"
     },
     "decadePattern": "{{decade}}s",
-    "colorKey": "Colour key"
+    "colorKey": "Colour key",
+    "keyboardHelp": {
+      "tableHeading": "Planet table",
+      "nextPlanet": "Move to the next or previous planet",
+      "pagePlanet": "Move a page up or down",
+      "firstLastPlanet": "Jump to the first or last planet",
+      "plotHeading": "Plot",
+      "stepPlanets": "Select the planet to the left or right",
+      "barsHeading": "Bar chart",
+      "stepBars": "Read the bar to the left or right",
+      "keypadHeading": "Filter values",
+      "keypadType": "Type a number in the keypad, then press Enter"
+    }
   },
   "explore": {
     "filtersTitle": "Filters",
@@ -251,7 +263,8 @@
     "selectedPattern": "Selected: {{name}}",
     "noSelection": "Click a point to select a planet.",
     "chart": "Plot",
-    "chartHelp": "Use the left and right arrow keys to step through the plotted planets from left to right. The selected planet is also selected in the Explore table."
+    "chartHelp": "Use the left and right arrow keys to step through the plotted planets from left to right. The selected planet is also selected in the Explore table.",
+    "logScaleForPattern": "{{axis}}: log scale"
   },
   "counts": {
     "tiles": {
@@ -278,47 +291,37 @@
   "a11y": {
     "counts": {
       "screenSummary": {
-        "playArea": "The play area shows the main simulation content.",
-        "controlArea": "The control area has a Reset All button that returns the simulation to its starting state.",
-        "interactionHint": "Explore the simulation by interacting with its controls."
+        "playArea": "The play area shows how many exoplanets are confirmed, how many TESS and Kepler candidates still wait for confirmation, how many planets each discovery method has found, and a line chart of the confirmed count since the first discoveries.",
+        "controlArea": "The control area has a Reset All button.",
+        "interactionHint": "Change the first discovery year to count only recent discoveries by each method."
       },
-      "currentDetails": "The simulation is in its initial state.",
-      "controls": {
-        "placeholder": "Placeholder"
-      }
+      "currentDetails": "The data come from the NASA Exoplanet Archive."
     },
     "explore": {
       "screenSummary": {
-        "playArea": "The play area shows the main simulation content.",
-        "controlArea": "The control area has a Reset All button that returns the simulation to its starting state.",
-        "interactionHint": "Explore the simulation by interacting with its controls."
+        "playArea": "The play area has a table of confirmed exoplanets, one row per planet, and a card with the selected planet's details compared with Earth and the Sun.",
+        "controlArea": "The control area has quick filters, discovery-method checkboxes, a measured-masses toggle, a column chooser and a Reset All button. Each column header sorts the table and has a filter button.",
+        "interactionHint": "Apply a quick filter or a column filter, then move through the table with the arrow keys to read each planet's details."
       },
-      "currentDetails": "The simulation is in its initial state.",
-      "controls": {
-        "placeholder": "Placeholder"
-      }
+      "currentDetailsPattern": "{{count}} planets match the filters. {{selection}}",
+      "selectedPattern": "Selected planet: {{name}}.",
+      "noSelection": "No planet is selected."
     },
     "gallery": {
       "screenSummary": {
-        "playArea": "The play area shows the main simulation content.",
-        "controlArea": "The control area has a Reset All button that returns the simulation to its starting state.",
-        "interactionHint": "Explore the simulation by interacting with its controls."
+        "playArea": "The play area shows one of eight ready-made plots of the confirmed exoplanets, its colour key, and a caption saying what to notice.",
+        "controlArea": "The control area has the list of plots, a checkbox for the Solar System planets and a Reset All button.",
+        "interactionHint": "Choose a plot, read its caption, then step through the planets on it with the arrow keys."
       },
-      "currentDetails": "The simulation is in its initial state.",
-      "controls": {
-        "placeholder": "Placeholder"
-      }
+      "currentDetailsPattern": "Showing {{plot}}."
     },
     "builder": {
       "screenSummary": {
-        "playArea": "The play area shows the main simulation content.",
-        "controlArea": "The control area has a Reset All button that returns the simulation to its starting state.",
-        "interactionHint": "Explore the simulation by interacting with its controls."
+        "playArea": "The play area is a scatter plot of the planets that pass the filters, one point per planet, coloured as chosen.",
+        "controlArea": "The control area chooses the quantity on each axis, log or linear scales and the colouring, and holds the discovery-method filters (shared with the Explore table), filter buttons for each axis, Show in Table and Reset All.",
+        "interactionHint": "Pick two quantities to compare, then step through the planets with the arrow keys."
       },
-      "currentDetails": "The simulation is in its initial state.",
-      "controls": {
-        "placeholder": "Placeholder"
-      }
+      "currentDetailsPattern": "Plotting {{y}} against {{x}} for {{count}} planets. {{selection}}"
     }
   },
   "preferences": {
