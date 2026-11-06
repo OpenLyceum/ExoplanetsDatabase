@@ -50,7 +50,7 @@ const stringProperties = LocalizedString.getNestedStringProperties({
  * Keep this in sync with the `a11y` key in `strings_en.json` — a locale key
  * rename that is not mirrored here fails at the getter return (not silently).
  */
-export type SimA11yStrings = {
+export type ExoplanetsDatabaseA11yStrings = {
   readonly screenSummary: {
     readonly playAreaStringProperty: ReadOnlyProperty<string>;
     readonly controlAreaStringProperty: ReadOnlyProperty<string>;
@@ -64,9 +64,9 @@ export type SimA11yStrings = {
 
 /**
  * Explicit Preferences → Simulation labels from {@link StringManager.getPreferences}.
- * Same sync rule as {@link SimA11yStrings}.
+ * Same sync rule as {@link ExoplanetsDatabaseA11yStrings}.
  */
-export type SimPreferenceStrings = {
+export type ExoplanetsDatabasePreferenceStrings = {
   readonly titleStringProperty: ReadOnlyProperty<string>;
   readonly exampleToggleStringProperty: ReadOnlyProperty<string>;
 };
@@ -103,34 +103,43 @@ export class StringManager {
    * Each property updates automatically when the locale changes.
    */
   public getScreenNames(): {
-    readonly simStringProperty: ReadOnlyProperty<string>;
+    readonly countsStringProperty: ReadOnlyProperty<string>;
+    readonly exploreStringProperty: ReadOnlyProperty<string>;
+    readonly galleryStringProperty: ReadOnlyProperty<string>;
+    readonly builderStringProperty: ReadOnlyProperty<string>;
   } {
     return {
-      simStringProperty: stringProperties.screens.simStringProperty,
+      countsStringProperty: stringProperties.screens.countsStringProperty,
+      exploreStringProperty: stringProperties.screens.exploreStringProperty,
+      galleryStringProperty: stringProperties.screens.galleryStringProperty,
+      builderStringProperty: stringProperties.screens.builderStringProperty,
     };
   }
 
-  /**
-   * Accessibility (Interactive Description) StringProperties.
-   *
-   * Returns the reactive `a11y` string tree used by the parallel DOM:
-   *   - `screenSummary.*` — play-area / control-area overview and an interaction
-   *     hint, read by `SimScreenSummaryContent`.
-   *   - `currentDetails` — a paragraph describing the simulation's current state.
-   *     In a real sim, derive a live version from model Properties (see
-   *     LunarLander's ScreenSummaryContent for the canonical pattern).
-   *
-   * Add `accessibleName` / `accessibleHelpText` strings for individual controls
-   * to the `a11y` group too, then read them through this same nested tree.
-   */
-  public getA11yStrings(): SimA11yStrings {
-    return stringProperties.a11y;
+  /** Accessibility strings for the Counts screen. */
+  public getCountsA11yStrings() {
+    return stringProperties.a11y.counts;
+  }
+
+  /** Accessibility strings for the Explore screen. */
+  public getExploreA11yStrings() {
+    return stringProperties.a11y.explore;
+  }
+
+  /** Accessibility strings for the Plot Gallery screen. */
+  public getPlotGalleryA11yStrings() {
+    return stringProperties.a11y.gallery;
+  }
+
+  /** Accessibility strings for the Plot Builder screen. */
+  public getPlotBuilderA11yStrings() {
+    return stringProperties.a11y.builder;
   }
 
   /**
    * Simulation-specific preference labels shown in Preferences → Simulation.
    */
-  public getPreferences(): SimPreferenceStrings {
+  public getPreferences() {
     return stringProperties.preferences;
   }
 }

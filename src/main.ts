@@ -21,24 +21,41 @@ import "./brand.js";
 
 import { onReadyToLaunch, PreferencesModel, Sim } from "scenerystack/sim";
 import { Tandem } from "scenerystack/tandem";
+import { PlotBuilderScreen } from "./builder/PlotBuilderScreen.js";
+import { CountsScreen } from "./counts/CountsScreen.js";
+import ExoplanetsDatabaseColors from "./ExoplanetsDatabaseColors.js";
+import { ExploreScreen } from "./explore/ExploreScreen.js";
+import { PlotGalleryScreen } from "./gallery/PlotGalleryScreen.js";
 import { StringManager } from "./i18n/StringManager.js";
-import { SimPreferencesModel } from "./preferences/SimPreferencesModel.js";
-import { SimPreferencesNode } from "./preferences/SimPreferencesNode.js";
-import SimColors from "./SimColors.js";
-import { SimScreen } from "./sim-screen/SimScreen.js";
+import { ExoplanetsDatabasePreferencesModel } from "./preferences/ExoplanetsDatabasePreferencesModel.js";
+import { ExoplanetsDatabasePreferencesNode } from "./preferences/ExoplanetsDatabasePreferencesNode.js";
 
 onReadyToLaunch(() => {
   const stringManager = StringManager.getInstance();
 
-  // Simulation-specific preferences; initial values come from simQueryParameters.
-  const simPreferences = new SimPreferencesModel(Tandem.ROOT.createTandem("preferences"));
+  // Simulation-specific preferences; initial values come from exoplanetsDatabaseQueryParameters.
+  const simPreferences = new ExoplanetsDatabasePreferencesModel(Tandem.ROOT.createTandem("preferences"));
 
   const screens = [
-    new SimScreen({
-      // The screen name Property updates automatically when the locale changes
-      name: stringManager.getScreenNames().simStringProperty,
-      tandem: Tandem.ROOT.createTandem("simScreen"),
-      backgroundColorProperty: SimColors.backgroundColorProperty,
+    new CountsScreen({
+      name: stringManager.getScreenNames().countsStringProperty,
+      tandem: Tandem.ROOT.createTandem("countsScreen"),
+      backgroundColorProperty: ExoplanetsDatabaseColors.backgroundColorProperty,
+    }),
+    new ExploreScreen({
+      name: stringManager.getScreenNames().exploreStringProperty,
+      tandem: Tandem.ROOT.createTandem("exploreScreen"),
+      backgroundColorProperty: ExoplanetsDatabaseColors.backgroundColorProperty,
+    }),
+    new PlotGalleryScreen({
+      name: stringManager.getScreenNames().galleryStringProperty,
+      tandem: Tandem.ROOT.createTandem("galleryScreen"),
+      backgroundColorProperty: ExoplanetsDatabaseColors.backgroundColorProperty,
+    }),
+    new PlotBuilderScreen({
+      name: stringManager.getScreenNames().builderStringProperty,
+      tandem: Tandem.ROOT.createTandem("builderScreen"),
+      backgroundColorProperty: ExoplanetsDatabaseColors.backgroundColorProperty,
     }),
   ];
 
@@ -53,7 +70,7 @@ onReadyToLaunch(() => {
       simulationOptions: {
         customPreferences: [
           {
-            createContent: (tandem: Tandem) => new SimPreferencesNode(simPreferences, tandem),
+            createContent: (tandem: Tandem) => new ExoplanetsDatabasePreferencesNode(simPreferences, tandem),
           },
         ],
       },
