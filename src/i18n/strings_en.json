@@ -14,7 +14,6 @@
     "clearAllFilters": "Clear All Filters",
     "measuredMassesOnly": "Measured masses only",
     "showSolarSystem": "Solar System planets",
-    "valueWithUnitPattern": "{{value}} {{unit}}",
     "labelWithUnitPattern": "{{label}} ({{unit}})",
     "methods": {
       "transit": "Transit",
@@ -106,8 +105,6 @@
       "earthLikeOrbits": "Orbit between 0.72 and 1.5 au (Venus to Mars) around a star of 0.9 to 1.1 Suns"
     },
     "estimatedMassNote": "≈ estimated from the radius, not measured",
-    "minimumMassNote": "≥ minimum mass (M sin i) from radial velocity",
-    "estimatedValueNote": "≈ estimated by the archive",
     "keypadRangePattern": "From {{min}} to {{max}}",
     "starMassGroups": {
       "small": "Small stars (under 0.6 M☉)",
@@ -130,7 +127,6 @@
     }
   },
   "explore": {
-    "filtersTitle": "Filters",
     "presetsTitle": "Quick filters",
     "methodsTitle": "Discovery method",
     "selectColumns": "Columns…",
@@ -138,12 +134,9 @@
     "columnsDialogHint": "Like the archive's Select Columns. Up to {{max}} columns fit.",
     "nameColumn": "Planet",
     "methodColumn": "Method",
-    "sortedAscending": "sorted, smallest first",
-    "sortedDescending": "sorted, largest first",
     "noMatches": "No planet passes these filters.",
     "archiveTitle": "In the archive's table, type:",
     "archiveNoFilters": "No filters: the archive's table shows every confirmed planet.",
-    "archiveLinePattern": "{{column}} box:",
     "filterDialogTitlePattern": "Filter: {{quantity}}",
     "atLeast": "At least",
     "atMost": "At most",
@@ -162,8 +155,6 @@
       "orbitHeading": "Orbit",
       "starHeading": "Star",
       "derivedHeading": "Worked out from these values",
-      "comparePattern": "{{value}} × Earth",
-      "compareSunPattern": "{{value}} × Sun",
       "distancePattern": "{{parsecs}} pc ({{lightYears}} light years)",
       "keplerPattern": "Kepler's third law: P² = {{pSquared}}, a³/M★ = {{aCubed}} ({{percent}}% apart)",
       "extremesPattern": "Distance from its star: {{closest}} to {{farthest}} au",
@@ -172,7 +163,6 @@
       "noteMassEstimated": "Mass ≈ estimated from the radius.",
       "noteMassMinimum": "Mass ≥: radial velocity gives only M sin i, a minimum.",
       "noteRadiusEstimated": "Radius ≈ estimated from the mass.",
-      "showInTable": "Show in Table",
       "earthReference": "Earth",
       "sunReference": "Sun"
     },
@@ -195,7 +185,6 @@
   "gallery": {
     "presetsTitle": "Plots",
     "colorKeyTitle": "Colour key",
-    "whatToNotice": "What to notice",
     "planetsPlottedPattern": "{{count}} planets plotted",
     "chart": "Plot",
     "chartHelp": "Use the left and right arrow keys to step through the planets from left to right and hear their values.",

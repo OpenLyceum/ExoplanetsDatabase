@@ -1,81 +1,80 @@
 {
-  "title": "Exoplanets Database",
+  "title": "Base de données d'exoplanètes",
   "screens": {
-    "counts": "Counts",
-    "explore": "Explore",
-    "gallery": "Plot Gallery",
-    "builder": "Plot Builder"
+    "counts": "Décomptes",
+    "explore": "Explorer",
+    "gallery": "Galerie de graphiques",
+    "builder": "Créateur de graphiques"
   },
   "common": {
-    "dataCreditPattern": "Data: NASA Exoplanet Archive, Planetary Systems Composite Parameters, retrieved {{date}}",
-    "matchCountPattern": "{{count}} of {{total}} planets",
-    "planetCountPattern": "{{count}} planets",
+    "dataCreditPattern": "Données : NASA Exoplanet Archive, Planetary Systems Composite Parameters, extraites le {{date}}",
+    "matchCountPattern": "{{count}} planètes sur {{total}}",
+    "planetCountPattern": "{{count}} planètes",
     "noValue": "—",
-    "clearAllFilters": "Clear All Filters",
-    "measuredMassesOnly": "Measured masses only",
-    "showSolarSystem": "Solar System planets",
-    "valueWithUnitPattern": "{{value}} {{unit}}",
+    "clearAllFilters": "Effacer tous les filtres",
+    "measuredMassesOnly": "Masses mesurées seulement",
+    "showSolarSystem": "Planètes du Système solaire",
     "labelWithUnitPattern": "{{label}} ({{unit}})",
     "methods": {
       "transit": "Transit",
-      "radialVelocity": "Radial velocity",
-      "microlensing": "Microlensing",
-      "imaging": "Imaging",
-      "other": "Other"
+      "radialVelocity": "Vitesse radiale",
+      "microlensing": "Microlentille",
+      "imaging": "Imagerie",
+      "other": "Autres"
     },
     "methodsShort": {
       "transit": "Transit",
-      "radialVelocity": "RV",
-      "microlensing": "Microlens.",
-      "imaging": "Imaging",
-      "other": "Other"
+      "radialVelocity": "VR",
+      "microlensing": "Microlent.",
+      "imaging": "Imagerie",
+      "other": "Autres"
     },
-    "otherMethodsList": "Other: transit timing variations, eclipse timing variations, orbital brightness modulation, pulsar timing, pulsation timing, astrometry, disk kinematics",
+    "otherMethodsList": "Autres : variations du moment des transits, variations du moment des éclipses, modulation de la luminosité orbitale, chronométrage de pulsar, chronométrage de pulsations, astrométrie, cinématique de disque",
     "facilities": {
       "kepler": "Kepler",
       "k2": "K2",
       "tess": "TESS",
-      "otherSpace": "Other space telescopes",
-      "ground": "Ground-based"
+      "otherSpace": "Autres télescopes spatiaux",
+      "ground": "Au sol"
     },
     "quantities": {
-      "period": "Orbital period",
-      "semiMajorAxis": "Semi-major axis",
-      "eccentricity": "Eccentricity",
-      "radius": "Planet radius",
-      "mass": "Planet mass",
-      "temperature": "Planet temperature",
-      "insolation": "Starlight received",
-      "starTemperature": "Star temperature",
-      "starRadius": "Star radius",
-      "starMass": "Star mass",
-      "distance": "Distance from us",
-      "planetCount": "Planets in system",
-      "discoveryYear": "Discovery year"
+      "period": "Période orbitale",
+      "semiMajorAxis": "Demi-grand axe",
+      "eccentricity": "Excentricité",
+      "radius": "Rayon de la planète",
+      "mass": "Masse de la planète",
+      "temperature": "Température de la planète",
+      "insolation": "Lumière reçue",
+      "starTemperature": "Température de l'étoile",
+      "starRadius": "Rayon de l'étoile",
+      "starMass": "Masse de l'étoile",
+      "distance": "Distance à la Terre",
+      "planetCount": "Planètes du système",
+      "discoveryYear": "Année de découverte"
     },
     "quantitiesShort": {
-      "period": "Period",
-      "semiMajorAxis": "Orbit size",
-      "eccentricity": "Eccentricity",
-      "radius": "Radius",
-      "mass": "Mass",
+      "period": "Période",
+      "semiMajorAxis": "Taille orbite",
+      "eccentricity": "Excentricité",
+      "radius": "Rayon",
+      "mass": "Masse",
       "temperature": "Temp.",
-      "insolation": "Starlight",
-      "starTemperature": "Star temp.",
-      "starRadius": "Star radius",
-      "starMass": "Star mass",
+      "insolation": "Lumière",
+      "starTemperature": "Temp. étoile",
+      "starRadius": "Rayon étoile",
+      "starMass": "Masse étoile",
       "distance": "Distance",
-      "planetCount": "Planets",
-      "discoveryYear": "Year"
+      "planetCount": "Planètes",
+      "discoveryYear": "Année"
     },
     "units": {
-      "period": "days",
-      "semiMajorAxis": "au",
+      "period": "jours",
+      "semiMajorAxis": "ua",
       "eccentricity": "",
       "radius": "R<sub>⊕</sub>",
       "mass": "M<sub>⊕</sub>",
       "temperature": "K",
-      "insolation": "× Earth",
+      "insolation": "× Terre",
       "starTemperature": "K",
       "starRadius": "R<sub>☉</sub>",
       "starMass": "M<sub>☉</sub>",
@@ -84,249 +83,239 @@
       "discoveryYear": ""
     },
     "solarSystem": {
-      "mercury": "Mercury",
-      "venus": "Venus",
-      "earth": "Earth",
+      "mercury": "Mercure",
+      "venus": "Vénus",
+      "earth": "Terre",
       "mars": "Mars",
       "jupiter": "Jupiter",
-      "saturn": "Saturn",
+      "saturn": "Saturne",
       "uranus": "Uranus",
       "neptune": "Neptune"
     },
     "presets": {
-      "sunLikeStars": "Sun-like stars",
-      "recent": "Found since 2024",
-      "orbitKnown": "Orbit and star known",
-      "earthLikeOrbits": "Earth-like orbits"
+      "sunLikeStars": "Étoiles comme le Soleil",
+      "recent": "Trouvées depuis 2024",
+      "orbitKnown": "Orbite et étoile connues",
+      "earthLikeOrbits": "Orbites comme la Terre"
     },
     "presetDescriptions": {
-      "sunLikeStars": "Star mass between 0.95 and 1.05 Suns",
-      "recent": "Discovered in 2024 or later",
-      "orbitKnown": "Orbit size, period and star mass all listed",
-      "earthLikeOrbits": "Orbit between 0.72 and 1.5 au (Venus to Mars) around a star of 0.9 to 1.1 Suns"
+      "sunLikeStars": "Masse de l'étoile entre 0,95 et 1,05 Soleil",
+      "recent": "Découvertes en 2024 ou après",
+      "orbitKnown": "Taille de l'orbite, période et masse de l'étoile toutes indiquées",
+      "earthLikeOrbits": "Orbite entre 0,72 et 1,5 ua (de Vénus à Mars) autour d'une étoile de 0,9 à 1,1 Soleil"
     },
-    "estimatedMassNote": "≈ estimated from the radius, not measured",
-    "minimumMassNote": "≥ minimum mass (M sin i) from radial velocity",
-    "estimatedValueNote": "≈ estimated by the archive",
-    "keypadRangePattern": "From {{min}} to {{max}}",
+    "estimatedMassNote": "≈ estimée à partir du rayon, non mesurée",
+    "keypadRangePattern": "De {{min}} à {{max}}",
     "starMassGroups": {
-      "small": "Small stars (under 0.6 M☉)",
-      "sunLike": "Sun-like stars (0.6–1.4 M☉)",
-      "massive": "Massive stars (over 1.4 M☉)"
+      "small": "Petites étoiles (moins de 0,6 M☉)",
+      "sunLike": "Étoiles comme le Soleil (0,6–1,4 M☉)",
+      "massive": "Étoiles massives (plus de 1,4 M☉)"
     },
-    "decadePattern": "{{decade}}s",
-    "colorKey": "Colour key",
+    "decadePattern": "Années {{decade}}",
+    "colorKey": "Légende des couleurs",
     "keyboardHelp": {
-      "tableHeading": "Planet table",
-      "nextPlanet": "Move to the next or previous planet",
-      "pagePlanet": "Move a page up or down",
-      "firstLastPlanet": "Jump to the first or last planet",
-      "plotHeading": "Plot",
-      "stepPlanets": "Select the planet to the left or right",
-      "barsHeading": "Bar chart",
-      "stepBars": "Read the bar to the left or right",
-      "keypadHeading": "Filter values",
-      "keypadType": "Type a number in the keypad, then press Enter"
+      "tableHeading": "Tableau des planètes",
+      "nextPlanet": "Passer à la planète suivante ou précédente",
+      "pagePlanet": "Monter ou descendre d'une page",
+      "firstLastPlanet": "Aller à la première ou à la dernière planète",
+      "plotHeading": "Graphique",
+      "stepPlanets": "Choisir la planète à gauche ou à droite",
+      "barsHeading": "Diagramme à barres",
+      "stepBars": "Lire la barre à gauche ou à droite",
+      "keypadHeading": "Valeurs des filtres",
+      "keypadType": "Taper un nombre sur le pavé, puis appuyer sur Entrée"
     }
   },
   "explore": {
-    "filtersTitle": "Filters",
-    "presetsTitle": "Quick filters",
-    "methodsTitle": "Discovery method",
-    "selectColumns": "Columns…",
-    "columnsDialogTitle": "Columns to show",
-    "columnsDialogHint": "Like the archive's Select Columns. Up to {{max}} columns fit.",
-    "nameColumn": "Planet",
-    "methodColumn": "Method",
-    "sortedAscending": "sorted, smallest first",
-    "sortedDescending": "sorted, largest first",
-    "noMatches": "No planet passes these filters.",
-    "archiveTitle": "In the archive's table, type:",
-    "archiveNoFilters": "No filters: the archive's table shows every confirmed planet.",
-    "archiveLinePattern": "{{column}} box:",
-    "filterDialogTitlePattern": "Filter: {{quantity}}",
-    "atLeast": "At least",
-    "atMost": "At most",
-    "anyValue": "any",
-    "clearBound": "Clear",
-    "requireValue": "Hide planets with no value",
-    "clearFilter": "Clear This Filter",
-    "archiveEquivalentPattern": "Archive: type {{text}} in the {{column}} box",
-    "archiveEquivalentNone": "Archive: leave the {{column}} box empty",
+    "presetsTitle": "Filtres rapides",
+    "methodsTitle": "Méthode de découverte",
+    "selectColumns": "Colonnes…",
+    "columnsDialogTitle": "Colonnes à afficher",
+    "columnsDialogHint": "Comme « Select Columns » de l'archive. Jusqu'à {{max}} colonnes.",
+    "nameColumn": "Planète",
+    "methodColumn": "Méthode",
+    "noMatches": "Aucune planète ne passe ces filtres.",
+    "archiveTitle": "Dans le tableau de l'archive, taper :",
+    "archiveNoFilters": "Aucun filtre : le tableau de l'archive montre toutes les planètes confirmées.",
+    "filterDialogTitlePattern": "Filtre : {{quantity}}",
+    "atLeast": "Au moins",
+    "atMost": "Au plus",
+    "anyValue": "toute valeur",
+    "clearBound": "Effacer",
+    "requireValue": "Masquer les planètes sans valeur",
+    "clearFilter": "Effacer ce filtre",
+    "archiveEquivalentPattern": "Archive : taper {{text}} dans la case {{column}}",
+    "archiveEquivalentNone": "Archive : laisser la case {{column}} vide",
     "card": {
-      "empty": "Select a planet in the table to see its details.",
-      "orbitsPattern": "orbits {{host}}",
-      "discoveredPattern": "Found by {{method}} in {{year}}",
-      "facilityPattern": "Discovery facility: {{facility}}",
-      "planetHeading": "Planet",
-      "orbitHeading": "Orbit",
-      "starHeading": "Star",
-      "derivedHeading": "Worked out from these values",
-      "comparePattern": "{{value}} × Earth",
-      "compareSunPattern": "{{value}} × Sun",
-      "distancePattern": "{{parsecs}} pc ({{lightYears}} light years)",
-      "keplerPattern": "Kepler's third law: P² = {{pSquared}}, a³/M★ = {{aCubed}} ({{percent}}% apart)",
-      "extremesPattern": "Distance from its star: {{closest}} to {{farthest}} au",
-      "luminosityPattern": "Star's luminosity (R²T⁴): {{luminosity}} × Sun",
-      "densityPattern": "Density: {{density}} g/cm³ (Earth 5.5, water 1.0)",
-      "noteMassEstimated": "Mass ≈ estimated from the radius.",
-      "noteMassMinimum": "Mass ≥: radial velocity gives only M sin i, a minimum.",
-      "noteRadiusEstimated": "Radius ≈ estimated from the mass.",
-      "showInTable": "Show in Table",
-      "earthReference": "Earth",
-      "sunReference": "Sun"
+      "empty": "Choisissez une planète dans le tableau pour voir ses détails.",
+      "orbitsPattern": "tourne autour de {{host}}",
+      "discoveredPattern": "Trouvée par {{method}} en {{year}}",
+      "facilityPattern": "Instrument de découverte : {{facility}}",
+      "planetHeading": "Planète",
+      "orbitHeading": "Orbite",
+      "starHeading": "Étoile",
+      "derivedHeading": "Calculé à partir de ces valeurs",
+      "distancePattern": "{{parsecs}} pc ({{lightYears}} années-lumière)",
+      "keplerPattern": "Troisième loi de Kepler : P² = {{pSquared}}, a³/M★ = {{aCubed}} (écart de {{percent}} %)",
+      "extremesPattern": "Distance à son étoile : de {{closest}} à {{farthest}} ua",
+      "luminosityPattern": "Luminosité de l'étoile (R²T⁴) : {{luminosity}} × Soleil",
+      "densityPattern": "Masse volumique : {{density}} g/cm³ (Terre 5,5, eau 1,0)",
+      "noteMassEstimated": "Masse ≈ estimée à partir du rayon.",
+      "noteMassMinimum": "Masse ≥ : la vitesse radiale ne donne que M sin i, un minimum.",
+      "noteRadiusEstimated": "Rayon ≈ estimé à partir de la masse.",
+      "earthReference": "Terre",
+      "sunReference": "Soleil"
     },
-    "sortByPattern": "Sort by {{column}}",
-    "filterColumnPattern": "Filter {{column}}",
-    "table": "Planet table",
-    "tableHelp": "Use the up and down arrow keys, Page Up, Page Down, Home and End to move through the planets. The selected planet's details appear beside the table.",
-    "scrollBar": "Scroll the table",
+    "sortByPattern": "Trier par {{column}}",
+    "filterColumnPattern": "Filtrer {{column}}",
+    "table": "Tableau des planètes",
+    "tableHelp": "Utilisez les flèches haut et bas, Page préc., Page suiv., Début et Fin pour parcourir les planètes. Les détails de la planète choisie s'affichent à côté du tableau.",
+    "scrollBar": "Faire défiler le tableau",
     "summary": {
-      "title": "Filters applied",
-      "none": "No filters: every confirmed planet is listed.",
-      "rangePattern": "{{label}}: {{min}} to {{max}} {{unit}}",
-      "atLeastPattern": "{{label}}: at least {{min}} {{unit}}",
-      "atMostPattern": "{{label}}: at most {{max}} {{unit}}",
-      "requireValuePattern": "{{label}}: has a value",
-      "methodsPattern": "Methods: {{methods}}",
-      "measuredMass": "Measured masses only"
+      "title": "Filtres appliqués",
+      "none": "Aucun filtre : toutes les planètes confirmées sont listées.",
+      "rangePattern": "{{label}} : de {{min}} à {{max}} {{unit}}",
+      "atLeastPattern": "{{label}} : au moins {{min}} {{unit}}",
+      "atMostPattern": "{{label}} : au plus {{max}} {{unit}}",
+      "requireValuePattern": "{{label}} : valeur indiquée",
+      "methodsPattern": "Méthodes : {{methods}}",
+      "measuredMass": "Masses mesurées seulement"
     }
   },
   "gallery": {
-    "presetsTitle": "Plots",
-    "colorKeyTitle": "Colour key",
-    "whatToNotice": "What to notice",
-    "planetsPlottedPattern": "{{count}} planets plotted",
-    "chart": "Plot",
-    "chartHelp": "Use the left and right arrow keys to step through the planets from left to right and hear their values.",
-    "barChart": "Bar chart",
-    "barChartHelp": "Use the left and right arrow keys to step through the bars and hear their counts.",
-    "planetsAxis": "Number of planets",
-    "discoveryDateAxis": "Discovery date",
+    "presetsTitle": "Graphiques",
+    "colorKeyTitle": "Légende des couleurs",
+    "planetsPlottedPattern": "{{count}} planètes affichées",
+    "chart": "Graphique",
+    "chartHelp": "Utilisez les flèches gauche et droite pour parcourir les planètes de gauche à droite et entendre leurs valeurs.",
+    "barChart": "Diagramme à barres",
+    "barChartHelp": "Utilisez les flèches gauche et droite pour parcourir les barres et entendre leurs effectifs.",
+    "planetsAxis": "Nombre de planètes",
+    "discoveryDateAxis": "Date de découverte",
     "binRangePattern": "{{from}}–{{to}} {{unit}}",
     "guides": {
-      "iron": "Pure iron",
-      "rock": "Earth-like rock",
-      "water": "Water",
-      "keplerLinePattern": "{{mass}} M☉ star"
+      "iron": "Fer pur",
+      "rock": "Roche comme la Terre",
+      "water": "Eau",
+      "keplerLinePattern": "Étoile de {{mass}} M☉"
     },
     "presets": {
       "massVsOrbit": {
-        "title": "Mass vs orbit size",
-        "caption": "Each discovery method finds a different kind of planet. Transits (circles) and radial velocity (squares) find planets close to their stars. Microlensing (triangles) finds planets a few au out, around faint, distant stars. Direct imaging (diamonds) only sees giant planets far from their stars. Earth sits in a nearly empty region: Earth-sized planets at Earth-like distances are still the hardest to find. Only measured masses are shown (≥ minimum masses for radial velocity)."
+        "title": "Masse et taille de l'orbite",
+        "caption": "Chaque méthode de découverte trouve un type de planète différent. Les transits (cercles) et la vitesse radiale (carrés) trouvent des planètes proches de leur étoile. La microlentille (triangles) trouve des planètes à quelques ua, autour d'étoiles faibles et lointaines. L'imagerie directe (losanges) ne voit que des planètes géantes loin de leur étoile. La Terre se trouve dans une région presque vide : les planètes de la taille de la Terre à des distances comme la sienne restent les plus difficiles à trouver. Seules les masses mesurées sont affichées (≥ masses minimales pour la vitesse radiale)."
       },
       "massVsPeriod": {
-        "title": "Mass vs orbital period",
-        "caption": "The clump at the top left are hot Jupiters: giant planets that orbit their stars in a few days. They were the first planets found around Sun-like stars (51 Pegasi b, 1995) because they tug their stars hardest and most often. Microlensing and imaging planets rarely have a known period, so look at Mass vs orbit size to see them. Only measured masses are shown."
+        "title": "Masse et période orbitale",
+        "caption": "L'amas en haut à gauche, ce sont les Jupiter chauds : des planètes géantes qui font le tour de leur étoile en quelques jours. Ce sont les premières planètes trouvées autour d'étoiles comme le Soleil (51 Pegasi b, 1995), parce qu'elles tirent le plus fort et le plus souvent sur leur étoile. Les planètes trouvées par microlentille ou imagerie ont rarement une période connue : regardez « Masse et taille de l'orbite » pour les voir. Seules les masses mesurées sont affichées."
       },
       "discoveriesPerYear": {
-        "title": "Discoveries per year",
-        "caption": "Each bar counts the planets announced that year, stacked by discovery method. The spikes in 2014 and 2016 are Kepler planets confirmed hundreds at a time. TESS, launched in 2018, keeps transits on top today, while radial velocity adds a steady stream every year. Hover over a bar for its numbers."
+        "title": "Découvertes par année",
+        "caption": "Chaque barre compte les planètes annoncées cette année-là, empilées par méthode de découverte. Les pics de 2014 et 2016 sont des planètes de Kepler confirmées par centaines d'un coup. TESS, lancé en 2018, garde les transits en tête aujourd'hui, tandis que la vitesse radiale en ajoute régulièrement chaque année. Survolez une barre pour voir ses nombres."
       },
       "radiusVsPeriod": {
-        "title": "Radius vs orbital period",
-        "caption": "Only measured radii are shown, so almost every planet here was seen to transit. Hot Jupiters form the group of large planets on orbits of a few days; below them, almost no Neptune-sized planets orbit that close (the \"hot-Neptune desert\"). Among small planets, look for the thinly populated band near 1.5 to 2 Earth radii that separates rocky super-Earths from gas-rich sub-Neptunes."
+        "title": "Rayon et période orbitale",
+        "caption": "Seuls les rayons mesurés sont affichés, donc presque toutes ces planètes ont été vues en transit. Les Jupiter chauds forment le groupe de grosses planètes aux orbites de quelques jours ; en dessous, presque aucune planète de la taille de Neptune n'orbite aussi près (le « désert des Neptune chauds »). Parmi les petites planètes, cherchez la bande peu peuplée vers 1,5 à 2 rayons terrestres qui sépare les super-Terres rocheuses des mini-Neptune riches en gaz."
       },
       "massVsRadius": {
-        "title": "Mass vs radius",
-        "caption": "Planets with both a measured mass and a measured radius. The curves show the radius a planet would have if it were pure iron, Earth-like rock, or water. Planets near the rock curve are rocky; planets far above it need a thick envelope of hydrogen and helium. Beyond about 100 Earth masses, giant planets all have roughly Jupiter's radius: extra mass squeezes them instead of making them bigger."
+        "title": "Masse et rayon",
+        "caption": "Planètes dont la masse et le rayon sont tous deux mesurés. Les courbes donnent le rayon qu'aurait une planète en fer pur, en roche comme la Terre ou en eau. Les planètes proches de la courbe de la roche sont rocheuses ; celles bien au-dessus ont besoin d'une épaisse enveloppe d'hydrogène et d'hélium. Au-delà d'environ 100 masses terrestres, les planètes géantes ont toutes à peu près le rayon de Jupiter : une masse supplémentaire les comprime au lieu de les grossir."
       },
       "keplersThirdLaw": {
-        "title": "Kepler's third law",
-        "caption": "Every planet obeys Kepler's third law, P² = a³/M★, but for its own star. The lines show the law for stars of 0.1, 1 and 10 solar masses, and the Solar System planets sit on the 1 M☉ line. Planets of small stars (red) lie above it: a lighter star pulls less, so an orbit of the same size takes longer."
+        "title": "Troisième loi de Kepler",
+        "caption": "Chaque planète obéit à la troisième loi de Kepler, P² = a³/M★, mais pour sa propre étoile. Les droites montrent la loi pour des étoiles de 0,1, 1 et 10 masses solaires, et les planètes du Système solaire sont sur la droite de 1 M☉. Les planètes des petites étoiles (en rouge) sont au-dessus : une étoile plus légère attire moins, donc une orbite de même taille prend plus de temps."
       },
       "distanceHistogram": {
-        "title": "How far away?",
-        "caption": "How far away the planets' stars are, on a log scale (1 parsec = 3.26 light years). Radial velocity needs bright stars, so its planets are mostly within about 100 parsecs. Kepler stared at fainter stars hundreds of parsecs away, and microlensing finds planets thousands of parsecs away, toward the centre of the Galaxy."
+        "title": "À quelle distance ?",
+        "caption": "La distance des étoiles des planètes, sur une échelle logarithmique (1 parsec = 3,26 années-lumière). La vitesse radiale exige des étoiles brillantes, donc ses planètes sont surtout à moins d'environ 100 parsecs. Kepler a observé des étoiles plus faibles à des centaines de parsecs, et la microlentille trouve des planètes à des milliers de parsecs, vers le centre de la Galaxie."
       },
       "sizeOverTime": {
-        "title": "Smaller and smaller",
-        "caption": "Measured radius against discovery date, coloured by the telescope that found each planet. The first transiting planets, found from the ground, were all giants. Kepler (2009–2018) found thousands of planets smaller than Neptune, many announced in the big releases of 2014 and 2016 (the vertical stripes), and TESS keeps adding small planets around nearby stars. As instruments improve, the smallest planets we can detect keep getting smaller."
+        "title": "De plus en plus petites",
+        "caption": "Rayon mesuré en fonction de la date de découverte, coloré selon le télescope qui a trouvé chaque planète. Les premières planètes en transit, trouvées depuis le sol, étaient toutes géantes. Kepler (2009–2018) a trouvé des milliers de planètes plus petites que Neptune, beaucoup annoncées lors des grandes publications de 2014 et 2016 (les bandes verticales), et TESS continue d'ajouter de petites planètes autour d'étoiles proches. À mesure que les instruments s'améliorent, les plus petites planètes détectables sont de plus en plus petites."
       }
     }
   },
   "builder": {
-    "xAxis": "Horizontal axis",
-    "yAxis": "Vertical axis",
-    "logScale": "Log scale",
-    "logScaleHelp": "A log scale gives each factor of 10 the same space, so tiny and huge values fit on one plot.",
-    "colorByTitle": "Colour by",
+    "xAxis": "Axe horizontal",
+    "yAxis": "Axe vertical",
+    "logScale": "Échelle logarithmique",
+    "logScaleHelp": "Une échelle logarithmique donne la même place à chaque facteur 10, pour que les valeurs minuscules et énormes tiennent sur un même graphique.",
+    "colorByTitle": "Couleur selon",
     "colorBy": {
-      "method": "Discovery method",
-      "facility": "Telescope",
-      "year": "Discovery year",
-      "starMass": "Star mass"
+      "method": "Méthode de découverte",
+      "facility": "Télescope",
+      "year": "Année de découverte",
+      "starMass": "Masse de l'étoile"
     },
-    "filtersTitle": "Filters (shared with Explore)",
-    "filterAxisPattern": "Filter {{quantity}}…",
-    "showInTable": "Show in Table",
-    "selectedPattern": "Selected: {{name}}",
-    "noSelection": "Click a point to select a planet.",
-    "chart": "Plot",
-    "chartHelp": "Use the left and right arrow keys to step through the plotted planets from left to right. The selected planet is also selected in the Explore table.",
-    "logScaleForPattern": "{{axis}}: log scale"
+    "filtersTitle": "Filtres (partagés avec Explorer)",
+    "filterAxisPattern": "Filtrer {{quantity}}…",
+    "showInTable": "Voir dans le tableau",
+    "selectedPattern": "Choisie : {{name}}",
+    "noSelection": "Cliquez sur un point pour choisir une planète.",
+    "chart": "Graphique",
+    "chartHelp": "Utilisez les flèches gauche et droite pour parcourir les planètes affichées de gauche à droite. La planète choisie l'est aussi dans le tableau d'Explorer.",
+    "logScaleForPattern": "{{axis}} : échelle logarithmique"
   },
   "counts": {
     "tiles": {
-      "confirmed": "Confirmed planets",
-      "tessCandidates": "TESS candidates not yet confirmed",
-      "keplerCandidates": "Kepler candidates not yet confirmed",
-      "byTess": "Confirmed planets found by TESS",
-      "byKepler": "Confirmed planets found by Kepler"
+      "confirmed": "Planètes confirmées",
+      "tessCandidates": "Candidates TESS pas encore confirmées",
+      "keplerCandidates": "Candidates Kepler pas encore confirmées",
+      "byTess": "Planètes confirmées trouvées par TESS",
+      "byKepler": "Planètes confirmées trouvées par Kepler"
     },
-    "methodsTitle": "Planets by discovery method",
-    "sinceYear": "Discovered in or after",
-    "sinceYearHelp": "Counts only the planets discovered in this year or later.",
-    "methodTotalPattern": "{{count}} planets discovered since {{year}}",
-    "methodRowPattern": "{{count}} ({{percent}}%)",
-    "growthTitle": "Confirmed planets over time",
-    "growthAxis": "Confirmed planets",
-    "yearAxis": "Year",
-    "totalLine": "All methods",
-    "fourThousand": "4 000 planets (June 2019)",
-    "growthPattern": "Today: {{count}} planets, {{factor}} × the June 2019 count",
-    "growthDescriptionPattern": "Line chart of the number of confirmed planets over time, rising from the first discoveries in the 1990s to {{count}} today. It passed 4,000 in June 2019.",
-    "candidateNote": "Candidates are signals still waiting for follow-up observations (radial-velocity masses, more transits) before they count as planets."
+    "methodsTitle": "Planètes par méthode de découverte",
+    "sinceYear": "Découvertes en ou après",
+    "sinceYearHelp": "Ne compte que les planètes découvertes cette année-là ou plus tard.",
+    "methodTotalPattern": "{{count}} planètes découvertes depuis {{year}}",
+    "methodRowPattern": "{{count}} ({{percent}} %)",
+    "growthTitle": "Planètes confirmées au fil du temps",
+    "growthAxis": "Planètes confirmées",
+    "yearAxis": "Année",
+    "totalLine": "Toutes les méthodes",
+    "fourThousand": "4 000 planètes (juin 2019)",
+    "growthPattern": "Aujourd'hui : {{count}} planètes, {{factor}} × le nombre de juin 2019",
+    "growthDescriptionPattern": "Graphique du nombre de planètes confirmées au fil du temps, des premières découvertes des années 1990 jusqu'à {{count}} aujourd'hui. Il a dépassé 4 000 en juin 2019.",
+    "candidateNote": "Les candidates sont des signaux qui attendent encore des observations de suivi (masses par vitesse radiale, nouveaux transits) avant de compter comme planètes."
   },
   "a11y": {
     "counts": {
       "screenSummary": {
-        "playArea": "The play area shows how many exoplanets are confirmed, how many TESS and Kepler candidates still wait for confirmation, how many planets each discovery method has found, and a line chart of the confirmed count since the first discoveries.",
-        "controlArea": "The control area has a Reset All button.",
-        "interactionHint": "Change the first discovery year to count only recent discoveries by each method."
+        "playArea": "La zone de jeu montre combien d'exoplanètes sont confirmées, combien de candidates TESS et Kepler attendent encore une confirmation, combien de planètes chaque méthode de découverte a trouvées, et un graphique du nombre confirmé depuis les premières découvertes.",
+        "controlArea": "La zone de contrôle contient un bouton Tout réinitialiser.",
+        "interactionHint": "Changez la première année de découverte pour ne compter que les découvertes récentes de chaque méthode."
       },
-      "currentDetails": "The data come from the NASA Exoplanet Archive."
+      "currentDetails": "Les données viennent de la NASA Exoplanet Archive."
     },
     "explore": {
       "screenSummary": {
-        "playArea": "The play area has a table of confirmed exoplanets, one row per planet, and a card with the selected planet's details compared with Earth and the Sun.",
-        "controlArea": "The control area has quick filters, discovery-method checkboxes, a measured-masses toggle, a column chooser and a Reset All button. Each column header sorts the table and has a filter button.",
-        "interactionHint": "Apply a quick filter or a column filter, then move through the table with the arrow keys to read each planet's details."
+        "playArea": "La zone de jeu contient un tableau des exoplanètes confirmées, une ligne par planète, et une fiche des détails de la planète choisie comparés à la Terre et au Soleil.",
+        "controlArea": "La zone de contrôle contient des filtres rapides, des cases par méthode de découverte, un choix pour les masses mesurées, un choix des colonnes et un bouton Tout réinitialiser. Chaque en-tête de colonne trie le tableau et a un bouton de filtre.",
+        "interactionHint": "Appliquez un filtre rapide ou un filtre de colonne, puis parcourez le tableau avec les flèches pour lire les détails de chaque planète."
       },
-      "currentDetailsPattern": "{{count}} planets match the filters. {{selection}}",
-      "selectedPattern": "Selected planet: {{name}}.",
-      "noSelection": "No planet is selected."
+      "currentDetailsPattern": "{{count}} planètes passent les filtres. {{selection}}",
+      "selectedPattern": "Planète choisie : {{name}}.",
+      "noSelection": "Aucune planète n'est choisie."
     },
     "gallery": {
       "screenSummary": {
-        "playArea": "The play area shows one of eight ready-made plots of the confirmed exoplanets, its colour key, and a caption saying what to notice.",
-        "controlArea": "The control area has the list of plots, a checkbox for the Solar System planets and a Reset All button.",
-        "interactionHint": "Choose a plot, read its caption, then step through the planets on it with the arrow keys."
+        "playArea": "La zone de jeu montre l'un des huit graphiques tout prêts des exoplanètes confirmées, sa légende des couleurs et une légende qui dit quoi remarquer.",
+        "controlArea": "La zone de contrôle contient la liste des graphiques, une case pour les planètes du Système solaire et un bouton Tout réinitialiser.",
+        "interactionHint": "Choisissez un graphique, lisez sa légende, puis parcourez ses planètes avec les flèches."
       },
-      "currentDetailsPattern": "Showing {{plot}}."
+      "currentDetailsPattern": "Graphique affiché : {{plot}}."
     },
     "builder": {
       "screenSummary": {
-        "playArea": "The play area is a scatter plot of the planets that pass the filters, one point per planet, coloured as chosen.",
-        "controlArea": "The control area chooses the quantity on each axis, log or linear scales and the colouring, and holds the discovery-method filters (shared with the Explore table), filter buttons for each axis, Show in Table and Reset All.",
-        "interactionHint": "Pick two quantities to compare, then step through the planets with the arrow keys."
+        "playArea": "La zone de jeu est un nuage de points des planètes qui passent les filtres, un point par planète, colorés selon le choix.",
+        "controlArea": "La zone de contrôle choisit la grandeur de chaque axe, les échelles logarithmiques ou linéaires et les couleurs, et contient les filtres par méthode (partagés avec le tableau d'Explorer), un bouton de filtre par axe, Voir dans le tableau et Tout réinitialiser.",
+        "interactionHint": "Choisissez deux grandeurs à comparer, puis parcourez les planètes avec les flèches."
       },
-      "currentDetailsPattern": "Plotting {{y}} against {{x}} for {{count}} planets. {{selection}}"
+      "currentDetailsPattern": "{{y}} en fonction de {{x}} pour {{count}} planètes. {{selection}}"
     }
   },
   "preferences": {
     "title": "Simulation",
-    "showArchiveSyntax": "Show what to type in the NASA Exoplanet Archive",
-    "showArchiveSyntaxHelp": "Lists, under the table and the Plot Builder, the archive's filter-box text for the same filters."
+    "showArchiveSyntax": "Montrer quoi taper dans la NASA Exoplanet Archive",
+    "showArchiveSyntaxHelp": "Affiche, sous le tableau et le Créateur de graphiques, le texte à taper dans les cases de filtre de l'archive pour les mêmes filtres."
   }
 }
