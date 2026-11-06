@@ -112,7 +112,7 @@
       "massive": "Massive stars (over 1.4 M☉)"
     },
     "decadePattern": "{{decade}}s",
-    "colorKey": "Colour key",
+    "colorKey": "Color key",
     "keyboardHelp": {
       "tableHeading": "Planet table",
       "nextPlanet": "Move to the next or previous planet",
@@ -184,7 +184,7 @@
   },
   "gallery": {
     "presetsTitle": "Plots",
-    "colorKeyTitle": "Colour key",
+    "colorKeyTitle": "Color key",
     "planetsPlottedPattern": "{{count}} planets plotted",
     "chart": "Plot",
     "chartHelp": "Use the left and right arrow keys to step through the planets from left to right and hear their values.",
@@ -226,11 +226,11 @@
       },
       "distanceHistogram": {
         "title": "How far away?",
-        "caption": "How far away the planets' stars are, on a log scale (1 parsec = 3.26 light years). Radial velocity needs bright stars, so its planets are mostly within about 100 parsecs. Kepler stared at fainter stars hundreds of parsecs away, and microlensing finds planets thousands of parsecs away, toward the centre of the Galaxy."
+        "caption": "How far away the planets' stars are, on a log scale (1 parsec = 3.26 light years). Radial velocity needs bright stars, so its planets are mostly within about 100 parsecs. Kepler stared at fainter stars hundreds of parsecs away, and microlensing finds planets thousands of parsecs away, toward the center of the Galaxy."
       },
       "sizeOverTime": {
         "title": "Smaller and smaller",
-        "caption": "Measured radius against discovery date, coloured by the telescope that found each planet. The first transiting planets, found from the ground, were all giants. Kepler (2009–2018) found thousands of planets smaller than Neptune, many announced in the big releases of 2014 and 2016 (the vertical stripes), and TESS keeps adding small planets around nearby stars. As instruments improve, the smallest planets we can detect keep getting smaller."
+        "caption": "Measured radius against discovery date, colored by the telescope that found each planet. The first transiting planets, found from the ground, were all giants. Kepler (2009–2018) found thousands of planets smaller than Neptune, many announced in the big releases of 2014 and 2016 (the vertical stripes), and TESS keeps adding small planets around nearby stars. As instruments improve, the smallest planets we can detect keep getting smaller."
       }
     }
   },
@@ -239,7 +239,7 @@
     "yAxis": "Vertical axis",
     "logScale": "Log scale",
     "logScaleHelp": "A log scale gives each factor of 10 the same space, so tiny and huge values fit on one plot.",
-    "colorByTitle": "Colour by",
+    "colorByTitle": "Color by",
     "colorBy": {
       "method": "Discovery method",
       "facility": "Telescope",
@@ -298,7 +298,7 @@
     },
     "gallery": {
       "screenSummary": {
-        "playArea": "The play area shows one of eight ready-made plots of the confirmed exoplanets, its colour key, and a caption saying what to notice.",
+        "playArea": "The play area shows one of eight ready-made plots of the confirmed exoplanets, its color key, and a caption saying what to notice.",
         "controlArea": "The control area has the list of plots, a checkbox for the Solar System planets and a Reset All button.",
         "interactionHint": "Choose a plot, read its caption, then step through the planets on it with the arrow keys."
       },
@@ -306,8 +306,8 @@
     },
     "builder": {
       "screenSummary": {
-        "playArea": "The play area is a scatter plot of the planets that pass the filters, one point per planet, coloured as chosen.",
-        "controlArea": "The control area chooses the quantity on each axis, log or linear scales and the colouring, and holds the discovery-method filters (shared with the Explore table), filter buttons for each axis, Show in Table and Reset All.",
+        "playArea": "The play area is a scatter plot of the planets that pass the filters, one point per planet, colored as chosen.",
+        "controlArea": "The control area chooses the quantity on each axis, log or linear scales and the coloring, and holds the discovery-method filters (shared with the Explore table), filter buttons for each axis, Show in Table and Reset All.",
         "interactionHint": "Pick two quantities to compare, then step through the planets with the arrow keys."
       },
       "currentDetailsPattern": "Plotting {{y}} against {{x}} for {{count}} planets. {{selection}}"
