@@ -16,7 +16,7 @@ import type { ExoplanetCatalog } from "../../common/model/ExoplanetCatalog.js";
 import type { ExoplanetDatabase } from "../../common/model/ExoplanetDatabase.js";
 import { FacilityGroup } from "../../common/model/FacilityGroup.js";
 import {
-  densityFromMassAndRadius,
+  densityConstraint,
   keplerCheck,
   LIGHT_YEARS_PER_PARSEC,
   luminosityFromRadiusAndTemperature,
@@ -50,7 +50,10 @@ function derivedLines(catalog: ExoplanetCatalog, index: number): string[] {
   const period = value(Quantity.PERIOD);
   const a = value(Quantity.SEMI_MAJOR_AXIS);
   const starMass = value(Quantity.STAR_MASS);
-  if ([period, a, starMass].every(Number.isFinite)) {
+  if (
+    [period, a, starMass].every(Number.isFinite) &&
+    [Quantity.PERIOD, Quantity.SEMI_MAJOR_AXIS, Quantity.STAR_MASS].every((q) => !catalog.isLimit(index, q))
+  ) {
     const check = keplerCheck(period, a, starMass);
     lines.push(
       fill(card.keplerPatternStringProperty.value, {
@@ -61,7 +64,12 @@ function derivedLines(catalog: ExoplanetCatalog, index: number): string[] {
     );
   }
   const e = value(Quantity.ECCENTRICITY);
-  if (Number.isFinite(a) && Number.isFinite(e)) {
+  if (
+    Number.isFinite(a) &&
+    Number.isFinite(e) &&
+    !catalog.isLimit(index, Quantity.SEMI_MAJOR_AXIS) &&
+    !catalog.isLimit(index, Quantity.ECCENTRICITY)
+  ) {
     const { closest, farthest } = orbitExtremes(a, e);
     lines.push(
       fill(card.extremesPatternStringProperty.value, {
@@ -72,7 +80,12 @@ function derivedLines(catalog: ExoplanetCatalog, index: number): string[] {
   }
   const starRadius = value(Quantity.STAR_RADIUS);
   const starTemperature = value(Quantity.STAR_TEMPERATURE);
-  if (Number.isFinite(starRadius) && Number.isFinite(starTemperature)) {
+  if (
+    Number.isFinite(starRadius) &&
+    Number.isFinite(starTemperature) &&
+    !catalog.isLimit(index, Quantity.STAR_RADIUS) &&
+    !catalog.isLimit(index, Quantity.STAR_TEMPERATURE)
+  ) {
     lines.push(
       fill(card.luminosityPatternStringProperty.value, {
         luminosity: formatValue(luminosityFromRadiusAndTemperature(starRadius, starTemperature), 3),
@@ -81,12 +94,19 @@ function derivedLines(catalog: ExoplanetCatalog, index: number): string[] {
   }
   const mass = value(Quantity.MASS);
   const radius = value(Quantity.RADIUS);
-  if (Number.isFinite(mass) && Number.isFinite(radius)) {
+  const density = densityConstraint(
+    mass,
+    radius,
+    catalog.limit(index, Quantity.MASS),
+    catalog.limit(index, Quantity.RADIUS),
+    catalog.isMinimumMass(index),
+  );
+  if (density) {
     const estimated = catalog.isCalculated(index, Quantity.MASS) || catalog.isCalculated(index, Quantity.RADIUS);
-    const prefix = estimated ? "≈" : catalog.isMinimumMass(index) ? "≥" : "";
+    const prefix = density.limit === 1 ? "≤" : density.limit === -1 ? "≥" : estimated ? "≈" : "";
     lines.push(
       fill(card.densityPatternStringProperty.value, {
-        density: `${prefix}${formatValue(densityFromMassAndRadius(mass, radius), 2)}`,
+        density: `${prefix}${formatValue(density.value, 2)}`,
       }),
     );
   }
@@ -97,6 +117,9 @@ function derivedLines(catalog: ExoplanetCatalog, index: number): string[] {
 function noteLines(catalog: ExoplanetCatalog, index: number): string[] {
   const card = StringManager.getInstance().getExploreStrings().card;
   const notes: string[] = [];
+  if (Quantity.enumeration.values.some((q) => catalog.isLimit(index, q))) {
+    notes.push(card.noteLimitsStringProperty.value);
+  }
   if (catalog.isCalculated(index, Quantity.MASS)) {
     notes.push(card.noteMassEstimatedStringProperty.value);
   } else if (catalog.isMinimumMass(index)) {
@@ -167,11 +190,10 @@ export class PlanetCardNode extends ExoplanetsDatabasePanel {
         const rows: Node[][] = quantities.map((q) => {
           const v = value(q);
           const estimated = catalog.isCalculated(index, q);
-          const minimum = q === Quantity.MASS && catalog.isMinimumMass(index);
           const unit = quantityUnit(q).value;
           const text = Number.isNaN(v)
             ? common.noValueStringProperty.value
-            : `${estimated ? "≈" : minimum ? "≥" : ""}${format(q)}${unit === "" ? "" : ` ${unit}`}`;
+            : `${catalog.valuePrefix(index, q)}${format(q)}${unit === "" ? "" : ` ${unit}`}`;
           return [
             new Text(quantityName(q).value, { ...secondary, maxWidth: LABEL_WIDTH }),
             new RichText(text, {

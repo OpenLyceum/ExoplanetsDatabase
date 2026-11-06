@@ -118,6 +118,7 @@ export class PlanetFilter {
     }
     if (this.measuredMassOnlyProperty.value) {
       lines.push({ column: MASS_REFERENCE_COLUMN, text: "!=calculated" });
+      lines.push({ column: "pl_bmasselim (TAP)", text: "=0" });
     }
     return lines;
   }

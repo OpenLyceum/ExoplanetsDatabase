@@ -59,6 +59,21 @@ describe("ExoplanetCatalog", () => {
     expect(tess).toBeGreaterThan(900);
   });
 
+  it("retains upper and lower limits and excludes them from measured masses", () => {
+    const upper = CATALOG.indexOf("Kepler-62 c");
+    expect(CATALOG.value(upper, Quantity.MASS)).toBe(4);
+    expect(CATALOG.limit(upper, Quantity.MASS)).toBe(1);
+    expect(CATALOG.valuePrefix(upper, Quantity.MASS)).toBe("≤");
+    expect(CATALOG.hasMeasuredMass(upper)).toBe(false);
+    const lower = raw.columns.pl_name.findIndex((_, i) => rawNumber("pl_bmasselim", i) === -1);
+    expect(lower).toBeGreaterThanOrEqual(0);
+    expect(CATALOG.valuePrefix(lower, Quantity.MASS)).toBe("≥");
+    expect(CATALOG.hasMeasuredMass(lower)).toBe(false);
+    const measured = CATALOG.indexOf("TRAPPIST-1 e");
+    expect(CATALOG.hasMeasuredMass(measured)).toBe(true);
+    expect(CATALOG.valuePrefix(measured, Quantity.MASS)).toBe("");
+  });
+
   it("flags masses estimated from a mass–radius relation", () => {
     const estimated = Array.from({ length: CATALOG.size }, (_, i) => i).filter((i) =>
       CATALOG.isCalculated(i, Quantity.MASS),
@@ -115,12 +130,16 @@ describe("PlanetFilter", () => {
     expect(filter.archiveFilters.map((line) => line.text)).toEqual(["not null", "not null", "not null"]);
   });
 
-  it("keeps measured masses only, matching the archive's !=calculated (Q24)", () => {
+  it("keeps measured masses only, excluding calculated values and limits (Q24)", () => {
     const filter = new PlanetFilter();
     filter.measuredMassOnlyProperty.value = true;
     const matches = filter.matches(CATALOG);
     expect(matches.every((i) => !CATALOG.isCalculated(i, Quantity.MASS))).toBe(true);
-    expect(filter.archiveFilters).toEqual([{ column: MASS_REFERENCE_COLUMN, text: "!=calculated" }]);
+    expect(filter.archiveFilters).toEqual([
+      { column: MASS_REFERENCE_COLUMN, text: "!=calculated" },
+      { column: "pl_bmasselim (TAP)", text: "=0" },
+    ]);
+    expect(matches.every((i) => !CATALOG.isLimit(i, Quantity.MASS))).toBe(true);
   });
 
   it("writes one-sided bounds as >= and <=, and swaps reversed bounds", () => {
@@ -130,6 +149,13 @@ describe("PlanetFilter", () => {
     expect(criterion.archiveSyntax).toBe("<=10");
     criterion.setRange(30, 3);
     expect(criterion.archiveSyntax).toBe("between 3 and 30");
+    expect(criterion.accepts(10)).toBe(true);
+    expect(criterion.accepts(2)).toBe(false);
+    expect(criterion.accepts(31)).toBe(false);
+    // The keypad edits properties directly, without going through setRange.
+    criterion.minProperty.value = 50;
+    expect(criterion.accepts(40)).toBe(true);
+    expect(criterion.accepts(60)).toBe(false);
   });
 
   it("notifies on every change and resets to no filter", () => {

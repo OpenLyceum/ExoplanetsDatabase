@@ -31,7 +31,11 @@ Data and formulas: [`doc/model.md`](doc/model.md). Architecture and decisions:
 - **Estimated values are flagged, never hidden.** The snapshot's `calculated` bitmask marks values
   whose archive reference is `refstr=CALCULATED_VALUE` (masses from a mass–radius relation, radii
   from masses, temperatures, insolation). The archive never calculates P or a, so the card's
-  Kepler's-law check is genuine. RV masses with `pl_bmassprov = "Msini"` are minimum masses (≥).
+  Kepler's-law check is genuine. RV masses with `pl_bmassprov = "Msini"` are minimum masses (≥). Numeric `*lim` flags
+  preserve upper/lower bounds; the measured-mass toggle and plot coordinates exclude limits.
+  `scripts/archive/add-limit-flags.ts` enriches an older frozen snapshot with drift validation.
+- **Pure iron** uses the numerical Zeng table in `data/pureIron.json`, interpolated by
+  `src/common/model/ironRadius.ts`; do not extrapolate the rocky CMF fit to pure iron.
 - **Explore and Plot Builder share one `ExoplanetDatabase`** (filters, sort, selection), built in
   `main.ts`. Reset All on either screen resets it, and so both screens.
 - **Filter dialogs are created once per quantity** and live for the sim (`showFilterDialog`), shared

@@ -161,10 +161,11 @@
       "luminosityPattern": "Luminosité de l'étoile (R²T⁴) : {{luminosity}} × Soleil",
       "densityPattern": "Masse volumique : {{density}} g/cm³ (Terre 5,5, eau 1,0)",
       "noteMassEstimated": "Masse ≈ estimée à partir du rayon.",
-      "noteMassMinimum": "Masse ≥ : la vitesse radiale ne donne que M sin i, un minimum.",
+      "noteMassMinimum": "La vitesse radiale mesure M sin i ; sans l’inclinaison, elle ne donne pas la masse réelle.",
       "noteRadiusEstimated": "Rayon ≈ estimé à partir de la masse.",
       "earthReference": "Terre",
-      "sunReference": "Soleil"
+      "sunReference": "Soleil",
+      "noteLimits": "Les valeurs marquées ≤ ou ≥ sont des limites supérieures ou inférieures, et non des valeurs centrales mesurées."
     },
     "sortByPattern": "Trier par {{column}}",
     "filterColumnPattern": "Filtrer {{column}}",
@@ -218,7 +219,7 @@
       },
       "massVsRadius": {
         "title": "Masse et rayon",
-        "caption": "Planètes dont la masse et le rayon sont tous deux mesurés. Les courbes donnent le rayon qu'aurait une planète en fer pur, en roche comme la Terre ou en eau. Les planètes proches de la courbe de la roche sont rocheuses ; celles bien au-dessus ont besoin d'une épaisse enveloppe d'hydrogène et d'hélium. Au-delà d'environ 100 masses terrestres, les planètes géantes ont toutes à peu près le rayon de Jupiter : une masse supplémentaire les comprime au lieu de les grossir."
+        "caption": "Planètes dont la masse et le rayon sont tous deux mesurés. Les courbes donnent le rayon qu'aurait une planète en fer pur, en roche comme la Terre ou en eau. Les planètes proches de la courbe de la roche sont rocheuses ; celles bien au-dessus ont besoin d'une épaisse enveloppe d'hydrogène et d'hélium. Au-delà d'environ 100 masses terrestres, les planètes géantes ont toutes à peu près le rayon de Jupiter : une masse supplémentaire les comprime au lieu de les grossir. La ligne de l’eau est un guide à densité constante (1 g/cm³), et non un modèle de planète d’eau comprimée. Les limites supérieures et inférieures ne sont pas représentées comme coordonnées."
       },
       "keplersThirdLaw": {
         "title": "Troisième loi de Kepler",

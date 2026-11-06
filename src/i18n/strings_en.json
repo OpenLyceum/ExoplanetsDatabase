@@ -161,10 +161,11 @@
       "luminosityPattern": "Star's luminosity (R²T⁴): {{luminosity}} × Sun",
       "densityPattern": "Density: {{density}} g/cm³ (Earth 5.5, water 1.0)",
       "noteMassEstimated": "Mass ≈ estimated from the radius.",
-      "noteMassMinimum": "Mass ≥: radial velocity gives only M sin i, a minimum.",
+      "noteMassMinimum": "Radial velocity measures M sin i; without the inclination it does not give the true mass.",
       "noteRadiusEstimated": "Radius ≈ estimated from the mass.",
       "earthReference": "Earth",
-      "sunReference": "Sun"
+      "sunReference": "Sun",
+      "noteLimits": "Values marked ≤ or ≥ are upper or lower limits, not measured central values."
     },
     "sortByPattern": "Sort by {{column}}",
     "filterColumnPattern": "Filter {{column}}",
@@ -218,7 +219,7 @@
       },
       "massVsRadius": {
         "title": "Mass vs radius",
-        "caption": "Planets with both a measured mass and a measured radius. The curves show the radius a planet would have if it were pure iron, Earth-like rock, or water. Planets near the rock curve are rocky; planets far above it need a thick envelope of hydrogen and helium. Beyond about 100 Earth masses, giant planets all have roughly Jupiter's radius: extra mass squeezes them instead of making them bigger."
+        "caption": "Planets with both a measured mass and a measured radius. The curves show the radius a planet would have if it were pure iron, Earth-like rock, or water. Planets near the rock curve are rocky; planets far above it need a thick envelope of hydrogen and helium. Beyond about 100 Earth masses, giant planets all have roughly Jupiter's radius: extra mass squeezes them instead of making them bigger. The water line is a constant-density guide (1 g/cm³), not a compressed water-planet model. Upper and lower limits are omitted from plot coordinates."
       },
       "keplersThirdLaw": {
         "title": "Kepler's third law",

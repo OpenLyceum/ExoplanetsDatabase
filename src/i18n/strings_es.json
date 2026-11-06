@@ -161,10 +161,11 @@
       "luminosityPattern": "Luminosidad de la estrella (R²T⁴): {{luminosity}} × Sol",
       "densityPattern": "Densidad: {{density}} g/cm³ (Tierra 5,5, agua 1,0)",
       "noteMassEstimated": "Masa ≈ estimada a partir del radio.",
-      "noteMassMinimum": "Masa ≥: la velocidad radial solo da M sen i, un mínimo.",
+      "noteMassMinimum": "La velocidad radial mide M sen i; sin la inclinación no da la masa real.",
       "noteRadiusEstimated": "Radio ≈ estimado a partir de la masa.",
       "earthReference": "Tierra",
-      "sunReference": "Sol"
+      "sunReference": "Sol",
+      "noteLimits": "Los valores marcados con ≤ o ≥ son límites superiores o inferiores, no valores centrales medidos."
     },
     "sortByPattern": "Ordenar por {{column}}",
     "filterColumnPattern": "Filtrar {{column}}",
@@ -218,7 +219,7 @@
       },
       "massVsRadius": {
         "title": "Masa y radio",
-        "caption": "Planetas con masa y radio medidos. Las curvas dan el radio que tendría un planeta de hierro puro, de roca como la Tierra o de agua. Los planetas cerca de la curva de la roca son rocosos; los que quedan muy por encima necesitan una gruesa envoltura de hidrógeno y helio. Por encima de unas 100 masas terrestres, todos los gigantes tienen más o menos el radio de Júpiter: la masa extra los comprime en lugar de agrandarlos."
+        "caption": "Planetas con masa y radio medidos. Las curvas dan el radio que tendría un planeta de hierro puro, de roca como la Tierra o de agua. Los planetas cerca de la curva de la roca son rocosos; los que quedan muy por encima necesitan una gruesa envoltura de hidrógeno y helio. Por encima de unas 100 masas terrestres, todos los gigantes tienen más o menos el radio de Júpiter: la masa extra los comprime en lugar de agrandarlos. La línea del agua es una guía de densidad constante (1 g/cm³), no un modelo de planeta de agua comprimida. Los límites superiores e inferiores se omiten de las coordenadas."
       },
       "keplersThirdLaw": {
         "title": "Tercera ley de Kepler",

@@ -5,6 +5,7 @@
 import { describe, expect, it } from "vitest";
 import {
   constantDensityRadius,
+  densityConstraint,
   densityFromMassAndRadius,
   keplerCheck,
   keplerSemiMajorAxis,
@@ -16,6 +17,18 @@ import { Quantity } from "../src/common/model/Quantity.js";
 import { EARTH, SOLAR_SYSTEM } from "../src/common/model/SolarSystem.js";
 
 describe("physics", () => {
+  it("propagates one-sided density bounds and rejects ambiguous combinations", () => {
+    const bound = densityConstraint(4, 0.54, 1, 0, false);
+    expect(bound?.value).toBeCloseTo(139.9685, 4);
+    expect(bound?.limit).toBe(1);
+    expect(densityConstraint(1, 1, 0, 1, false)?.limit).toBe(-1);
+    expect(densityConstraint(1, 1, -1, 1, false)?.limit).toBe(-1);
+    expect(densityConstraint(1, 1, 1, -1, false)?.limit).toBe(1);
+    expect(densityConstraint(1, 1, 1, 1, false)).toBeNull();
+    expect(densityConstraint(1, 1, 1, 0, true)).toBeNull();
+    expect(densityConstraint(1, 1, 0, 0, true)?.limit).toBe(-1);
+  });
+
   it("Kepler's third law holds for every Solar System planet", () => {
     for (const planet of SOLAR_SYSTEM) {
       const check = keplerCheck(

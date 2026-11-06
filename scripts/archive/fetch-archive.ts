@@ -40,6 +40,11 @@ const NUMERIC_COLUMNS: readonly (readonly [column: string, significantFigures: n
   ["disc_year", 4], // discovery year
 ];
 
+/** Limits accompany numeric parameters, except counts, dates and distance. */
+const LIMIT_COLUMNS = NUMERIC_COLUMNS.filter(([column]) => !["sy_dist", "sy_pnum", "disc_year"].includes(column)).map(
+  ([column]) => `${column}lim`,
+);
+
 /** Categorical columns, stored as indices into a sorted lookup list. */
 const CATEGORY_COLUMNS = ["discoverymethod", "disc_facility", "pl_bmassprov"] as const;
 
@@ -98,6 +103,7 @@ async function main(): Promise<void> {
     ...TEXT_COLUMNS,
     ...CATEGORY_COLUMNS,
     ...NUMERIC_COLUMNS.map(([column]) => column),
+    ...LIMIT_COLUMNS,
     ...CALCULABLE_COLUMNS.map((column) => `${column}_reflink`),
   ];
   console.log("Querying pscomppars…");
@@ -123,6 +129,15 @@ async function main(): Promise<void> {
     data[column] = rows.map((row) => {
       const value = row[column];
       return typeof value === "number" && Number.isFinite(value) ? roundSig(value, digits) : null;
+    });
+  }
+  for (const column of LIMIT_COLUMNS) {
+    data[column] = rows.map((row) => {
+      const value = row[column];
+      if (value !== null && value !== -1 && value !== 0 && value !== 1) {
+        throw new Error(`Invalid archive limit flag in ${column}`);
+      }
+      return value;
     });
   }
 

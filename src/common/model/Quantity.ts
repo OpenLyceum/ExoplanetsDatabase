@@ -24,6 +24,10 @@ export const CALCULABLE_COLUMNS = [
 
 export type QuantityColumn = (typeof CALCULABLE_COLUMNS)[number] | "pl_orbeccen" | "sy_dist" | "sy_pnum" | "disc_year";
 
+/** Numeric archive parameters that carry a separate upper/lower-limit flag. */
+export const LIMITABLE_COLUMNS = [...CALCULABLE_COLUMNS, "pl_orbeccen"] as const;
+export type LimitColumn = `${(typeof LIMITABLE_COLUMNS)[number]}lim`;
+
 export class Quantity extends EnumerationValue {
   public static readonly PERIOD = new Quantity("period", "pl_orbper", "Orbital Period [days]", true, 4);
   public static readonly SEMI_MAJOR_AXIS = new Quantity(
@@ -73,6 +77,13 @@ export class Quantity extends EnumerationValue {
 
   /** Bit of the snapshot's `calculated` mask, or −1 when the archive never calculates it. */
   public readonly calculatedBit: number;
+
+  /** Archive limit flag column, or null for quantities without limit flags. */
+  public get limitColumn(): LimitColumn | null {
+    return this.column === "sy_dist" || this.column === "sy_pnum" || this.column === "disc_year"
+      ? null
+      : `${this.column}lim`;
+  }
 
   /** Whether a log axis makes sense (positive values spanning decades, not years or counts). */
   public get canUseLog(): boolean {

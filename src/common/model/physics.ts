@@ -67,6 +67,28 @@ export function densityFromMassAndRadius(massEarth: number, radiusEarth: number)
   return (EARTH_DENSITY_G_CM3 * massEarth) / radiusEarth ** 3;
 }
 
+/** Density or a one-sided constraint; null when the inputs cannot give a density bound. */
+export function densityConstraint(
+  massEarth: number,
+  radiusEarth: number,
+  massLimit: -1 | 0 | 1,
+  radiusLimit: -1 | 0 | 1,
+  minimumMass: boolean,
+): { value: number; limit: -1 | 0 | 1 } | null {
+  if (!(massEarth > 0 && radiusEarth > 0 && Number.isFinite(massEarth) && Number.isFinite(radiusEarth))) {
+    return null;
+  }
+  if (minimumMass && massLimit === 1) {
+    return null;
+  }
+  const numeratorLimit = minimumMass ? -1 : massLimit;
+  if (numeratorLimit !== 0 && numeratorLimit === radiusLimit) {
+    return null;
+  }
+  const limit = numeratorLimit || -radiusLimit;
+  return { value: densityFromMassAndRadius(massEarth, radiusEarth), limit: limit as -1 | 0 | 1 };
+}
+
 /** Radius (R⊕) of a uniform planet of this mass (M⊕) and density (g/cm³). */
 export function constantDensityRadius(massEarth: number, densityGcm3: number): number {
   return ((EARTH_DENSITY_G_CM3 * massEarth) / densityGcm3) ** (1 / 3);
@@ -75,8 +97,10 @@ export function constantDensityRadius(massEarth: number, densityGcm3: number): n
 /**
  * Radius (R⊕) of a rocky planet of this mass (M⊕) and core mass fraction:
  * R = (1.07 − 0.21 CMF) M^{1/3.7} (Zeng, Sasselov & Jacobsen 2016, ApJ 819, 127; fitted for about
- * 1–8 M⊕ and still close up to ~20 M⊕). CMF = 0 is pure rock, 0.325 Earth-like, 1 pure iron.
+ * 1–8 M⊕ and still close up to ~20 M⊕). Valid for CMF 0–0.4; use ironRadius for pure iron.
  */
 export function rockyRadius(massEarth: number, coreMassFraction = EARTH_LIKE_CORE_MASS_FRACTION): number {
   return (1.07 - 0.21 * coreMassFraction) * massEarth ** (1 / 3.7);
 }
+
+export { ironRadius } from "./ironRadius.js";

@@ -237,11 +237,7 @@ export class ScatterChartNode extends Node {
         q === Quantity.DISCOVERY_YEAR
           ? formatInteger(this.catalog.value(index, q))
           : formatValue(value, q.significantFigures);
-      const mark = this.catalog.isCalculated(index, q)
-        ? "≈"
-        : q === Quantity.MASS && this.catalog.isMinimumMass(index)
-          ? "≥"
-          : "";
+      const mark = this.catalog.valuePrefix(index, q);
       return `${quantityName(q).value}: ${mark}${shown}${unit === "" ? "" : ` ${unit}`}`;
     };
     return `<b>${this.catalog.names[index] ?? ""}</b><br>${line(this.xAxis)}<br>${line(this.yAxis)}`;

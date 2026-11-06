@@ -13,6 +13,7 @@ import type { Quantity } from "./Quantity.js";
 export const archiveNumber = (value: number): string => String(Number(value.toPrecision(6)));
 
 export class RangeCriterion {
+  private settingRange = false;
   public readonly quantity: Quantity;
   public readonly minProperty = new Property<number | null>(null);
   public readonly maxProperty = new Property<number | null>(null);
@@ -22,6 +23,15 @@ export class RangeCriterion {
 
   public constructor(quantity: Quantity) {
     this.quantity = quantity;
+    const normalize = (): void => {
+      const min = this.minProperty.value;
+      const max = this.maxProperty.value;
+      if (!this.settingRange && min !== null && max !== null && min > max) {
+        this.setRange(max, min);
+      }
+    };
+    this.minProperty.lazyLink(normalize);
+    this.maxProperty.lazyLink(normalize);
   }
 
   /** Whether this criterion removes any planet. */
@@ -35,7 +45,9 @@ export class RangeCriterion {
     if (Number.isNaN(value)) {
       return !this.isActive;
     }
-    return (min === null || value >= min) && (max === null || value <= max);
+    const lower = min !== null && max !== null ? Math.min(min, max) : min;
+    const upper = min !== null && max !== null ? Math.max(min, max) : max;
+    return (lower === null || value >= lower) && (upper === null || value <= upper);
   }
 
   /** What to type in the archive's filter box for this column, or null when inactive. */
@@ -56,8 +68,10 @@ export class RangeCriterion {
 
   /** Sets both bounds (null for no bound). */
   public setRange(min: number | null, max: number | null): void {
-    this.minProperty.value = min;
-    this.maxProperty.value = max;
+    this.settingRange = true;
+    this.minProperty.value = min !== null && max !== null ? Math.min(min, max) : min;
+    this.maxProperty.value = min !== null && max !== null ? Math.max(min, max) : max;
+    this.settingRange = false;
   }
 
   public reset(): void {

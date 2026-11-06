@@ -9,7 +9,7 @@
 import { DiscoveryMethod } from "./DiscoveryMethod.js";
 import snapshotJson from "./data/pscomppars.json";
 import { FacilityGroup } from "./FacilityGroup.js";
-import { Quantity, type QuantityColumn } from "./Quantity.js";
+import { type LimitColumn, Quantity, type QuantityColumn } from "./Quantity.js";
 
 /** Shape of data/pscomppars.json. */
 export type ArchiveSnapshot = {
@@ -20,6 +20,7 @@ export type ArchiveSnapshot = {
   // Keys are the archive's own column names (snake_case), so they are written as Record keys.
   readonly categories: Readonly<Record<CategoryColumn, readonly string[]>>;
   readonly columns: Readonly<Record<QuantityColumn | "disc_month", readonly (number | null)[]>> &
+    Readonly<Record<LimitColumn, readonly (number | null)[]>> &
     Readonly<Record<"pl_name" | "hostname", readonly string[]>> &
     Readonly<Record<CategoryColumn, readonly (number | null)[]>> &
     Readonly<Record<"calculated", readonly number[]>>;
@@ -64,6 +65,7 @@ export class ExoplanetCatalog {
   private readonly massProvenance: readonly string[];
   private readonly calculated: Uint16Array;
   private readonly columns: ReadonlyMap<Quantity, Float64Array>;
+  private readonly limits: ReadonlyMap<Quantity, readonly (number | null)[]>;
 
   public constructor(snapshot: ArchiveSnapshot) {
     const { columns, categories } = snapshot;
@@ -83,6 +85,15 @@ export class ExoplanetCatalog {
     this.discoveryMonths = toFloat64(columns.disc_month);
     this.calculated = Uint16Array.from(columns.calculated);
     this.columns = new Map(Quantity.enumeration.values.map((q) => [q, toFloat64(columns[q.column])]));
+    this.limits = new Map(
+      Quantity.enumeration.values.map((q) => {
+        const flags = q.limitColumn ? columns[q.limitColumn] : [];
+        if (q.limitColumn && (!flags || flags.length !== this.size)) {
+          throw new Error(`Missing limit metadata for ${q.column}; enrich the snapshot before loading it.`);
+        }
+        return [q, flags];
+      }),
+    );
   }
 
   /** All values of a quantity, indexed by planet (NaN where the archive has none). */
@@ -108,9 +119,38 @@ export class ExoplanetCatalog {
     return this.massProvenance[index] === "Msini";
   }
 
+  /** Archive convention: +1 is an upper limit, −1 a lower limit, 0 a central value. */
+  public limit(index: number, quantity: Quantity): -1 | 0 | 1 {
+    const flag = this.limits.get(quantity)?.[index];
+    return flag === -1 || flag === 1 ? flag : 0;
+  }
+
+  public isLimit(index: number, quantity: Quantity): boolean {
+    return this.limit(index, quantity) !== 0;
+  }
+
+  /** Scientific annotations shared by the table, card, and plot descriptions. */
+  public valuePrefix(index: number, quantity: Quantity): string {
+    const limit = this.limit(index, quantity);
+    if (limit !== 0) {
+      // An upper bound on M sin i does not bound the true mass from above.
+      const parameter = quantity === Quantity.MASS && this.isMinimumMass(index) && limit === 1 ? "M sin i " : "";
+      return `${parameter}${limit === 1 ? "≤" : "≥"}`;
+    }
+    return this.isCalculated(index, quantity)
+      ? "≈"
+      : quantity === Quantity.MASS && this.isMinimumMass(index)
+        ? "≥"
+        : "";
+  }
+
   /** Whether the planet's mass was measured (true mass or M sin i), not estimated from its radius. */
   public hasMeasuredMass(index: number): boolean {
-    return Number.isFinite(this.value(index, Quantity.MASS)) && !this.isCalculated(index, Quantity.MASS);
+    return (
+      Number.isFinite(this.value(index, Quantity.MASS)) &&
+      !this.isCalculated(index, Quantity.MASS) &&
+      !this.isLimit(index, Quantity.MASS)
+    );
   }
 
   /** Index of the planet with this name, or −1. */

@@ -61,6 +61,10 @@ export function buildPoints(
   const transform = (axis: AxisRequest, value: number): number =>
     axis.log ? (value > 0 ? Math.log10(value) : Number.NaN) : value;
   for (const i of Array.from(candidates)) {
+    // Bounds cannot be drawn as if the planet lay at a measured coordinate.
+    if (catalog.isLimit(i, x.quantity) || catalog.isLimit(i, y.quantity)) {
+      continue;
+    }
     if (measuredOnly.some((q) => catalog.isCalculated(i, q))) {
       continue;
     }

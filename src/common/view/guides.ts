@@ -10,7 +10,7 @@ import { PatternStringProperty, type TReadOnlyProperty } from "scenerystack/axon
 import { Vector2 } from "scenerystack/dot";
 import { Shape } from "scenerystack/kite";
 import { Node, Path, Rectangle, Text } from "scenerystack/scenery";
-import { constantDensityRadius, rockyRadius } from "../../common/model/physics.js";
+import { constantDensityRadius, ironRadius, rockyRadius } from "../../common/model/physics.js";
 import ExoplanetsDatabaseColors from "../../ExoplanetsDatabaseColors.js";
 import { FONTS } from "../../ExoplanetsDatabaseConstants.js";
 import { StringManager } from "../../i18n/StringManager.js";
@@ -91,7 +91,7 @@ export function compositionGuides(frame: PlotFrameNode): Node[] {
   const xRange = frame.axes.x.range;
   const nodes: (Node | null)[] = [
     new Path(
-      curve(frame, xRange.min, ROCKY_MAX_MASS, (m) => rockyRadius(m, 1)),
+      curve(frame, xRange.min, ROCKY_MAX_MASS, (m) => ironRadius(m)),
       lineOptions,
     ),
     new Path(
@@ -102,7 +102,7 @@ export function compositionGuides(frame: PlotFrameNode): Node[] {
       curve(frame, xRange.min, xRange.max, (m) => constantDensityRadius(m, WATER_DENSITY)),
       lineOptions,
     ),
-    label(frame, strings.ironStringProperty, ROCKY_MAX_MASS, rockyRadius(ROCKY_MAX_MASS, 1), false),
+    label(frame, strings.ironStringProperty, ROCKY_MAX_MASS, ironRadius(ROCKY_MAX_MASS), false),
     label(frame, strings.rockStringProperty, ROCKY_MAX_MASS, rockyRadius(ROCKY_MAX_MASS)),
     label(frame, strings.waterStringProperty, 300, constantDensityRadius(300, WATER_DENSITY)),
   ];

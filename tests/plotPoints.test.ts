@@ -40,6 +40,25 @@ describe("buildPoints", () => {
     );
     for (const i of points.indices) {
       expect(CATALOG.isCalculated(i, Quantity.MASS) || CATALOG.isCalculated(i, Quantity.RADIUS)).toBe(false);
+      expect(CATALOG.isLimit(i, Quantity.MASS) || CATALOG.isLimit(i, Quantity.RADIUS)).toBe(false);
+    }
+  });
+
+  it("does not draw reported bounds as exact coordinates on either axis", () => {
+    const upper = CATALOG.indexOf("Kepler-62 c");
+    const measured = CATALOG.indexOf("TRAPPIST-1 e");
+    for (const [x, y] of [
+      [Quantity.MASS, Quantity.RADIUS],
+      [Quantity.RADIUS, Quantity.MASS],
+    ]) {
+      const points = buildPoints(
+        CATALOG,
+        [upper, measured],
+        { quantity: x!, log: true },
+        { quantity: y!, log: true },
+        () => 0,
+      );
+      expect([...points.indices]).toEqual([measured]);
     }
   });
 

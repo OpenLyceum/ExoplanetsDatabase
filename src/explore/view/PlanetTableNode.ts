@@ -17,7 +17,7 @@ import { FireListener, KeyboardListener, Node, Path, Rectangle, RichText, Text }
 import { PhetFont } from "scenerystack/scenery-phet";
 import { RectangularPushButton, VSlider } from "scenerystack/sun";
 import type { DiscoveryMethod } from "../../common/model/DiscoveryMethod.js";
-import { Quantity } from "../../common/model/Quantity.js";
+import type { Quantity } from "../../common/model/Quantity.js";
 import { TableColumn } from "../../common/model/TableColumn.js";
 import {
   methodColor,
@@ -226,8 +226,7 @@ class ColumnNodes {
     }
     const formatted = quantity.isInteger ? formatInteger(value) : formatValue(value, quantity.significantFigures);
     const estimated = catalog.isCalculated(index, quantity);
-    const minimum = quantity === Quantity.MASS && catalog.isMinimumMass(index);
-    text.string = `${estimated ? "≈" : minimum ? "≥" : ""}${formatted}`;
+    text.string = `${catalog.valuePrefix(index, quantity)}${formatted}`;
     text.fill = estimated
       ? ExoplanetsDatabaseColors.estimatedTextColorProperty
       : ExoplanetsDatabaseColors.textColorProperty;
