@@ -74,6 +74,11 @@ export class Quantity extends EnumerationValue {
   /** Bit of the snapshot's `calculated` mask, or −1 when the archive never calculates it. */
   public readonly calculatedBit: number;
 
+  /** Whether a log axis makes sense (positive values spanning decades, not years or counts). */
+  public get canUseLog(): boolean {
+    return this !== Quantity.ECCENTRICITY && !this.isInteger;
+  }
+
   public constructor(
     key: string,
     column: QuantityColumn,

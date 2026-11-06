@@ -30,10 +30,10 @@ export class PlotBuilderModel implements TModel {
 
     // A new quantity starts on the axis type that suits it.
     this.xQuantityProperty.lazyLink((quantity) => {
-      this.xLogProperty.value = quantity.prefersLog;
+      this.xLogProperty.value = quantity.prefersLog && quantity.canUseLog;
     });
     this.yQuantityProperty.lazyLink((quantity) => {
-      this.yLogProperty.value = quantity.prefersLog;
+      this.yLogProperty.value = quantity.prefersLog && quantity.canUseLog;
     });
   }
 

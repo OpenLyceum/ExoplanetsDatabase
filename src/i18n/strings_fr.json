@@ -114,7 +114,8 @@
       "sunLike": "Sun-like stars (0.6–1.4 M☉)",
       "massive": "Massive stars (over 1.4 M☉)"
     },
-    "decadePattern": "{{decade}}s"
+    "decadePattern": "{{decade}}s",
+    "colorKey": "Colour key"
   },
   "explore": {
     "filtersTitle": "Filters",
@@ -233,10 +234,46 @@
     }
   },
   "builder": {
-    "placeholder": "Plot Builder"
+    "xAxis": "Horizontal axis",
+    "yAxis": "Vertical axis",
+    "logScale": "Log scale",
+    "logScaleHelp": "A log scale gives each factor of 10 the same space, so tiny and huge values fit on one plot.",
+    "colorByTitle": "Colour by",
+    "colorBy": {
+      "method": "Discovery method",
+      "facility": "Telescope",
+      "year": "Discovery year",
+      "starMass": "Star mass"
+    },
+    "filtersTitle": "Filters (shared with Explore)",
+    "filterAxisPattern": "Filter {{quantity}}…",
+    "showInTable": "Show in Table",
+    "selectedPattern": "Selected: {{name}}",
+    "noSelection": "Click a point to select a planet.",
+    "chart": "Plot",
+    "chartHelp": "Use the left and right arrow keys to step through the plotted planets from left to right. The selected planet is also selected in the Explore table."
   },
   "counts": {
-    "placeholder": "Counts"
+    "tiles": {
+      "confirmed": "Confirmed planets",
+      "tessCandidates": "TESS candidates not yet confirmed",
+      "keplerCandidates": "Kepler candidates not yet confirmed",
+      "byTess": "Confirmed planets found by TESS",
+      "byKepler": "Confirmed planets found by Kepler"
+    },
+    "methodsTitle": "Planets by discovery method",
+    "sinceYear": "Discovered in or after",
+    "sinceYearHelp": "Counts only the planets discovered in this year or later.",
+    "methodTotalPattern": "{{count}} planets discovered since {{year}}",
+    "methodRowPattern": "{{count}} ({{percent}}%)",
+    "growthTitle": "Confirmed planets over time",
+    "growthAxis": "Confirmed planets",
+    "yearAxis": "Year",
+    "totalLine": "All methods",
+    "fourThousand": "4 000 planets (June 2019)",
+    "growthPattern": "Today: {{count}} planets, {{factor}} × the June 2019 count",
+    "growthDescriptionPattern": "Line chart of the number of confirmed planets over time, rising from the first discoveries in the 1990s to {{count}} today. It passed 4,000 in June 2019.",
+    "candidateNote": "Candidates are signals still waiting for follow-up observations (radial-velocity masses, more transits) before they count as planets."
   },
   "a11y": {
     "counts": {

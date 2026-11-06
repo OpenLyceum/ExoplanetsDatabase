@@ -199,3 +199,14 @@ describe("ExoplanetDatabase", () => {
     expect(database.sortedPlanetsProperty.value.length).toBe(CATALOG.size);
   });
 });
+
+describe("CountsModel", () => {
+  it("splits the planets discovered since a year by method", async () => {
+    const { CountsModel } = await import("../src/counts/model/CountsModel.js");
+    const model = new CountsModel();
+    const all = model.methodCounts(model.yearRange.min);
+    expect(all.reduce((a, b) => a + b, 0)).toBe(CATALOG.size);
+    const recent = model.methodCounts(2024);
+    expect(recent.reduce((a, b) => a + b, 0)).toBe(rawCount((i) => rawNumber("disc_year", i) >= 2024));
+  });
+});

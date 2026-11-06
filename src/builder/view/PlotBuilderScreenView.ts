@@ -1,160 +1,356 @@
 /**
  * PlotBuilderScreenView.ts
  *
- * The top-level view for the simulation screen.
- *
- * All visual nodes are added here. Follow these conventions:
- *   - Use this.layoutBounds for positioning (never magic pixel values)
- *   - Keep a ResetAllButton that calls model.reset() and this.reset()
- *   - Override step(dt) for frame-by-frame animation
- *
- * ── Adding content ────────────────────────────────────────────────────────────
- * 1. Create Node subclasses in separate files (e.g. ExoplanetsDatabaseControlPanel.ts)
- * 2. Instantiate them here and call this.addChild(...)
- * 3. Link them to model properties:
- *      model.isRunningProperty.link( isRunning => { ... } );
- *
- * ── Layout bounds ─────────────────────────────────────────────────────────────
- * SceneryStack uses a virtual 1024×618 coordinate space by default.
- * this.layoutBounds gives you the full rectangle; use it for alignment:
- *   center, minX, maxX, minY, maxY, width, height
+ * The Plot Builder: choose what goes on each axis (linear or log) and what the colours mean, and
+ * plot the planets that pass the filters shared with the Explore table. Selecting a point selects
+ * the planet in the table too; "Show in Table" jumps there.
  */
 
+import { DerivedProperty, Multilink, PatternStringProperty, type TReadOnlyProperty } from "scenerystack/axon";
+import { Range } from "scenerystack/dot";
 import { type EmptySelfOptions, optionize } from "scenerystack/phet-core";
-import { Node, Rectangle, Text } from "scenerystack/scenery";
+import { HBox, Node, RichText, Text, VBox } from "scenerystack/scenery";
 import { ResetAllButton } from "scenerystack/scenery-phet";
 import { ScreenView, type ScreenViewOptions } from "scenerystack/sim";
-import { FLAT_RESET_ALL_BUTTON_OPTIONS } from "../../common/ExoplanetsDatabaseButtonOptions.js";
+import { AquaRadioButtonGroup, Checkbox, ComboBox, RectangularPushButton } from "scenerystack/sun";
+import {
+  EXOPLANETS_DATABASE_COMBO_BOX_OPTIONS,
+  FLAT_PANEL_PUSH_BUTTON_OPTIONS,
+  FLAT_RESET_ALL_BUTTON_OPTIONS,
+  LIGHT_SURFACE_TEXT_FILL,
+} from "../../common/ExoplanetsDatabaseButtonOptions.js";
+import { EXOPLANETS_DATABASE_CHECKBOX_OPTIONS } from "../../common/ExoplanetsDatabaseControlOptions.js";
+import { ExoplanetsDatabasePanel } from "../../common/ExoplanetsDatabasePanel.js";
+import { buildPoints } from "../../common/model/plotPoints.js";
+import { Quantity } from "../../common/model/Quantity.js";
+import { SOLAR_SYSTEM } from "../../common/model/SolarSystem.js";
+import { DataCreditNode } from "../../common/view/DataCreditNode.js";
+import { quantityLabelWithUnit, quantityName } from "../../common/view/dataStyles.js";
+import { showFilterDialog } from "../../common/view/FilterDialog.js";
+import { FilterSummaryNode } from "../../common/view/FilterSummaryNode.js";
+import { LegendNode } from "../../common/view/LegendNode.js";
+import { MatchCountNode } from "../../common/view/MatchCountNode.js";
+import { MethodCheckboxGroup } from "../../common/view/MethodCheckboxGroup.js";
+import {
+  FACILITY_COLORING,
+  METHOD_COLORING,
+  type PointColoring,
+  STAR_MASS_COLORING,
+  YEAR_COLORING,
+} from "../../common/view/pointColorings.js";
+import { type ScatterAxis, ScatterChartNode } from "../../common/view/ScatterChartNode.js";
 import ExoplanetsDatabaseColors from "../../ExoplanetsDatabaseColors.js";
-import { SCREEN_VIEW_MARGIN } from "../../ExoplanetsDatabaseConstants.js";
+import { FONTS, SCREEN_VIEW_MARGIN } from "../../ExoplanetsDatabaseConstants.js";
 import { StringManager } from "../../i18n/StringManager.js";
+import { ColorBy } from "../model/ColorBy.js";
 import type { PlotBuilderModel } from "../model/PlotBuilderModel.js";
 import { PlotBuilderScreenSummaryContent } from "./PlotBuilderScreenSummaryContent.js";
 
 export type PlotBuilderScreenViewOptions = ScreenViewOptions;
 
+const MARGIN = 10;
+const LEFT_WIDTH = 200;
+const RIGHT_WIDTH = 236;
+const CHART_LEFT = 290;
+const CHART_WIDTH = 425;
+const CHART_HEIGHT = 330;
+
+const COLORINGS = new Map<ColorBy, PointColoring>([
+  [ColorBy.METHOD, METHOD_COLORING],
+  [ColorBy.FACILITY, FACILITY_COLORING],
+  [ColorBy.YEAR, YEAR_COLORING],
+  [ColorBy.STAR_MASS, STAR_MASS_COLORING],
+]);
+
+/** Axis range covering every planet's value, rounded out to whole decades (log) or nice numbers. */
+function dataRange(values: Float64Array, quantity: Quantity, log: boolean): Range {
+  if (quantity === Quantity.DISCOVERY_YEAR) {
+    return new Range(1989, 2027);
+  }
+  const usable = Array.from(values).filter((v) => Number.isFinite(v) && (!log || v > 0));
+  if (usable.length === 0) {
+    return log ? new Range(0.1, 10) : new Range(0, 1);
+  }
+  const min = Math.min(...usable);
+  const max = Math.max(...usable);
+  if (log) {
+    return new Range(10 ** Math.floor(Math.log10(min)), 10 ** Math.ceil(Math.log10(max)));
+  }
+  const pad = (max - min) * 0.04 || 1;
+  return new Range(quantity === Quantity.ECCENTRICITY ? 0 : Math.min(0, min - pad), max + pad);
+}
+
 export class PlotBuilderScreenView extends ScreenView {
   public constructor(model: PlotBuilderModel, providedOptions?: PlotBuilderScreenViewOptions) {
-    // ── Accessibility: screen summary ───────────────────────────────────────────
-    // The screen summary is the first thing a screen-reader user encounters. It
-    // is registered here, in the ScreenView's super() options, so every sim wires
-    // it the same way. See PlotBuilderScreenSummaryContent for the four content regions.
     const options = optionize<PlotBuilderScreenViewOptions, EmptySelfOptions, ScreenViewOptions>()(
-      {
-        screenSummaryContent: new PlotBuilderScreenSummaryContent(model),
-      },
+      { screenSummaryContent: new PlotBuilderScreenSummaryContent(model) },
       providedOptions,
     );
     super(options);
 
-    // ── Background ────────────────────────────────────────────────────────────
-    // A full-screen rectangle that follows the active color profile.
-    // Replace or remove once you add real content.
-    const backgroundRect = new Rectangle(0, 0, this.layoutBounds.width, this.layoutBounds.height, {
-      fill: ExoplanetsDatabaseColors.backgroundColorProperty,
-    });
-    this.addChild(backgroundRect);
+    const strings = StringManager.getInstance().getPlotBuilderStrings();
+    const common = StringManager.getInstance().getCommonStrings();
+    const database = model.database;
+    const catalog = database.catalog;
+    const bounds = this.layoutBounds;
+    const listParent = new Node();
 
-    // ── Placeholder label ─────────────────────────────────────────────────────
-    // Replace this with your actual simulation content.
-    const placeholderText = new Text(StringManager.getInstance().getScreenNames().builderStringProperty, {
-      font: "bold 36px sans-serif",
+    const heading = (text: TReadOnlyProperty<string>): Text =>
+      new Text(text, {
+        font: FONTS.HEADING,
+        fill: ExoplanetsDatabaseColors.accentColorProperty,
+        maxWidth: LEFT_WIDTH - 20,
+      });
+    const lightText = (text: TReadOnlyProperty<string>, maxWidth: number): Text =>
+      new Text(text, { font: FONTS.LABEL, fill: LIGHT_SURFACE_TEXT_FILL, maxWidth });
+    const label = (text: TReadOnlyProperty<string>, maxWidth: number): Text =>
+      new Text(text, { font: FONTS.LABEL, fill: ExoplanetsDatabaseColors.textColorProperty, maxWidth });
+
+    // ── Axis choosers ─────────────────────────────────────────────────────────
+    const quantityItems = Quantity.enumeration.values.map((q) => ({
+      value: q,
+      createNode: () =>
+        new RichText(quantityLabelWithUnit(q), {
+          font: FONTS.LABEL,
+          fill: LIGHT_SURFACE_TEXT_FILL,
+          maxWidth: LEFT_WIDTH - 60,
+        }),
+      accessibleName: quantityName(q),
+    }));
+    const axisControls = (
+      title: TReadOnlyProperty<string>,
+      quantityProperty: typeof model.xQuantityProperty,
+      logProperty: typeof model.xLogProperty,
+    ): VBox => {
+      const comboBox = new ComboBox(quantityProperty, quantityItems, listParent, {
+        ...EXOPLANETS_DATABASE_COMBO_BOX_OPTIONS,
+        accessibleName: title,
+      });
+      const logCheckbox = new Checkbox(logProperty, label(strings.logScaleStringProperty, LEFT_WIDTH - 50), {
+        ...EXOPLANETS_DATABASE_CHECKBOX_OPTIONS,
+        enabledProperty: new DerivedProperty([quantityProperty], (q) => q.canUseLog),
+        accessibleHelpText: strings.logScaleHelpStringProperty,
+      });
+      return new VBox({ align: "left", spacing: 6, children: [heading(title), comboBox, logCheckbox] });
+    };
+    const xControls = axisControls(strings.xAxisStringProperty, model.xQuantityProperty, model.xLogProperty);
+    const yControls = axisControls(strings.yAxisStringProperty, model.yQuantityProperty, model.yLogProperty);
+
+    const colorByNames = strings.colorBy as unknown as Readonly<Record<string, TReadOnlyProperty<string>>>;
+    const colorByGroup = new AquaRadioButtonGroup(
+      model.colorByProperty,
+      ColorBy.enumeration.values.map((colorBy) => ({
+        value: colorBy,
+        createNode: () =>
+          label(colorByNames[`${colorBy.key}StringProperty`] as TReadOnlyProperty<string>, LEFT_WIDTH - 50),
+      })),
+      { spacing: 7, radioButtonOptions: { radius: 7 }, accessibleName: strings.colorByTitleStringProperty },
+    );
+    const solarSystemCheckbox = new Checkbox(
+      model.showSolarSystemProperty,
+      label(common.showSolarSystemStringProperty, LEFT_WIDTH - 50),
+      {
+        ...EXOPLANETS_DATABASE_CHECKBOX_OPTIONS,
+      },
+    );
+    const leftPanel = new ExoplanetsDatabasePanel(
+      new VBox({
+        align: "left",
+        spacing: 12,
+        children: [
+          xControls,
+          yControls,
+          new VBox({
+            align: "left",
+            spacing: 6,
+            children: [heading(strings.colorByTitleStringProperty), colorByGroup],
+          }),
+          solarSystemCheckbox,
+        ],
+      }),
+      { left: MARGIN, top: MARGIN, minWidth: LEFT_WIDTH, maxWidth: LEFT_WIDTH },
+    );
+
+    // ── Chart ─────────────────────────────────────────────────────────────────
+    const chart = new ScatterChartNode(
+      catalog,
+      database.selectedPlanetProperty,
+      CHART_WIDTH,
+      CHART_HEIGHT,
+      strings.chartStringProperty,
+      strings.chartHelpStringProperty,
+    );
+    chart.left = CHART_LEFT;
+    chart.top = MARGIN + 6;
+    const legend = new LegendNode();
+
+    // ── Right panel: count, methods, filters, selection ─────────────────────
+    const matchCount = new MatchCountNode(database, { maxWidth: RIGHT_WIDTH - 20 });
+    const methodCheckboxes = new MethodCheckboxGroup(database.filter, RIGHT_WIDTH - 20);
+    const filterButton = (quantityProperty: typeof model.xQuantityProperty): RectangularPushButton =>
+      new RectangularPushButton({
+        ...FLAT_PANEL_PUSH_BUTTON_OPTIONS,
+        content: lightText(
+          new PatternStringProperty(strings.filterAxisPatternStringProperty, {
+            quantity: new DerivedProperty(
+              [quantityProperty, common.labelWithUnitPatternStringProperty],
+              (q) => quantityName(q).value,
+            ),
+          }),
+          RIGHT_WIDTH - 36,
+        ),
+        minWidth: RIGHT_WIDTH - 24,
+        listener: () => showFilterDialog(database.filter.criterion(quantityProperty.value)),
+      });
+    const xFilterButton = filterButton(model.xQuantityProperty);
+    const yFilterButton = filterButton(model.yQuantityProperty);
+    const clearButton = new RectangularPushButton({
+      ...FLAT_PANEL_PUSH_BUTTON_OPTIONS,
+      content: lightText(common.clearAllFiltersStringProperty, RIGHT_WIDTH - 36),
+      minWidth: RIGHT_WIDTH - 24,
+      listener: () => database.filter.reset(),
+      enabledProperty: new DerivedProperty([database.matchingPlanetsProperty], () => database.filter.isActive),
+    });
+    const selectedText = new Text("", {
+      font: FONTS.SMALL,
       fill: ExoplanetsDatabaseColors.textColorProperty,
-      center: this.layoutBounds.center,
+      maxWidth: RIGHT_WIDTH - 24,
     });
-    this.addChild(placeholderText);
+    Multilink.multilink(
+      [database.selectedPlanetProperty, strings.selectedPatternStringProperty, strings.noSelectionStringProperty],
+      (index, pattern, none) => {
+        selectedText.string = index === null ? none : pattern.replace("{{name}}", catalog.names[index] ?? "");
+      },
+    );
+    const showInTableButton = new RectangularPushButton({
+      ...FLAT_PANEL_PUSH_BUTTON_OPTIONS,
+      content: lightText(strings.showInTableStringProperty, RIGHT_WIDTH - 36),
+      minWidth: RIGHT_WIDTH - 24,
+      listener: () => model.showInTable(),
+      enabledProperty: new DerivedProperty([database.selectedPlanetProperty], (index) => index !== null),
+    });
+    const legendBox = new VBox({
+      align: "left",
+      spacing: 6,
+      children: [heading(common.colorKeyStringProperty), legend],
+    });
+    const rightPanel = new ExoplanetsDatabasePanel(
+      new VBox({
+        align: "left",
+        spacing: 8,
+        children: [
+          matchCount,
+          heading(strings.filtersTitleStringProperty),
+          methodCheckboxes,
+          xFilterButton,
+          yFilterButton,
+          clearButton,
+          legendBox,
+          new HBox({ children: [selectedText] }),
+          showInTableButton,
+        ],
+      }),
+      { right: bounds.maxX - MARGIN, top: MARGIN, minWidth: RIGHT_WIDTH, maxWidth: RIGHT_WIDTH },
+    );
 
-    // ── Accessibility: per-control names ────────────────────────────────────────
-    // EVERY interactive node must carry an `accessibleName` (and an
-    // `accessibleHelpText` where useful), sourced from the StringManager `a11y`
-    // string group — never a hard-coded English literal. Sun/scenery-phet controls
-    // (NumberControl, Checkbox, ComboBox, AquaRadioButtonGroup, …) accept it as an
-    // option; a draggable plain Node needs `tagName: "div", focusable: true` too.
-    // Example (uncomment and adapt when you add a real control):
-    //
-    //   const a11y = StringManager.getInstance().getPlotBuilderA11yStrings();
-    //   const exampleButton = new RectangularPushButton({
-    //     ...FLAT_RECTANGULAR_BUTTON_OPTIONS, // flat appearance, not SceneryStack's default 3-D look
-    //     content: someIcon,
-    //     listener: () => model.doSomething(),
-    //     accessibleName: a11y.controls.exampleControlStringProperty,
-    //   });
-    //   this.addChild(exampleButton);
+    const summary = new FilterSummaryNode(database.filter, CHART_LEFT + CHART_WIDTH - LEFT_WIDTH - MARGIN - 10);
+    summary.left = LEFT_WIDTH + 2 * MARGIN;
+    summary.top = chart.bottom + 12;
 
-    // ── Reset All button ──────────────────────────────────────────────────────
-    // Always position at bottom-right (PhET convention).
+    // ── Redrawing ─────────────────────────────────────────────────────────────
+    const update = (): void => {
+      const xQuantity = model.xQuantityProperty.value;
+      const yQuantity = model.yQuantityProperty.value;
+      const xLog = model.xLogProperty.value && xQuantity.canUseLog;
+      const yLog = model.yLogProperty.value && yQuantity.canUseLog;
+      const coloring = COLORINGS.get(model.colorByProperty.value) ?? METHOD_COLORING;
+      const xAxis: ScatterAxis = {
+        quantity: xQuantity,
+        log: xLog,
+        range: dataRange(catalog.column(xQuantity), xQuantity, xLog),
+      };
+      const yAxis: ScatterAxis = {
+        quantity: yQuantity,
+        log: yLog,
+        range: dataRange(catalog.column(yQuantity), yQuantity, yLog),
+      };
+      const points = buildPoints(catalog, database.matchingPlanetsProperty.value, xAxis, yAxis, (i) =>
+        coloring.groupOf(catalog, i),
+      );
+      chart.setPlot(
+        xAxis,
+        yAxis,
+        quantityLabelWithUnit(xQuantity),
+        quantityLabelWithUnit(yQuantity),
+        points,
+        coloring.styles,
+      );
+      legend.setEntries(coloring.legend, points);
+      // The method checkboxes already show the method colours.
+      legendBox.visible = model.colorByProperty.value !== ColorBy.METHOD;
+
+      const names = common.solarSystem as unknown as Readonly<Record<string, TReadOnlyProperty<string>>>;
+      chart.setReferencePoints(
+        model.showSolarSystemProperty.value
+          ? SOLAR_SYSTEM.flatMap((planet) => {
+              const x = planet.values.get(xQuantity);
+              const y = planet.values.get(yQuantity);
+              return x === undefined || y === undefined
+                ? []
+                : [{ label: names[`${planet.key}StringProperty`]?.value ?? planet.key, x, y }];
+            })
+          : [],
+      );
+    };
+    Multilink.multilink(
+      [
+        model.xQuantityProperty,
+        model.yQuantityProperty,
+        model.xLogProperty,
+        model.yLogProperty,
+        model.colorByProperty,
+        model.showSolarSystemProperty,
+        database.matchingPlanetsProperty,
+        common.solarSystem.earthStringProperty,
+      ],
+      update,
+    );
+
+    const credit = new DataCreditNode({ left: MARGIN, bottom: bounds.maxY - 6, maxWidth: 680 });
     const resetAllButton = new ResetAllButton({
       ...FLAT_RESET_ALL_BUTTON_OPTIONS,
-      listener: () => {
-        model.reset();
-        this.reset();
-      },
-      right: this.layoutBounds.maxX - SCREEN_VIEW_MARGIN,
-      bottom: this.layoutBounds.maxY - SCREEN_VIEW_MARGIN,
+      listener: () => model.reset(),
+      right: bounds.maxX - SCREEN_VIEW_MARGIN,
+      bottom: bounds.maxY - SCREEN_VIEW_MARGIN,
     });
-    this.addChild(resetAllButton);
 
-    // ── Accessibility: keyboard / reading traversal order ───────────────────────
-    // Make the parallel DOM (Tab order and screen-reader reading order)
-    // deterministic and independent of child z-order. ScreenView throws if you
-    // set pdomOrder on itself, so add a lightweight wrapper Node that "borrows"
-    // the interactive nodes in the order a user should reach them — Reset All
-    // last. Non-interactive decoration (background, placeholder) is omitted.
+    for (const node of [leftPanel, chart, rightPanel, summary, credit, resetAllButton, listParent]) {
+      this.addChild(node);
+    }
     this.addChild(
       new Node({
         pdomOrder: [
-          // TODO: add the sim's interactive nodes here, in traversal order
+          xControls,
+          yControls,
+          colorByGroup,
+          solarSystemCheckbox,
+          chart,
+          methodCheckboxes,
+          xFilterButton,
+          yFilterButton,
+          clearButton,
+          showInTableButton,
           resetAllButton,
         ],
       }),
     );
   }
 
-  /**
-   * Resets view-side state (animations, panel visibility, etc.).
-   * Called by the Reset All button listener.
-   */
   public reset(): void {
-    // TODO: reset any view-side state here
+    // No view-only state.
   }
 
-  /**
-   * Steps the view forward by dt seconds for animation.
-   * @param _dt - elapsed time in seconds
-   */
   public override step(_dt: number): void {
-    // TODO: implement animation updates here
+    // Nothing animates.
   }
-
-  // ── Accessibility / listeners: dispose ─────────────────────────────────────
-  // ScreenView is `isDisposable: false` and lives for the whole sim, so this
-  // class rarely needs dispose(). Child Nodes (and a live currentDetails
-  // DerivedProperty you own on a short-lived object) do. When you add
-  // DerivedProperty / Multilink / Property.link against model state, keep the
-  // references and tear them down — forks copy what they see. Pattern:
-  //
-  // private readonly disposePlotBuilderScreenView: () => void;
-  //
-  // // in the constructor, after creating the listeners:
-  // const statusMultilink = Multilink.multilink(
-  //   [model.someProperty, model.otherProperty],
-  //   (a, b) => { /* update view from model */ },
-  // );
-  // const detailsProperty = new DerivedProperty(
-  //   [model.stateProperty],
-  //   (state) => `State: ${state}`,
-  // ); // → pass as currentDetailsContent in PlotBuilderScreenSummaryContent
-  // const onExternal = (v: number) => { /* … */ };
-  // model.externalProperty.link(onExternal); // Property you do NOT own
-  //
-  // this.disposePlotBuilderScreenView = () => {
-  //   statusMultilink.dispose();                 // Multilink you created
-  //   detailsProperty.dispose();                 // DerivedProperty you created
-  //   model.externalProperty.unlink(onExternal); // undo external link
-  // };
-  //
-  // public override dispose(): void {
-  //   this.disposePlotBuilderScreenView();
-  //   super.dispose();
-  // }
 }
