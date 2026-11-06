@@ -141,6 +141,20 @@ const ExoplanetsDatabaseColors = {
     projector: "#d55e00",
   }),
 
+  /** Star-mass groups on the Kepler's-law plot: small, Sun-like and massive stars. */
+  smallStarColorProperty: new ProfileColorProperty(ExoplanetsDatabaseNamespace, "smallStar", {
+    default: "#ff7b5c",
+    projector: "#c2410c",
+  }),
+  sunLikeStarColorProperty: new ProfileColorProperty(ExoplanetsDatabaseNamespace, "sunLikeStar", {
+    default: "#ffd84d",
+    projector: "#8a6a00",
+  }),
+  massiveStarColorProperty: new ProfileColorProperty(ExoplanetsDatabaseNamespace, "massiveStar", {
+    default: "#8fb8ff",
+    projector: "#1d4ed8",
+  }),
+
   /** Discovery-year colour scale ends (oldest → newest), interpolated in between. */
   oldestYearColorProperty: new ProfileColorProperty(ExoplanetsDatabaseNamespace, "oldestYear", {
     default: "#7b5cff",

@@ -13,7 +13,7 @@ import { Quantity } from "../../common/model/Quantity.js";
 export type GalleryChartKind = "scatter" | "yearBars" | "histogram";
 
 /** What a scatter preset colours its points by. */
-export type GalleryColoring = "method" | "starMass";
+export type GalleryColoring = "method" | "starMass" | "facility";
 
 /** Guide curves a preset can add. */
 export type GalleryGuide = "composition" | "keplerLines";
@@ -40,21 +40,30 @@ type GalleryPresetOptions = {
 };
 
 const PERIOD_AXIS: GalleryAxis = { quantity: Quantity.PERIOD, log: true, range: new Range(0.1, 1e7) };
-const MASS_AXIS: GalleryAxis = { quantity: Quantity.MASS, log: true, range: new Range(0.05, 3e4) };
+const MASS_AXIS: GalleryAxis = { quantity: Quantity.MASS, log: true, range: new Range(0.05, 1e5) };
 const RADIUS_AXIS: GalleryAxis = { quantity: Quantity.RADIUS, log: true, range: new Range(0.3, 30) };
 const YEAR_AXIS: GalleryAxis = { quantity: Quantity.DISCOVERY_YEAR, log: false, range: new Range(1989, 2027) };
 
 export class GalleryPreset extends EnumerationValue {
-  public static readonly DISCOVERIES_PER_YEAR = new GalleryPreset("discoveriesPerYear", {
-    kind: "yearBars",
-    x: YEAR_AXIS,
+  public static readonly MASS_VS_ORBIT = new GalleryPreset("massVsOrbit", {
+    kind: "scatter",
+    x: { quantity: Quantity.SEMI_MAJOR_AXIS, log: true, range: new Range(0.003, 1e4) },
+    y: MASS_AXIS,
+    measuredOnly: [Quantity.MASS],
+    solarSystem: true,
   });
 
   public static readonly MASS_VS_PERIOD = new GalleryPreset("massVsPeriod", {
     kind: "scatter",
     x: PERIOD_AXIS,
     y: MASS_AXIS,
+    measuredOnly: [Quantity.MASS],
     solarSystem: true,
+  });
+
+  public static readonly DISCOVERIES_PER_YEAR = new GalleryPreset("discoveriesPerYear", {
+    kind: "yearBars",
+    x: YEAR_AXIS,
   });
 
   public static readonly RADIUS_VS_PERIOD = new GalleryPreset("radiusVsPeriod", {
@@ -85,7 +94,7 @@ export class GalleryPreset extends EnumerationValue {
 
   public static readonly DISTANCE_HISTOGRAM = new GalleryPreset("distanceHistogram", {
     kind: "histogram",
-    x: { quantity: Quantity.DISTANCE, log: true, range: new Range(1, 1e5) },
+    x: { quantity: Quantity.DISTANCE, log: true, range: new Range(1, 1e4) },
   });
 
   public static readonly SIZE_OVER_TIME = new GalleryPreset("sizeOverTime", {
@@ -93,6 +102,7 @@ export class GalleryPreset extends EnumerationValue {
     x: YEAR_AXIS,
     y: RADIUS_AXIS,
     measuredOnly: [Quantity.RADIUS],
+    coloring: "facility",
     xFromDiscoveryMonth: true,
   });
 

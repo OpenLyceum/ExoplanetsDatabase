@@ -108,7 +108,13 @@
     "estimatedMassNote": "≈ estimated from the radius, not measured",
     "minimumMassNote": "≥ minimum mass (M sin i) from radial velocity",
     "estimatedValueNote": "≈ estimated by the archive",
-    "keypadRangePattern": "From {{min}} to {{max}}"
+    "keypadRangePattern": "From {{min}} to {{max}}",
+    "starMassGroups": {
+      "small": "Small stars (under 0.6 M☉)",
+      "sunLike": "Sun-like stars (0.6–1.4 M☉)",
+      "massive": "Massive stars (over 1.4 M☉)"
+    },
+    "decadePattern": "{{decade}}s"
   },
   "explore": {
     "filtersTitle": "Filters",
@@ -174,7 +180,57 @@
     }
   },
   "gallery": {
-    "placeholder": "Plot Gallery"
+    "presetsTitle": "Plots",
+    "colorKeyTitle": "Colour key",
+    "whatToNotice": "What to notice",
+    "planetsPlottedPattern": "{{count}} planets plotted",
+    "chart": "Plot",
+    "chartHelp": "Use the left and right arrow keys to step through the planets from left to right and hear their values.",
+    "barChart": "Bar chart",
+    "barChartHelp": "Use the left and right arrow keys to step through the bars and hear their counts.",
+    "planetsAxis": "Number of planets",
+    "discoveryDateAxis": "Discovery date",
+    "binRangePattern": "{{from}}–{{to}} {{unit}}",
+    "guides": {
+      "iron": "Pure iron",
+      "rock": "Earth-like rock",
+      "water": "Water",
+      "keplerLinePattern": "{{mass}} M☉ star"
+    },
+    "presets": {
+      "massVsOrbit": {
+        "title": "Mass vs orbit size",
+        "caption": "Each discovery method finds a different kind of planet. Transits (circles) and radial velocity (squares) find planets close to their stars. Microlensing (triangles) finds planets a few au out, around faint, distant stars. Direct imaging (diamonds) only sees giant planets far from their stars. Earth sits in a nearly empty region: Earth-sized planets at Earth-like distances are still the hardest to find. Only measured masses are shown (≥ minimum masses for radial velocity)."
+      },
+      "massVsPeriod": {
+        "title": "Mass vs orbital period",
+        "caption": "The clump at the top left are hot Jupiters: giant planets that orbit their stars in a few days. They were the first planets found around Sun-like stars (51 Pegasi b, 1995) because they tug their stars hardest and most often. Microlensing and imaging planets rarely have a known period, so look at Mass vs orbit size to see them. Only measured masses are shown."
+      },
+      "discoveriesPerYear": {
+        "title": "Discoveries per year",
+        "caption": "Each bar counts the planets announced that year, stacked by discovery method. The spikes in 2014 and 2016 are Kepler planets confirmed hundreds at a time. TESS, launched in 2018, keeps transits on top today, while radial velocity adds a steady stream every year. Hover over a bar for its numbers."
+      },
+      "radiusVsPeriod": {
+        "title": "Radius vs orbital period",
+        "caption": "Only measured radii are shown, so almost every planet here was seen to transit. Hot Jupiters form the group of large planets on orbits of a few days; below them, almost no Neptune-sized planets orbit that close (the \"hot-Neptune desert\"). Among small planets, look for the thinly populated band near 1.5 to 2 Earth radii that separates rocky super-Earths from gas-rich sub-Neptunes."
+      },
+      "massVsRadius": {
+        "title": "Mass vs radius",
+        "caption": "Planets with both a measured mass and a measured radius. The curves show the radius a planet would have if it were pure iron, Earth-like rock, or water. Planets near the rock curve are rocky; planets far above it need a thick envelope of hydrogen and helium. Beyond about 100 Earth masses, giant planets all have roughly Jupiter's radius: extra mass squeezes them instead of making them bigger."
+      },
+      "keplersThirdLaw": {
+        "title": "Kepler's third law",
+        "caption": "Every planet obeys Kepler's third law, P² = a³/M★, but for its own star. The lines show the law for stars of 0.1, 1 and 10 solar masses, and the Solar System planets sit on the 1 M☉ line. Planets of small stars (red) lie above it: a lighter star pulls less, so an orbit of the same size takes longer."
+      },
+      "distanceHistogram": {
+        "title": "How far away?",
+        "caption": "How far away the planets' stars are, on a log scale (1 parsec = 3.26 light years). Radial velocity needs bright stars, so its planets are mostly within about 100 parsecs. Kepler stared at fainter stars hundreds of parsecs away, and microlensing finds planets thousands of parsecs away, toward the centre of the Galaxy."
+      },
+      "sizeOverTime": {
+        "title": "Smaller and smaller",
+        "caption": "Measured radius against discovery date, coloured by the telescope that found each planet. The first transiting planets, found from the ground, were all giants. Kepler (2009–2018) found thousands of planets smaller than Neptune, many announced in the big releases of 2014 and 2016 (the vertical stripes), and TESS keeps adding small planets around nearby stars. As instruments improve, the smallest planets we can detect keep getting smaller."
+      }
+    }
   },
   "builder": {
     "placeholder": "Plot Builder"

@@ -12,7 +12,7 @@ import { GalleryPreset } from "./GalleryPreset.js";
 
 export class PlotGalleryModel implements TModel {
   public readonly catalog: ExoplanetCatalog;
-  public readonly presetProperty = new EnumerationProperty(GalleryPreset.MASS_VS_PERIOD);
+  public readonly presetProperty = new EnumerationProperty(GalleryPreset.MASS_VS_ORBIT);
   public readonly showSolarSystemProperty = new BooleanProperty(true);
 
   /** Planet under the pointer or picked by keyboard (catalog index), or null. */
