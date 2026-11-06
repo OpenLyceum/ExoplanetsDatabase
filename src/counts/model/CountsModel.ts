@@ -1,48 +1,46 @@
 /**
  * CountsModel.ts
  *
- * The top-level model for the simulation screen.
- *
- * Add your simulation's state here using reactive Property objects from
- * scenerystack/axon. The view observes these properties and updates automatically.
- *
- * ── Example ──────────────────────────────────────────────────────────────────
- *   import { BooleanProperty, NumberProperty } from "scenerystack/axon";
- *
- *   public readonly isRunningProperty = new BooleanProperty(false);
- *   public readonly timeProperty = new NumberProperty(0);    // seconds
- *
- * ── Step cycle ────────────────────────────────────────────────────────────────
- * The Sim calls step(dt) on every animation frame. Advance your model state
- * in that method (e.g. integrate equations, update positions).
- *
- * ── Reset ─────────────────────────────────────────────────────────────────────
- * reset() is called when the user presses Reset All. Call .reset() on every
- * Property declared here.
+ * Model for the Counts screen: the headline numbers come straight from the catalog; the only
+ * state is the first discovery year the method chart counts from.
  */
+
+import { NumberProperty } from "scenerystack/axon";
+import { Range } from "scenerystack/dot";
 import type { TModel } from "scenerystack/joist";
-import { SharedModel } from "../../common/model/SharedModel.js";
+import { DiscoveryMethod } from "../../common/model/DiscoveryMethod.js";
+import { CATALOG, type ExoplanetCatalog } from "../../common/model/ExoplanetCatalog.js";
+import { Quantity } from "../../common/model/Quantity.js";
 
 export class CountsModel implements TModel {
-  /** Shared helpers — rename SharedModel to a domain type when known. */
-  public readonly shared = new SharedModel();
+  public readonly catalog: ExoplanetCatalog;
 
-  /**
-   * Resets all model state to initial values.
-   * Called when the user presses the Reset All button.
-   */
-  public reset(): void {
-    this.shared.reset();
-    // TODO: call .reset() on every Property declared in this model
+  /** Earliest and latest discovery years in the snapshot. */
+  public readonly yearRange: Range;
+
+  /** The method chart counts planets discovered in this year or later. */
+  public readonly sinceYearProperty: NumberProperty;
+
+  public constructor(catalog: ExoplanetCatalog = CATALOG) {
+    this.catalog = catalog;
+    const years = Array.from(catalog.column(Quantity.DISCOVERY_YEAR)).filter(Number.isFinite);
+    this.yearRange = new Range(Math.min(...years), Math.max(...years));
+    this.sinceYearProperty = new NumberProperty(this.yearRange.min, { range: this.yearRange, numberType: "Integer" });
   }
 
-  /**
-   * Steps the model forward by dt seconds.
-   * Called every animation frame by the Sim framework.
-   *
-   * @param _dt - elapsed time in seconds since the last frame
-   */
+  /** Planets per method discovered in `sinceYear` or later, in DiscoveryMethod order. */
+  public methodCounts(sinceYear: number): number[] {
+    const years = this.catalog.column(Quantity.DISCOVERY_YEAR);
+    return DiscoveryMethod.enumeration.values.map(
+      (method) => this.catalog.methods.filter((m, i) => m === method && (years[i] ?? 0) >= sinceYear).length,
+    );
+  }
+
+  public reset(): void {
+    this.sinceYearProperty.reset();
+  }
+
   public step(_dt: number): void {
-    // TODO: advance simulation state here
+    // Nothing evolves in time.
   }
 }

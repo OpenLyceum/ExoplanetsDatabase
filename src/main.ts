@@ -22,19 +22,23 @@ import "./brand.js";
 import { onReadyToLaunch, PreferencesModel, Sim } from "scenerystack/sim";
 import { Tandem } from "scenerystack/tandem";
 import { PlotBuilderScreen } from "./builder/PlotBuilderScreen.js";
+import { ExoplanetDatabase } from "./common/model/ExoplanetDatabase.js";
 import { CountsScreen } from "./counts/CountsScreen.js";
 import ExoplanetsDatabaseColors from "./ExoplanetsDatabaseColors.js";
 import { ExploreScreen } from "./explore/ExploreScreen.js";
 import { PlotGalleryScreen } from "./gallery/PlotGalleryScreen.js";
 import { StringManager } from "./i18n/StringManager.js";
-import { ExoplanetsDatabasePreferencesModel } from "./preferences/ExoplanetsDatabasePreferencesModel.js";
+import { exoplanetsDatabasePreferences } from "./preferences/ExoplanetsDatabasePreferencesModel.js";
 import { ExoplanetsDatabasePreferencesNode } from "./preferences/ExoplanetsDatabasePreferencesNode.js";
 
 onReadyToLaunch(() => {
   const stringManager = StringManager.getInstance();
 
-  // Simulation-specific preferences; initial values come from exoplanetsDatabaseQueryParameters.
-  const simPreferences = new ExoplanetsDatabasePreferencesModel(Tandem.ROOT.createTandem("preferences"));
+  // Filters, sort order and selection shared by the Explore table and the Plot Builder.
+  const database = new ExoplanetDatabase();
+
+  // The Plot Builder's "Show in Table" switches to the Explore screen; `sim` is assigned below.
+  let sim: Sim | null = null;
 
   const screens = [
     new CountsScreen({
@@ -42,7 +46,7 @@ onReadyToLaunch(() => {
       tandem: Tandem.ROOT.createTandem("countsScreen"),
       backgroundColorProperty: ExoplanetsDatabaseColors.backgroundColorProperty,
     }),
-    new ExploreScreen({
+    new ExploreScreen(database, {
       name: stringManager.getScreenNames().exploreStringProperty,
       tandem: Tandem.ROOT.createTandem("exploreScreen"),
       backgroundColorProperty: ExoplanetsDatabaseColors.backgroundColorProperty,
@@ -52,14 +56,14 @@ onReadyToLaunch(() => {
       tandem: Tandem.ROOT.createTandem("galleryScreen"),
       backgroundColorProperty: ExoplanetsDatabaseColors.backgroundColorProperty,
     }),
-    new PlotBuilderScreen({
+    new PlotBuilderScreen(database, () => sim?.selectedScreenProperty.set(screens[1] as ExploreScreen), {
       name: stringManager.getScreenNames().builderStringProperty,
       tandem: Tandem.ROOT.createTandem("builderScreen"),
       backgroundColorProperty: ExoplanetsDatabaseColors.backgroundColorProperty,
     }),
   ];
 
-  const sim = new Sim(stringManager.getTitleStringProperty(), screens, {
+  sim = new Sim(stringManager.getTitleStringProperty(), screens, {
     preferencesModel: new PreferencesModel({
       visualOptions: {
         // Adds a "Projector Mode" toggle in Preferences → Visual
@@ -70,7 +74,8 @@ onReadyToLaunch(() => {
       simulationOptions: {
         customPreferences: [
           {
-            createContent: (tandem: Tandem) => new ExoplanetsDatabasePreferencesNode(simPreferences, tandem),
+            createContent: (tandem: Tandem) =>
+              new ExoplanetsDatabasePreferencesNode(exoplanetsDatabasePreferences, tandem),
           },
         ],
       },
@@ -80,12 +85,13 @@ onReadyToLaunch(() => {
       },
     }),
 
-    // Optional: fill in credits shown in Help → About
     credits: {
-      leadDesign: "",
-      softwareDevelopment: "",
-      team: "",
-      qualityAssurance: "",
+      leadDesign: "Martin Veillette",
+      softwareDevelopment: "OpenLyceum",
+      thanks:
+        "This research has made use of the NASA Exoplanet Archive, which is operated by the California " +
+        "Institute of Technology, under contract with the National Aeronautics and Space Administration " +
+        "under the Exoplanet Exploration Program.",
     },
   });
 

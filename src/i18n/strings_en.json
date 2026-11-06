@@ -6,6 +6,182 @@
     "gallery": "Plot Gallery",
     "builder": "Plot Builder"
   },
+  "common": {
+    "dataCreditPattern": "Data: NASA Exoplanet Archive, Planetary Systems Composite Parameters, retrieved {{date}}",
+    "matchCountPattern": "{{count}} of {{total}} planets",
+    "planetCountPattern": "{{count}} planets",
+    "noValue": "—",
+    "clearAllFilters": "Clear All Filters",
+    "measuredMassesOnly": "Measured masses only",
+    "showSolarSystem": "Solar System planets",
+    "valueWithUnitPattern": "{{value}} {{unit}}",
+    "labelWithUnitPattern": "{{label}} ({{unit}})",
+    "methods": {
+      "transit": "Transit",
+      "radialVelocity": "Radial velocity",
+      "microlensing": "Microlensing",
+      "imaging": "Imaging",
+      "other": "Other"
+    },
+    "methodsShort": {
+      "transit": "Transit",
+      "radialVelocity": "RV",
+      "microlensing": "Microlens.",
+      "imaging": "Imaging",
+      "other": "Other"
+    },
+    "otherMethodsList": "Other: transit timing variations, eclipse timing variations, orbital brightness modulation, pulsar timing, pulsation timing, astrometry, disk kinematics",
+    "facilities": {
+      "kepler": "Kepler",
+      "k2": "K2",
+      "tess": "TESS",
+      "otherSpace": "Other space telescopes",
+      "ground": "Ground-based"
+    },
+    "quantities": {
+      "period": "Orbital period",
+      "semiMajorAxis": "Semi-major axis",
+      "eccentricity": "Eccentricity",
+      "radius": "Planet radius",
+      "mass": "Planet mass",
+      "temperature": "Planet temperature",
+      "insolation": "Starlight received",
+      "starTemperature": "Star temperature",
+      "starRadius": "Star radius",
+      "starMass": "Star mass",
+      "distance": "Distance from us",
+      "planetCount": "Planets in system",
+      "discoveryYear": "Discovery year"
+    },
+    "quantitiesShort": {
+      "period": "Period",
+      "semiMajorAxis": "Orbit size",
+      "eccentricity": "Eccentricity",
+      "radius": "Radius",
+      "mass": "Mass",
+      "temperature": "Temp.",
+      "insolation": "Starlight",
+      "starTemperature": "Star temp.",
+      "starRadius": "Star radius",
+      "starMass": "Star mass",
+      "distance": "Distance",
+      "planetCount": "Planets",
+      "discoveryYear": "Year"
+    },
+    "units": {
+      "period": "days",
+      "semiMajorAxis": "au",
+      "eccentricity": "",
+      "radius": "R<sub>⊕</sub>",
+      "mass": "M<sub>⊕</sub>",
+      "temperature": "K",
+      "insolation": "× Earth",
+      "starTemperature": "K",
+      "starRadius": "R<sub>☉</sub>",
+      "starMass": "M<sub>☉</sub>",
+      "distance": "pc",
+      "planetCount": "",
+      "discoveryYear": ""
+    },
+    "solarSystem": {
+      "mercury": "Mercury",
+      "venus": "Venus",
+      "earth": "Earth",
+      "mars": "Mars",
+      "jupiter": "Jupiter",
+      "saturn": "Saturn",
+      "uranus": "Uranus",
+      "neptune": "Neptune"
+    },
+    "presets": {
+      "sunLikeStars": "Sun-like stars",
+      "recent": "Found since 2024",
+      "orbitKnown": "Orbit and star known",
+      "earthLikeOrbits": "Earth-like orbits"
+    },
+    "presetDescriptions": {
+      "sunLikeStars": "Star mass between 0.95 and 1.05 Suns",
+      "recent": "Discovered in 2024 or later",
+      "orbitKnown": "Orbit size, period and star mass all listed",
+      "earthLikeOrbits": "Orbit between 0.72 and 1.5 au (Venus to Mars) around a star of 0.9 to 1.1 Suns"
+    },
+    "estimatedMassNote": "≈ estimated from the radius, not measured",
+    "minimumMassNote": "≥ minimum mass (M sin i) from radial velocity",
+    "estimatedValueNote": "≈ estimated by the archive",
+    "keypadRangePattern": "From {{min}} to {{max}}"
+  },
+  "explore": {
+    "filtersTitle": "Filters",
+    "presetsTitle": "Quick filters",
+    "methodsTitle": "Discovery method",
+    "selectColumns": "Columns…",
+    "columnsDialogTitle": "Columns to show",
+    "columnsDialogHint": "Like the archive's Select Columns. Up to {{max}} columns fit.",
+    "nameColumn": "Planet",
+    "methodColumn": "Method",
+    "sortedAscending": "sorted, smallest first",
+    "sortedDescending": "sorted, largest first",
+    "noMatches": "No planet passes these filters.",
+    "archiveTitle": "In the archive's table, type:",
+    "archiveNoFilters": "No filters: the archive's table shows every confirmed planet.",
+    "archiveLinePattern": "{{column}} box:",
+    "filterDialogTitlePattern": "Filter: {{quantity}}",
+    "atLeast": "At least",
+    "atMost": "At most",
+    "anyValue": "any",
+    "clearBound": "Clear",
+    "requireValue": "Hide planets with no value",
+    "clearFilter": "Clear This Filter",
+    "archiveEquivalentPattern": "Archive: type {{text}} in the {{column}} box",
+    "archiveEquivalentNone": "Archive: leave the {{column}} box empty",
+    "card": {
+      "empty": "Select a planet in the table to see its details.",
+      "orbitsPattern": "orbits {{host}}",
+      "discoveredPattern": "Found by {{method}} in {{year}}",
+      "facilityPattern": "Discovery facility: {{facility}}",
+      "planetHeading": "Planet",
+      "orbitHeading": "Orbit",
+      "starHeading": "Star",
+      "derivedHeading": "Worked out from these values",
+      "comparePattern": "{{value}} × Earth",
+      "compareSunPattern": "{{value}} × Sun",
+      "distancePattern": "{{parsecs}} pc ({{lightYears}} light years)",
+      "keplerPattern": "Kepler's third law: P² = {{pSquared}}, a³/M★ = {{aCubed}} ({{percent}}% apart)",
+      "extremesPattern": "Distance from its star: {{closest}} to {{farthest}} au",
+      "luminosityPattern": "Star's luminosity (R²T⁴): {{luminosity}} × Sun",
+      "densityPattern": "Density: {{density}} g/cm³ (Earth 5.5, water 1.0)",
+      "noteMassEstimated": "Mass ≈ estimated from the radius.",
+      "noteMassMinimum": "Mass ≥: radial velocity gives only M sin i, a minimum.",
+      "noteRadiusEstimated": "Radius ≈ estimated from the mass.",
+      "showInTable": "Show in Table",
+      "earthReference": "Earth",
+      "sunReference": "Sun"
+    },
+    "sortByPattern": "Sort by {{column}}",
+    "filterColumnPattern": "Filter {{column}}",
+    "table": "Planet table",
+    "tableHelp": "Use the up and down arrow keys, Page Up, Page Down, Home and End to move through the planets. The selected planet's details appear beside the table.",
+    "scrollBar": "Scroll the table",
+    "summary": {
+      "title": "Filters applied",
+      "none": "No filters: every confirmed planet is listed.",
+      "rangePattern": "{{label}}: {{min}} to {{max}} {{unit}}",
+      "atLeastPattern": "{{label}}: at least {{min}} {{unit}}",
+      "atMostPattern": "{{label}}: at most {{max}} {{unit}}",
+      "requireValuePattern": "{{label}}: has a value",
+      "methodsPattern": "Methods: {{methods}}",
+      "measuredMass": "Measured masses only"
+    }
+  },
+  "gallery": {
+    "placeholder": "Plot Gallery"
+  },
+  "builder": {
+    "placeholder": "Plot Builder"
+  },
+  "counts": {
+    "placeholder": "Counts"
+  },
   "a11y": {
     "counts": {
       "screenSummary": {
@@ -15,7 +191,7 @@
       },
       "currentDetails": "The simulation is in its initial state.",
       "controls": {
-        "exampleControl": "Example control"
+        "placeholder": "Placeholder"
       }
     },
     "explore": {
@@ -26,7 +202,7 @@
       },
       "currentDetails": "The simulation is in its initial state.",
       "controls": {
-        "exampleControl": "Example control"
+        "placeholder": "Placeholder"
       }
     },
     "gallery": {
@@ -37,7 +213,7 @@
       },
       "currentDetails": "The simulation is in its initial state.",
       "controls": {
-        "exampleControl": "Example control"
+        "placeholder": "Placeholder"
       }
     },
     "builder": {
@@ -48,12 +224,13 @@
       },
       "currentDetails": "The simulation is in its initial state.",
       "controls": {
-        "exampleControl": "Example control"
+        "placeholder": "Placeholder"
       }
     }
   },
   "preferences": {
     "title": "Simulation",
-    "exampleToggle": "Example Toggle"
+    "showArchiveSyntax": "Show what to type in the NASA Exoplanet Archive",
+    "showArchiveSyntaxHelp": "Lists, under the table and the Plot Builder, the archive's filter-box text for the same filters."
   }
 }

@@ -1,48 +1,58 @@
 /**
  * ExploreModel.ts
  *
- * The top-level model for the simulation screen.
- *
- * Add your simulation's state here using reactive Property objects from
- * scenerystack/axon. The view observes these properties and updates automatically.
- *
- * ── Example ──────────────────────────────────────────────────────────────────
- *   import { BooleanProperty, NumberProperty } from "scenerystack/axon";
- *
- *   public readonly isRunningProperty = new BooleanProperty(false);
- *   public readonly timeProperty = new NumberProperty(0);    // seconds
- *
- * ── Step cycle ────────────────────────────────────────────────────────────────
- * The Sim calls step(dt) on every animation frame. Advance your model state
- * in that method (e.g. integrate equations, update positions).
- *
- * ── Reset ─────────────────────────────────────────────────────────────────────
- * reset() is called when the user presses Reset All. Call .reset() on every
- * Property declared here.
+ * Model for the Explore screen: the shared database (filters, sort order, selection) plus which
+ * columns the table shows. Nothing moves, so step() does nothing.
  */
+
+import { BooleanProperty } from "scenerystack/axon";
 import type { TModel } from "scenerystack/joist";
-import { SharedModel } from "../../common/model/SharedModel.js";
+import type { ExoplanetDatabase } from "../../common/model/ExoplanetDatabase.js";
+import { TableColumn } from "../../common/model/TableColumn.js";
+
+/** Columns shown when the screen opens: what the handout asks for first. */
+const DEFAULT_COLUMNS = new Set([
+  TableColumn.NAME,
+  TableColumn.METHOD,
+  TableColumn.DISCOVERY_YEAR,
+  TableColumn.PERIOD,
+  TableColumn.SEMI_MAJOR_AXIS,
+  TableColumn.RADIUS,
+  TableColumn.MASS,
+  TableColumn.STAR_MASS,
+]);
+
+/** Most columns that fit across the table. */
+export const MAX_VISIBLE_COLUMNS = 9;
 
 export class ExploreModel implements TModel {
-  /** Shared helpers — rename SharedModel to a domain type when known. */
-  public readonly shared = new SharedModel();
+  public readonly database: ExoplanetDatabase;
 
-  /**
-   * Resets all model state to initial values.
-   * Called when the user presses the Reset All button.
-   */
-  public reset(): void {
-    this.shared.reset();
-    // TODO: call .reset() on every Property declared in this model
+  /** Whether each column is shown (the name column always is). */
+  public readonly columnVisibleProperties: ReadonlyMap<TableColumn, BooleanProperty>;
+
+  public constructor(database: ExoplanetDatabase) {
+    this.database = database;
+    this.columnVisibleProperties = new Map(
+      TableColumn.enumeration.values.map((column) => [column, new BooleanProperty(DEFAULT_COLUMNS.has(column))]),
+    );
   }
 
-  /**
-   * Steps the model forward by dt seconds.
-   * Called every animation frame by the Sim framework.
-   *
-   * @param _dt - elapsed time in seconds since the last frame
-   */
+  /** The columns currently shown, in TableColumn order. */
+  public get visibleColumns(): TableColumn[] {
+    return TableColumn.enumeration.values.filter(
+      (column) => column === TableColumn.NAME || this.columnVisibleProperties.get(column)?.value,
+    );
+  }
+
+  public reset(): void {
+    this.database.reset();
+    for (const property of this.columnVisibleProperties.values()) {
+      property.reset();
+    }
+  }
+
   public step(_dt: number): void {
-    // TODO: advance simulation state here
+    // Nothing evolves in time.
   }
 }

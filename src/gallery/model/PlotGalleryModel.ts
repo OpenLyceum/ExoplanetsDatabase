@@ -1,48 +1,37 @@
 /**
  * PlotGalleryModel.ts
  *
- * The top-level model for the simulation screen.
- *
- * Add your simulation's state here using reactive Property objects from
- * scenerystack/axon. The view observes these properties and updates automatically.
- *
- * ── Example ──────────────────────────────────────────────────────────────────
- *   import { BooleanProperty, NumberProperty } from "scenerystack/axon";
- *
- *   public readonly isRunningProperty = new BooleanProperty(false);
- *   public readonly timeProperty = new NumberProperty(0);    // seconds
- *
- * ── Step cycle ────────────────────────────────────────────────────────────────
- * The Sim calls step(dt) on every animation frame. Advance your model state
- * in that method (e.g. integrate equations, update positions).
- *
- * ── Reset ─────────────────────────────────────────────────────────────────────
- * reset() is called when the user presses Reset All. Call .reset() on every
- * Property declared here.
+ * Model for the Plot Gallery screen: which ready-made plot is shown, and whether the Solar System
+ * planets are drawn on it for comparison.
  */
+
+import { BooleanProperty, EnumerationProperty, Property } from "scenerystack/axon";
 import type { TModel } from "scenerystack/joist";
-import { SharedModel } from "../../common/model/SharedModel.js";
+import { CATALOG, type ExoplanetCatalog } from "../../common/model/ExoplanetCatalog.js";
+import { GalleryPreset } from "./GalleryPreset.js";
 
 export class PlotGalleryModel implements TModel {
-  /** Shared helpers — rename SharedModel to a domain type when known. */
-  public readonly shared = new SharedModel();
+  public readonly catalog: ExoplanetCatalog;
+  public readonly presetProperty = new EnumerationProperty(GalleryPreset.MASS_VS_PERIOD);
+  public readonly showSolarSystemProperty = new BooleanProperty(true);
 
-  /**
-   * Resets all model state to initial values.
-   * Called when the user presses the Reset All button.
-   */
-  public reset(): void {
-    this.shared.reset();
-    // TODO: call .reset() on every Property declared in this model
+  /** Planet under the pointer or picked by keyboard (catalog index), or null. */
+  public readonly highlightedPlanetProperty = new Property<number | null>(null);
+
+  public constructor(catalog: ExoplanetCatalog = CATALOG) {
+    this.catalog = catalog;
+    this.presetProperty.lazyLink(() => {
+      this.highlightedPlanetProperty.value = null;
+    });
   }
 
-  /**
-   * Steps the model forward by dt seconds.
-   * Called every animation frame by the Sim framework.
-   *
-   * @param _dt - elapsed time in seconds since the last frame
-   */
+  public reset(): void {
+    this.presetProperty.reset();
+    this.showSolarSystemProperty.reset();
+    this.highlightedPlanetProperty.reset();
+  }
+
   public step(_dt: number): void {
-    // TODO: advance simulation state here
+    // Nothing evolves in time.
   }
 }

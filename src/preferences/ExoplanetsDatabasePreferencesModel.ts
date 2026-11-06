@@ -10,24 +10,29 @@
  */
 
 import { BooleanProperty } from "scenerystack/axon";
-import type { Tandem } from "scenerystack/tandem";
+import { Tandem } from "scenerystack/tandem";
 import ExoplanetsDatabaseNamespace from "../ExoplanetsDatabaseNamespace.js";
 import exoplanetsDatabaseQueryParameters from "./exoplanetsDatabaseQueryParameters.js";
 
 export class ExoplanetsDatabasePreferencesModel {
-  /** Example preference; initial value comes from the `exampleToggle` query parameter. */
-  public readonly exampleToggleProperty: BooleanProperty;
+  /** Show what to type in the archive's own table (initial value from the `archiveSyntax` query parameter). */
+  public readonly showArchiveSyntaxProperty: BooleanProperty;
 
   public constructor(tandem?: Tandem) {
-    this.exampleToggleProperty = new BooleanProperty(
-      exoplanetsDatabaseQueryParameters.exampleToggle,
-      tandem ? { tandem: tandem.createTandem("exampleToggleProperty") } : undefined,
+    this.showArchiveSyntaxProperty = new BooleanProperty(
+      exoplanetsDatabaseQueryParameters.archiveSyntax,
+      tandem ? { tandem: tandem.createTandem("showArchiveSyntaxProperty") } : undefined,
     );
   }
 
   public reset(): void {
-    this.exampleToggleProperty.reset();
+    this.showArchiveSyntaxProperty.reset();
   }
 }
+
+/** The sim-wide preferences, shared by main.ts (the Preferences dialog) and the screen views. */
+export const exoplanetsDatabasePreferences = new ExoplanetsDatabasePreferencesModel(
+  Tandem.ROOT.createTandem("preferences"),
+);
 
 ExoplanetsDatabaseNamespace.register("ExoplanetsDatabasePreferencesModel", ExoplanetsDatabasePreferencesModel);

@@ -14,6 +14,7 @@ import type { ScreenOptions } from "scenerystack/sim";
 import { Screen } from "scenerystack/sim";
 import type { Tandem } from "scenerystack/tandem";
 import { createPlotBuilderIcon } from "../common/ExoplanetsDatabaseScreenIcons.js";
+import type { ExoplanetDatabase } from "../common/model/ExoplanetDatabase.js";
 import ExoplanetsDatabaseColors from "../ExoplanetsDatabaseColors.js";
 import { PlotBuilderModel } from "./model/PlotBuilderModel.js";
 import { PlotBuilderKeyboardHelpContent } from "./view/PlotBuilderKeyboardHelpContent.js";
@@ -23,10 +24,10 @@ import { PlotBuilderScreenView } from "./view/PlotBuilderScreenView.js";
 type PlotBuilderScreenOptions = ScreenOptions & { tandem: Tandem };
 
 export class PlotBuilderScreen extends Screen<PlotBuilderModel, PlotBuilderScreenView> {
-  public constructor(options: PlotBuilderScreenOptions) {
+  public constructor(database: ExoplanetDatabase, showInTable: () => void, options: PlotBuilderScreenOptions) {
     super(
       // Model factory — called once when the screen is first shown
-      () => new PlotBuilderModel(),
+      () => new PlotBuilderModel(database, showInTable),
       // View factory — receives the model instance
       (model) =>
         new PlotBuilderScreenView(model, {

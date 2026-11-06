@@ -27,9 +27,9 @@ export class ExoplanetsDatabasePreferencesNode extends VBox {
       fill: ExoplanetsDatabaseColors.controlSurfaceTextColorProperty,
     });
 
-    const exampleToggleCheckbox = new Checkbox(
-      preferencesModel.exampleToggleProperty,
-      new Text(prefStrings.exampleToggleStringProperty, {
+    const archiveSyntaxCheckbox = new Checkbox(
+      preferencesModel.showArchiveSyntaxProperty,
+      new Text(prefStrings.showArchiveSyntaxStringProperty, {
         font: new PhetFont(14),
         fill: ExoplanetsDatabaseColors.controlSurfaceTextColorProperty,
       }),
@@ -37,14 +37,15 @@ export class ExoplanetsDatabasePreferencesNode extends VBox {
         checkboxColor: ExoplanetsDatabaseColors.controlSurfaceTextColorProperty,
         checkboxColorBackground: ExoplanetsDatabaseColors.controlSurfaceColorProperty,
         spacing: 8,
-        ...(tandem && { tandem: tandem.createTandem("exampleToggleCheckbox") }),
+        accessibleHelpText: prefStrings.showArchiveSyntaxHelpStringProperty,
+        ...(tandem && { tandem: tandem.createTandem("archiveSyntaxCheckbox") }),
       },
     );
 
     super({
       align: "left",
       spacing: 12,
-      children: [header, exampleToggleCheckbox],
+      children: [header, archiveSyntaxCheckbox],
     });
   }
 }

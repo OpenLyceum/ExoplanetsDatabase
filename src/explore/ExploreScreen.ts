@@ -14,6 +14,7 @@ import type { ScreenOptions } from "scenerystack/sim";
 import { Screen } from "scenerystack/sim";
 import type { Tandem } from "scenerystack/tandem";
 import { createExploreIcon } from "../common/ExoplanetsDatabaseScreenIcons.js";
+import type { ExoplanetDatabase } from "../common/model/ExoplanetDatabase.js";
 import ExoplanetsDatabaseColors from "../ExoplanetsDatabaseColors.js";
 import { ExploreModel } from "./model/ExploreModel.js";
 import { ExploreKeyboardHelpContent } from "./view/ExploreKeyboardHelpContent.js";
@@ -23,10 +24,10 @@ import { ExploreScreenView } from "./view/ExploreScreenView.js";
 type ExploreScreenOptions = ScreenOptions & { tandem: Tandem };
 
 export class ExploreScreen extends Screen<ExploreModel, ExploreScreenView> {
-  public constructor(options: ExploreScreenOptions) {
+  public constructor(database: ExoplanetDatabase, options: ExploreScreenOptions) {
     super(
       // Model factory — called once when the screen is first shown
-      () => new ExploreModel(),
+      () => new ExploreModel(database),
       // View factory — receives the model instance
       (model) =>
         new ExploreScreenView(model, {

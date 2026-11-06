@@ -1,160 +1,163 @@
 /**
  * ExploreScreenView.ts
  *
- * The top-level view for the simulation screen.
- *
- * All visual nodes are added here. Follow these conventions:
- *   - Use this.layoutBounds for positioning (never magic pixel values)
- *   - Keep a ResetAllButton that calls model.reset() and this.reset()
- *   - Override step(dt) for frame-by-frame animation
- *
- * ── Adding content ────────────────────────────────────────────────────────────
- * 1. Create Node subclasses in separate files (e.g. ExoplanetsDatabaseControlPanel.ts)
- * 2. Instantiate them here and call this.addChild(...)
- * 3. Link them to model properties:
- *      model.isRunningProperty.link( isRunning => { ... } );
- *
- * ── Layout bounds ─────────────────────────────────────────────────────────────
- * SceneryStack uses a virtual 1024×618 coordinate space by default.
- * this.layoutBounds gives you the full rectangle; use it for alignment:
- *   center, minX, maxX, minY, maxY, width, height
+ * The Explore screen: quick filters and method checkboxes on the left, the simplified table in
+ * the middle with the match count above it and the filters (and their archive syntax) below,
+ * and the selected planet's card on the right.
  */
 
+import { DerivedProperty } from "scenerystack/axon";
 import { type EmptySelfOptions, optionize } from "scenerystack/phet-core";
-import { Node, Rectangle, Text } from "scenerystack/scenery";
+import { Node, Text, VBox } from "scenerystack/scenery";
 import { ResetAllButton } from "scenerystack/scenery-phet";
 import { ScreenView, type ScreenViewOptions } from "scenerystack/sim";
-import { FLAT_RESET_ALL_BUTTON_OPTIONS } from "../../common/ExoplanetsDatabaseButtonOptions.js";
+import { RectangularPushButton } from "scenerystack/sun";
+import {
+  FLAT_PANEL_PUSH_BUTTON_OPTIONS,
+  FLAT_RESET_ALL_BUTTON_OPTIONS,
+  LIGHT_SURFACE_TEXT_FILL,
+} from "../../common/ExoplanetsDatabaseButtonOptions.js";
+import { ExoplanetsDatabasePanel } from "../../common/ExoplanetsDatabasePanel.js";
+import { FilterPreset } from "../../common/model/FilterPreset.js";
+import { DataCreditNode } from "../../common/view/DataCreditNode.js";
+import { FilterSummaryNode } from "../../common/view/FilterSummaryNode.js";
+import { MatchCountNode } from "../../common/view/MatchCountNode.js";
+import { MethodCheckboxGroup } from "../../common/view/MethodCheckboxGroup.js";
 import ExoplanetsDatabaseColors from "../../ExoplanetsDatabaseColors.js";
-import { SCREEN_VIEW_MARGIN } from "../../ExoplanetsDatabaseConstants.js";
+import { FONTS, SCREEN_VIEW_MARGIN } from "../../ExoplanetsDatabaseConstants.js";
 import { StringManager } from "../../i18n/StringManager.js";
 import type { ExploreModel } from "../model/ExploreModel.js";
+import { ColumnsDialog } from "./ColumnsDialog.js";
 import { ExploreScreenSummaryContent } from "./ExploreScreenSummaryContent.js";
+import { PlanetCardNode } from "./PlanetCardNode.js";
+import { PlanetTableNode } from "./PlanetTableNode.js";
 
 export type ExploreScreenViewOptions = ScreenViewOptions;
 
+const MARGIN = 10;
+const SIDEBAR_WIDTH = 152;
+const TABLE_WIDTH = 566;
+const CARD_WIDTH = 268;
+const TABLE_ROWS = 17;
+const BUTTON_WIDTH = SIDEBAR_WIDTH - 24;
+
 export class ExploreScreenView extends ScreenView {
+  private readonly table: PlanetTableNode;
+
   public constructor(model: ExploreModel, providedOptions?: ExploreScreenViewOptions) {
-    // ── Accessibility: screen summary ───────────────────────────────────────────
-    // The screen summary is the first thing a screen-reader user encounters. It
-    // is registered here, in the ScreenView's super() options, so every sim wires
-    // it the same way. See ExploreScreenSummaryContent for the four content regions.
     const options = optionize<ExploreScreenViewOptions, EmptySelfOptions, ScreenViewOptions>()(
-      {
-        screenSummaryContent: new ExploreScreenSummaryContent(model),
-      },
+      { screenSummaryContent: new ExploreScreenSummaryContent(model) },
       providedOptions,
     );
     super(options);
 
-    // ── Background ────────────────────────────────────────────────────────────
-    // A full-screen rectangle that follows the active color profile.
-    // Replace or remove once you add real content.
-    const backgroundRect = new Rectangle(0, 0, this.layoutBounds.width, this.layoutBounds.height, {
-      fill: ExoplanetsDatabaseColors.backgroundColorProperty,
+    const strings = StringManager.getInstance().getExploreStrings();
+    const common = StringManager.getInstance().getCommonStrings();
+    const database = model.database;
+    const filter = database.filter;
+    const bounds = this.layoutBounds;
+
+    const heading = (text: typeof strings.presetsTitleStringProperty): Text =>
+      new Text(text, {
+        font: FONTS.HEADING,
+        fill: ExoplanetsDatabaseColors.accentColorProperty,
+        maxWidth: BUTTON_WIDTH,
+      });
+    const button = (
+      label: typeof strings.presetsTitleStringProperty,
+      listener: () => void,
+      extra: Partial<ConstructorParameters<typeof RectangularPushButton>[0]> = {},
+    ): RectangularPushButton =>
+      new RectangularPushButton({
+        ...FLAT_PANEL_PUSH_BUTTON_OPTIONS,
+        content: new Text(label, { font: FONTS.LABEL, fill: LIGHT_SURFACE_TEXT_FILL, maxWidth: BUTTON_WIDTH - 12 }),
+        minWidth: BUTTON_WIDTH,
+        xMargin: 6,
+        yMargin: 4,
+        listener,
+        ...extra,
+      });
+
+    // ── Sidebar ───────────────────────────────────────────────────────────────
+    const presetLabels = common.presets as unknown as Record<string, typeof strings.presetsTitleStringProperty>;
+    const presetHelp = common.presetDescriptions as unknown as Record<
+      string,
+      typeof strings.presetsTitleStringProperty
+    >;
+    const presetButtons = FilterPreset.enumeration.values.map((preset) =>
+      button(
+        presetLabels[`${preset.key}StringProperty`] as typeof strings.presetsTitleStringProperty,
+        () => filter.applyPreset(preset),
+        {
+          accessibleHelpText: presetHelp[`${preset.key}StringProperty`] ?? null,
+        },
+      ),
+    );
+    const methodCheckboxes = new MethodCheckboxGroup(filter, SIDEBAR_WIDTH - 20);
+    const columnsDialog = new ColumnsDialog(model);
+    const columnsButton = button(strings.selectColumnsStringProperty, () => columnsDialog.show());
+    const clearButton = button(common.clearAllFiltersStringProperty, () => filter.reset(), {
+      enabledProperty: new DerivedProperty([database.matchingPlanetsProperty], () => filter.isActive),
     });
-    this.addChild(backgroundRect);
+    const sidebar = new ExoplanetsDatabasePanel(
+      new VBox({
+        align: "left",
+        spacing: 6,
+        children: [
+          heading(strings.presetsTitleStringProperty),
+          ...presetButtons,
+          heading(strings.methodsTitleStringProperty),
+          methodCheckboxes,
+          columnsButton,
+          clearButton,
+        ],
+      }),
+      { left: MARGIN, top: MARGIN, minWidth: SIDEBAR_WIDTH, maxWidth: SIDEBAR_WIDTH, xMargin: 10 },
+    );
 
-    // ── Placeholder label ─────────────────────────────────────────────────────
-    // Replace this with your actual simulation content.
-    const placeholderText = new Text(StringManager.getInstance().getScreenNames().exploreStringProperty, {
-      font: "bold 36px sans-serif",
-      fill: ExoplanetsDatabaseColors.textColorProperty,
-      center: this.layoutBounds.center,
-    });
-    this.addChild(placeholderText);
+    // ── Table, count and filter summary ──────────────────────────────────────
+    const tableLeft = sidebar.right + MARGIN;
+    const matchCount = new MatchCountNode(database, { left: tableLeft, top: MARGIN });
+    this.table = new PlanetTableNode(model, TABLE_WIDTH, TABLE_ROWS);
+    this.table.left = tableLeft;
+    this.table.top = matchCount.bottom + 6;
+    const summary = new FilterSummaryNode(filter, TABLE_WIDTH);
+    summary.left = tableLeft;
+    summary.top = this.table.bottom + 8;
 
-    // ── Accessibility: per-control names ────────────────────────────────────────
-    // EVERY interactive node must carry an `accessibleName` (and an
-    // `accessibleHelpText` where useful), sourced from the StringManager `a11y`
-    // string group — never a hard-coded English literal. Sun/scenery-phet controls
-    // (NumberControl, Checkbox, ComboBox, AquaRadioButtonGroup, …) accept it as an
-    // option; a draggable plain Node needs `tagName: "div", focusable: true` too.
-    // Example (uncomment and adapt when you add a real control):
-    //
-    //   const a11y = StringManager.getInstance().getExploreA11yStrings();
-    //   const exampleButton = new RectangularPushButton({
-    //     ...FLAT_RECTANGULAR_BUTTON_OPTIONS, // flat appearance, not SceneryStack's default 3-D look
-    //     content: someIcon,
-    //     listener: () => model.doSomething(),
-    //     accessibleName: a11y.controls.exampleControlStringProperty,
-    //   });
-    //   this.addChild(exampleButton);
+    // ── Planet card ──────────────────────────────────────────────────────────
+    const card = new PlanetCardNode(database, bounds.height - 2 * MARGIN - 50);
+    card.left = tableLeft + TABLE_WIDTH + MARGIN;
+    card.top = MARGIN;
+    card.maxWidth = CARD_WIDTH;
 
-    // ── Reset All button ──────────────────────────────────────────────────────
-    // Always position at bottom-right (PhET convention).
+    const credit = new DataCreditNode({ left: MARGIN, bottom: bounds.maxY - 6, maxWidth: 680 });
+
     const resetAllButton = new ResetAllButton({
       ...FLAT_RESET_ALL_BUTTON_OPTIONS,
       listener: () => {
         model.reset();
         this.reset();
       },
-      right: this.layoutBounds.maxX - SCREEN_VIEW_MARGIN,
-      bottom: this.layoutBounds.maxY - SCREEN_VIEW_MARGIN,
+      right: bounds.maxX - SCREEN_VIEW_MARGIN,
+      bottom: bounds.maxY - SCREEN_VIEW_MARGIN,
     });
-    this.addChild(resetAllButton);
 
-    // ── Accessibility: keyboard / reading traversal order ───────────────────────
-    // Make the parallel DOM (Tab order and screen-reader reading order)
-    // deterministic and independent of child z-order. ScreenView throws if you
-    // set pdomOrder on itself, so add a lightweight wrapper Node that "borrows"
-    // the interactive nodes in the order a user should reach them — Reset All
-    // last. Non-interactive decoration (background, placeholder) is omitted.
+    for (const node of [sidebar, matchCount, this.table, summary, card, credit, resetAllButton]) {
+      this.addChild(node);
+    }
     this.addChild(
       new Node({
-        pdomOrder: [
-          // TODO: add the sim's interactive nodes here, in traversal order
-          resetAllButton,
-        ],
+        pdomOrder: [...presetButtons, methodCheckboxes, columnsButton, clearButton, this.table, card, resetAllButton],
       }),
     );
   }
 
-  /**
-   * Resets view-side state (animations, panel visibility, etc.).
-   * Called by the Reset All button listener.
-   */
   public reset(): void {
-    // TODO: reset any view-side state here
+    this.table.reset();
   }
 
-  /**
-   * Steps the view forward by dt seconds for animation.
-   * @param _dt - elapsed time in seconds
-   */
   public override step(_dt: number): void {
-    // TODO: implement animation updates here
+    // Nothing animates.
   }
-
-  // ── Accessibility / listeners: dispose ─────────────────────────────────────
-  // ScreenView is `isDisposable: false` and lives for the whole sim, so this
-  // class rarely needs dispose(). Child Nodes (and a live currentDetails
-  // DerivedProperty you own on a short-lived object) do. When you add
-  // DerivedProperty / Multilink / Property.link against model state, keep the
-  // references and tear them down — forks copy what they see. Pattern:
-  //
-  // private readonly disposeExploreScreenView: () => void;
-  //
-  // // in the constructor, after creating the listeners:
-  // const statusMultilink = Multilink.multilink(
-  //   [model.someProperty, model.otherProperty],
-  //   (a, b) => { /* update view from model */ },
-  // );
-  // const detailsProperty = new DerivedProperty(
-  //   [model.stateProperty],
-  //   (state) => `State: ${state}`,
-  // ); // → pass as currentDetailsContent in ExploreScreenSummaryContent
-  // const onExternal = (v: number) => { /* … */ };
-  // model.externalProperty.link(onExternal); // Property you do NOT own
-  //
-  // this.disposeExploreScreenView = () => {
-  //   statusMultilink.dispose();                 // Multilink you created
-  //   detailsProperty.dispose();                 // DerivedProperty you created
-  //   model.externalProperty.unlink(onExternal); // undo external link
-  // };
-  //
-  // public override dispose(): void {
-  //   this.disposeExploreScreenView();
-  //   super.dispose();
-  // }
 }

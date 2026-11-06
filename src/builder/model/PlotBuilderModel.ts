@@ -1,48 +1,53 @@
 /**
  * PlotBuilderModel.ts
  *
- * The top-level model for the simulation screen.
- *
- * Add your simulation's state here using reactive Property objects from
- * scenerystack/axon. The view observes these properties and updates automatically.
- *
- * ── Example ──────────────────────────────────────────────────────────────────
- *   import { BooleanProperty, NumberProperty } from "scenerystack/axon";
- *
- *   public readonly isRunningProperty = new BooleanProperty(false);
- *   public readonly timeProperty = new NumberProperty(0);    // seconds
- *
- * ── Step cycle ────────────────────────────────────────────────────────────────
- * The Sim calls step(dt) on every animation frame. Advance your model state
- * in that method (e.g. integrate equations, update positions).
- *
- * ── Reset ─────────────────────────────────────────────────────────────────────
- * reset() is called when the user presses Reset All. Call .reset() on every
- * Property declared here.
+ * Model for the Plot Builder screen: any quantity against any other, on linear or log axes,
+ * coloured by method, facility or year, using the same filters and selection as the Explore table.
  */
+
+import { BooleanProperty, EnumerationProperty } from "scenerystack/axon";
 import type { TModel } from "scenerystack/joist";
-import { SharedModel } from "../../common/model/SharedModel.js";
+import type { ExoplanetDatabase } from "../../common/model/ExoplanetDatabase.js";
+import { Quantity } from "../../common/model/Quantity.js";
+import { ColorBy } from "./ColorBy.js";
 
 export class PlotBuilderModel implements TModel {
-  /** Shared helpers — rename SharedModel to a domain type when known. */
-  public readonly shared = new SharedModel();
+  public readonly database: ExoplanetDatabase;
 
-  /**
-   * Resets all model state to initial values.
-   * Called when the user presses the Reset All button.
-   */
-  public reset(): void {
-    this.shared.reset();
-    // TODO: call .reset() on every Property declared in this model
+  /** Switches to the Explore screen (the selected planet stays selected). */
+  public readonly showInTable: () => void;
+
+  public readonly xQuantityProperty = new EnumerationProperty(Quantity.SEMI_MAJOR_AXIS);
+  public readonly yQuantityProperty = new EnumerationProperty(Quantity.MASS);
+  public readonly xLogProperty = new BooleanProperty(true);
+  public readonly yLogProperty = new BooleanProperty(true);
+  public readonly colorByProperty = new EnumerationProperty(ColorBy.METHOD);
+  public readonly showSolarSystemProperty = new BooleanProperty(true);
+
+  public constructor(database: ExoplanetDatabase, showInTable: () => void) {
+    this.database = database;
+    this.showInTable = showInTable;
+
+    // A new quantity starts on the axis type that suits it.
+    this.xQuantityProperty.lazyLink((quantity) => {
+      this.xLogProperty.value = quantity.prefersLog;
+    });
+    this.yQuantityProperty.lazyLink((quantity) => {
+      this.yLogProperty.value = quantity.prefersLog;
+    });
   }
 
-  /**
-   * Steps the model forward by dt seconds.
-   * Called every animation frame by the Sim framework.
-   *
-   * @param _dt - elapsed time in seconds since the last frame
-   */
+  public reset(): void {
+    this.database.reset();
+    this.xQuantityProperty.reset();
+    this.yQuantityProperty.reset();
+    this.xLogProperty.reset();
+    this.yLogProperty.reset();
+    this.colorByProperty.reset();
+    this.showSolarSystemProperty.reset();
+  }
+
   public step(_dt: number): void {
-    // TODO: advance simulation state here
+    // Nothing evolves in time.
   }
 }
