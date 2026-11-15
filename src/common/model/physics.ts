@@ -47,7 +47,10 @@ export function keplerCheck(periodDays: number, semiMajorAxisAu: number, starMas
   };
 }
 
-/** Semi-major axis (au) of an orbit with this period (days) around a star of this mass (M☉). */
+/**
+ * Semi-major axis (au) of an orbit with this period (days) around a star of this mass (M☉).
+ * @internal Exported for unit tests; not part of the application API.
+ */
 export function keplerSemiMajorAxis(periodDays: number, starMassSolar: number): number {
   return (starMassSolar * (periodDays / DAYS_PER_YEAR) ** 2) ** (1 / 3);
 }
@@ -62,7 +65,10 @@ export function luminosityFromRadiusAndTemperature(radiusSolar: number, temperat
   return radiusSolar ** 2 * (temperatureK / SUN_TEMPERATURE_K) ** 4;
 }
 
-/** Bulk density, g/cm³, from mass (M⊕) and radius (R⊕). */
+/**
+ * Bulk density, g/cm³, from mass (M⊕) and radius (R⊕).
+ * @internal Exported for unit tests; not part of the application API.
+ */
 export function densityFromMassAndRadius(massEarth: number, radiusEarth: number): number {
   return (EARTH_DENSITY_G_CM3 * massEarth) / radiusEarth ** 3;
 }
