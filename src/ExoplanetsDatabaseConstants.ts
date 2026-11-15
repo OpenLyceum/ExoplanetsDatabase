@@ -45,7 +45,7 @@ export const FONTS = {
 } as const;
 
 /** Vertical space between controls in a panel, px. */
-export const CONTROL_SPACING = 8;
+const CONTROL_SPACING = 8;
 
 /** Size of a plot marker, px. */
 export const MARKER_SIZE = 5;

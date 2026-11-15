@@ -103,7 +103,7 @@ class BoundField extends RectangularPushButton {
   }
 }
 
-export class FilterDialog extends Dialog {
+class FilterDialog extends Dialog {
   public constructor(criterion: RangeCriterion) {
     const strings = StringManager.getInstance().getExploreStrings();
     const quantity = criterion.quantity;

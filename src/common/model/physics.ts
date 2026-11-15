@@ -6,19 +6,19 @@
  */
 
 /** Days in a Julian year. */
-export const DAYS_PER_YEAR = 365.25;
+const DAYS_PER_YEAR = 365.25;
 
 /** The Sun's effective temperature, K (IAU 2015 nominal value). */
-export const SUN_TEMPERATURE_K = 5772;
+const SUN_TEMPERATURE_K = 5772;
 
 /** Earth's mean density, g/cm³. */
-export const EARTH_DENSITY_G_CM3 = 5.51;
+const EARTH_DENSITY_G_CM3 = 5.51;
 
 /** Light years in a parsec. */
 export const LIGHT_YEARS_PER_PARSEC = 3.2616;
 
 /** Core mass fraction of an Earth-like rocky planet (Zeng, Sasselov & Jacobsen 2016). */
-export const EARTH_LIKE_CORE_MASS_FRACTION = 0.325;
+const EARTH_LIKE_CORE_MASS_FRACTION = 0.325;
 
 export type KeplerCheck = {
   /** Period in years. */

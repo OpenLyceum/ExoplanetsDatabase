@@ -10,7 +10,7 @@ import { BooleanProperty, Property } from "scenerystack/axon";
 import type { Quantity } from "./Quantity.js";
 
 /** Archive filter-box text for a number: plain digits, no grouping, no trailing zeros. */
-export const archiveNumber = (value: number): string => String(Number(value.toPrecision(6)));
+const archiveNumber = (value: number): string => String(Number(value.toPrecision(6)));
 
 export class RangeCriterion {
   private settingRange = false;

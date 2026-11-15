@@ -10,7 +10,7 @@
 import { Enumeration, EnumerationValue } from "scenerystack/phet-core";
 
 /** pscomppars columns whose value the archive may calculate, in the snapshot's bit order. */
-export const CALCULABLE_COLUMNS = [
+const CALCULABLE_COLUMNS = [
   "pl_orbper",
   "pl_orbsmax",
   "pl_rade",
@@ -25,7 +25,7 @@ export const CALCULABLE_COLUMNS = [
 export type QuantityColumn = (typeof CALCULABLE_COLUMNS)[number] | "pl_orbeccen" | "sy_dist" | "sy_pnum" | "disc_year";
 
 /** Numeric archive parameters that carry a separate upper/lower-limit flag. */
-export const LIMITABLE_COLUMNS = [...CALCULABLE_COLUMNS, "pl_orbeccen"] as const;
+const LIMITABLE_COLUMNS = [...CALCULABLE_COLUMNS, "pl_orbeccen"] as const;
 export type LimitColumn = `${(typeof LIMITABLE_COLUMNS)[number]}lim`;
 
 export class Quantity extends EnumerationValue {
