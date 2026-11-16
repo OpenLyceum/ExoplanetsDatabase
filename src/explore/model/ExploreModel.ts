@@ -1,3 +1,4 @@
+import { EXPLORE_MODEL_SETTINGS } from "../../ExoplanetsDatabaseConstants.js";
 /**
  * ExploreModel.ts
  *
@@ -23,7 +24,7 @@ const DEFAULT_COLUMNS = new Set([
 ]);
 
 /** Most columns that fit across the table. */
-export const MAX_VISIBLE_COLUMNS = 9;
+export const MAX_VISIBLE_COLUMNS: number = EXPLORE_MODEL_SETTINGS.MAX_VISIBLE_COLUMNS;
 
 export class ExploreModel implements TModel {
   public readonly database: ExoplanetDatabase;

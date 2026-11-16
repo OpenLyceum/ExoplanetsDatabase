@@ -1,3 +1,4 @@
+import { COLUMNS_DIALOG_SETTINGS } from "../../ExoplanetsDatabaseConstants.js";
 /**
  * ColumnsDialog.ts
  *
@@ -38,15 +39,15 @@ export class ColumnsDialog extends Dialog {
           : new RichText(quantityLabelWithUnit(column.quantity as NonNullable<TableColumn["quantity"]>), {
               font: FONTS.LABEL,
               fill: LIGHT_SURFACE_TEXT_FILL,
-              maxWidth: 260,
+              maxWidth: COLUMNS_DIALOG_SETTINGS.LABEL_MAX_WIDTH,
             });
       return new Checkbox(property, label, {
         accessibleName:
           column === TableColumn.METHOD
             ? strings.methodColumnStringProperty
             : quantityLabelWithUnit(column.quantity as NonNullable<TableColumn["quantity"]>),
-        boxWidth: 16,
-        spacing: 6,
+        boxWidth: COLUMNS_DIALOG_SETTINGS.CHECKBOXES_BOX_WIDTH,
+        spacing: COLUMNS_DIALOG_SETTINGS.CHECKBOXES_SPACING,
         checkboxColor: ExoplanetsDatabaseColors.controlSurfaceTextColorProperty,
         checkboxColorBackground: ExoplanetsDatabaseColors.controlSurfaceColorProperty,
         enabledProperty: new DerivedProperty(
@@ -58,13 +59,20 @@ export class ColumnsDialog extends Dialog {
 
     const hint = new Text(
       new PatternStringProperty(strings.columnsDialogHintStringProperty, { max: MAX_VISIBLE_COLUMNS }),
-      { font: FONTS.SMALL, fill: LIGHT_SURFACE_TEXT_FILL, maxWidth: 300 },
+      { font: FONTS.SMALL, fill: LIGHT_SURFACE_TEXT_FILL, maxWidth: COLUMNS_DIALOG_SETTINGS.HINT_MAX_WIDTH },
     );
 
-    super(new VBox({ align: "left", spacing: 6, children: [hint, ...checkboxes] }), {
-      title: new Text(strings.columnsDialogTitleStringProperty, { font: FONTS.TITLE, fill: LIGHT_SURFACE_TEXT_FILL }),
-      fill: ExoplanetsDatabaseColors.controlSurfaceColorProperty,
-      isDisposable: false,
-    });
+    super(
+      new VBox({
+        align: "left",
+        spacing: COLUMNS_DIALOG_SETTINGS.CONSTRUCTOR_SPACING,
+        children: [hint, ...checkboxes],
+      }),
+      {
+        title: new Text(strings.columnsDialogTitleStringProperty, { font: FONTS.TITLE, fill: LIGHT_SURFACE_TEXT_FILL }),
+        fill: ExoplanetsDatabaseColors.controlSurfaceColorProperty,
+        isDisposable: false,
+      },
+    );
   }
 }

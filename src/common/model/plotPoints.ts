@@ -1,3 +1,4 @@
+import { PLOT_POINTS_SETTINGS } from "../../ExoplanetsDatabaseConstants.js";
 /**
  * plotPoints.ts
  *
@@ -9,7 +10,7 @@ import type { ExoplanetCatalog } from "./ExoplanetCatalog.js";
 import { Quantity } from "./Quantity.js";
 
 /** Group index of a point that is not drawn. */
-export const HIDDEN_GROUP = 255;
+export const HIDDEN_GROUP: number = PLOT_POINTS_SETTINGS.HIDDEN_GROUP;
 
 /** Points in chart coordinates, the catalog index of each, and its style group. */
 export type PointSet = {

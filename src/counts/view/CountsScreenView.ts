@@ -1,3 +1,4 @@
+import { COUNTS_SCREEN_VIEW_SETTINGS } from "../../ExoplanetsDatabaseConstants.js";
 /**
  * CountsScreenView.ts
  *
@@ -31,16 +32,16 @@ import { CountsScreenSummaryContent } from "./CountsScreenSummaryContent.js";
 
 export type CountsScreenViewOptions = ScreenViewOptions;
 
-const MARGIN = 10;
-const TILE_HEIGHT = 92;
-const METHODS_WIDTH = 440;
-const BAR_MAX_WIDTH = 190;
-const BAR_HEIGHT = 20;
-const CHART_WIDTH = 400;
-const CHART_HEIGHT = 270;
+const MARGIN: number = COUNTS_SCREEN_VIEW_SETTINGS.MARGIN;
+const TILE_HEIGHT: number = COUNTS_SCREEN_VIEW_SETTINGS.TILE_HEIGHT;
+const METHODS_WIDTH: number = COUNTS_SCREEN_VIEW_SETTINGS.METHODS_WIDTH;
+const BAR_MAX_WIDTH: number = COUNTS_SCREEN_VIEW_SETTINGS.BAR_MAX_WIDTH;
+const BAR_HEIGHT: number = COUNTS_SCREEN_VIEW_SETTINGS.BAR_HEIGHT;
+const CHART_WIDTH: number = COUNTS_SCREEN_VIEW_SETTINGS.CHART_WIDTH;
+const CHART_HEIGHT: number = COUNTS_SCREEN_VIEW_SETTINGS.CHART_HEIGHT;
 
 /** The archive's confirmed count first passed this in June 2019. */
-const FOUR_THOUSAND = 4000;
+const FOUR_THOUSAND: number = COUNTS_SCREEN_VIEW_SETTINGS.FOUR_THOUSAND;
 
 export class CountsScreenView extends ScreenView {
   public constructor(model: CountsModel, providedOptions?: CountsScreenViewOptions) {
@@ -78,27 +79,30 @@ export class CountsScreenView extends ScreenView {
       const caption = new RichText(label, {
         font: FONTS.SMALL,
         fill: ExoplanetsDatabaseColors.secondaryTextColorProperty,
-        lineWrap: tileWidth - 24,
-        maxWidth: tileWidth - 24,
+        lineWrap: tileWidth - COUNTS_SCREEN_VIEW_SETTINGS.CAPTION_LINE_WRAP_OFFSET,
+        maxWidth: tileWidth - COUNTS_SCREEN_VIEW_SETTINGS.CAPTION_MAX_WIDTH_OFFSET,
         align: "center",
       });
-      return new ExoplanetsDatabasePanel(new VBox({ spacing: 4, children: [number, caption] }), {
-        left: MARGIN + k * (tileWidth + MARGIN),
-        top: MARGIN,
-        minWidth: tileWidth,
-        maxWidth: tileWidth,
-        minHeight: TILE_HEIGHT,
-        align: "center",
-        tagName: "p",
-        accessibleName: new DerivedProperty([label], (text) => `${text}: ${formatCount(value)}`),
-      });
+      return new ExoplanetsDatabasePanel(
+        new VBox({ spacing: COUNTS_SCREEN_VIEW_SETTINGS.TILES_SPACING, children: [number, caption] }),
+        {
+          left: MARGIN + k * (tileWidth + MARGIN),
+          top: MARGIN,
+          minWidth: tileWidth,
+          maxWidth: tileWidth,
+          minHeight: TILE_HEIGHT,
+          align: "center",
+          tagName: "p",
+          accessibleName: new DerivedProperty([label], (text) => `${text}: ${formatCount(value)}`),
+        },
+      );
     });
     const candidateNote = new RichText(strings.candidateNoteStringProperty, {
       font: FONTS.SMALL,
       fill: ExoplanetsDatabaseColors.secondaryTextColorProperty,
       maxWidth: bounds.width - 2 * MARGIN,
       left: MARGIN,
-      top: MARGIN + TILE_HEIGHT + 22,
+      top: MARGIN + TILE_HEIGHT + COUNTS_SCREEN_VIEW_SETTINGS.CANDIDATE_NOTE_TOP_OFFSET,
     });
 
     // ── Planets by method ────────────────────────────────────────────────────
@@ -107,16 +111,16 @@ export class CountsScreenView extends ScreenView {
       const bar = new Rectangle(0, 0, 1, BAR_HEIGHT, { fill: methodColor(method) });
       const value = new Text("", { font: FONTS.LABEL, fill: ExoplanetsDatabaseColors.textColorProperty });
       const row = new HBox({
-        spacing: 8,
+        spacing: COUNTS_SCREEN_VIEW_SETTINGS.ROW_SPACING,
         children: [
           new Path(methodMarker(method).toShape(6), { fill: methodColor(method) }),
           new AlignBox(
             new Text(methodName(method), {
               font: FONTS.LABEL,
               fill: ExoplanetsDatabaseColors.textColorProperty,
-              maxWidth: 110,
+              maxWidth: COUNTS_SCREEN_VIEW_SETTINGS.ROW_MAX_WIDTH,
             }),
-            { alignBounds: new Bounds2(0, 0, 110, BAR_HEIGHT), xAlign: "left" },
+            { alignBounds: new Bounds2(0, 0, COUNTS_SCREEN_VIEW_SETTINGS.ROW_MAX_X, BAR_HEIGHT), xAlign: "left" },
           ),
           new Node({ children: [new Rectangle(0, 0, BAR_MAX_WIDTH, BAR_HEIGHT), bar] }),
           value,
@@ -127,8 +131,8 @@ export class CountsScreenView extends ScreenView {
     const otherList = new RichText(StringManager.getInstance().getCommonStrings().otherMethodsListStringProperty, {
       font: FONTS.SMALL,
       fill: ExoplanetsDatabaseColors.secondaryTextColorProperty,
-      lineWrap: METHODS_WIDTH - 24,
-      maxWidth: METHODS_WIDTH - 24,
+      lineWrap: METHODS_WIDTH - COUNTS_SCREEN_VIEW_SETTINGS.OTHER_LIST_LINE_WRAP_OFFSET,
+      maxWidth: METHODS_WIDTH - COUNTS_SCREEN_VIEW_SETTINGS.OTHER_LIST_MAX_WIDTH_OFFSET,
     });
     const yearSpinner = new NumberSpinner(
       model.sinceYearProperty,
@@ -146,7 +150,7 @@ export class CountsScreenView extends ScreenView {
     const totalText = new Text("", {
       font: FONTS.LABEL,
       fill: ExoplanetsDatabaseColors.secondaryTextColorProperty,
-      maxWidth: METHODS_WIDTH - 24,
+      maxWidth: METHODS_WIDTH - COUNTS_SCREEN_VIEW_SETTINGS.TOTAL_TEXT_MAX_WIDTH_OFFSET,
     });
     Multilink.multilink(
       [model.sinceYearProperty, strings.methodTotalPatternStringProperty, strings.methodRowPatternStringProperty],
@@ -167,16 +171,16 @@ export class CountsScreenView extends ScreenView {
     const methodsPanel = new ExoplanetsDatabasePanel(
       new VBox({
         align: "left",
-        spacing: 8,
+        spacing: COUNTS_SCREEN_VIEW_SETTINGS.METHODS_PANEL_SPACING,
         children: [
           heading(strings.methodsTitleStringProperty),
           new HBox({
-            spacing: 10,
+            spacing: COUNTS_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_METHODS_PANEL_SPACING,
             children: [
               new Text(strings.sinceYearStringProperty, {
                 font: FONTS.LABEL,
                 fill: ExoplanetsDatabaseColors.textColorProperty,
-                maxWidth: 200,
+                maxWidth: COUNTS_SCREEN_VIEW_SETTINGS.METHODS_PANEL_MAX_WIDTH,
               }),
               yearSpinner,
             ],
@@ -186,7 +190,12 @@ export class CountsScreenView extends ScreenView {
           otherList,
         ],
       }),
-      { left: MARGIN, top: candidateNote.bottom + 12, minWidth: METHODS_WIDTH, maxWidth: METHODS_WIDTH },
+      {
+        left: MARGIN,
+        top: candidateNote.bottom + COUNTS_SCREEN_VIEW_SETTINGS.METHODS_PANEL_TOP_OFFSET,
+        minWidth: METHODS_WIDTH,
+        maxWidth: METHODS_WIDTH,
+      },
     );
 
     // ── Growth over time ─────────────────────────────────────────────────────
@@ -215,16 +224,25 @@ export class CountsScreenView extends ScreenView {
       (method) =>
         new Path(
           stepLine((i) => catalog.methods[i] === method),
-          { stroke: methodColor(method), lineWidth: 2 },
+          { stroke: methodColor(method), lineWidth: COUNTS_SCREEN_VIEW_SETTINGS.METHOD_LINES_LINE_WIDTH },
         ),
     );
     const totalLine = new Path(
       stepLine(() => true),
-      { stroke: ExoplanetsDatabaseColors.textColorProperty, lineWidth: 2.5 },
+      {
+        stroke: ExoplanetsDatabaseColors.textColorProperty,
+        lineWidth: COUNTS_SCREEN_VIEW_SETTINGS.TOTAL_LINE_LINE_WIDTH,
+      },
     );
     const y4000 = frame.chartTransform.modelToViewY(FOUR_THOUSAND);
     const x2019 = frame.chartTransform.modelToViewX(FOUR_THOUSAND_PLANETS_YEAR);
-    const markerOptions = { stroke: ExoplanetsDatabaseColors.guideLineColorProperty, lineDash: [5, 4] };
+    const markerOptions = {
+      stroke: ExoplanetsDatabaseColors.guideLineColorProperty,
+      lineDash: [
+        COUNTS_SCREEN_VIEW_SETTINGS.MARKER_OPTIONS_LINE_DASH_DASH,
+        COUNTS_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_MARKER_OPTIONS_LINE_DASH_DASH,
+      ],
+    };
     const marker = new Node({
       children: [
         new Line(0, y4000, x2019, y4000, markerOptions),
@@ -232,17 +250,20 @@ export class CountsScreenView extends ScreenView {
         new Text(strings.fourThousandStringProperty, {
           font: FONTS.SMALL,
           fill: ExoplanetsDatabaseColors.guideLineColorProperty,
-          right: x2019 - 6,
-          bottom: y4000 - 4,
-          maxWidth: x2019 - 10,
+          right: x2019 - COUNTS_SCREEN_VIEW_SETTINGS.MARKER_RIGHT_OFFSET,
+          bottom: y4000 - COUNTS_SCREEN_VIEW_SETTINGS.MARKER_BOTTOM_OFFSET,
+          maxWidth: x2019 - COUNTS_SCREEN_VIEW_SETTINGS.MARKER_MAX_WIDTH_OFFSET,
         }),
       ],
     });
     frame.plotLayer.children = [...methodLines, totalLine, marker];
     const totalLegend = new HBox({
-      spacing: 6,
+      spacing: COUNTS_SCREEN_VIEW_SETTINGS.TOTAL_LEGEND_SPACING,
       children: [
-        new Line(0, 0, 18, 0, { stroke: ExoplanetsDatabaseColors.textColorProperty, lineWidth: 2.5 }),
+        new Line(0, 0, COUNTS_SCREEN_VIEW_SETTINGS.TOTAL_LEGEND_END_X, 0, {
+          stroke: ExoplanetsDatabaseColors.textColorProperty,
+          lineWidth: COUNTS_SCREEN_VIEW_SETTINGS.TOTAL_LEGEND_LINE_WIDTH,
+        }),
         new Text(strings.totalLineStringProperty, {
           font: FONTS.SMALL,
           fill: ExoplanetsDatabaseColors.textColorProperty,
@@ -252,18 +273,25 @@ export class CountsScreenView extends ScreenView {
     const growthText = new Text(
       new PatternStringProperty(strings.growthPatternStringProperty, {
         count: formatCount(catalog.size),
-        factor: (catalog.size / FOUR_THOUSAND).toFixed(2),
+        factor: (catalog.size / FOUR_THOUSAND).toFixed(COUNTS_SCREEN_VIEW_SETTINGS.GROWTH_TEXT_DECIMAL_PLACES),
       }),
-      { font: FONTS.LABEL, fill: ExoplanetsDatabaseColors.textColorProperty, maxWidth: CHART_WIDTH + 60 },
+      {
+        font: FONTS.LABEL,
+        fill: ExoplanetsDatabaseColors.textColorProperty,
+        maxWidth: CHART_WIDTH + COUNTS_SCREEN_VIEW_SETTINGS.GROWTH_TEXT_MAX_WIDTH_OFFSET,
+      },
     );
     const growthPanel = new ExoplanetsDatabasePanel(
       new VBox({
         align: "left",
-        spacing: 8,
+        spacing: COUNTS_SCREEN_VIEW_SETTINGS.GROWTH_PANEL_SPACING,
         children: [
           heading(strings.growthTitleStringProperty),
           new Node({ children: [frame] }),
-          new HBox({ spacing: 16, children: [totalLegend, growthText] }),
+          new HBox({
+            spacing: COUNTS_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_GROWTH_PANEL_SPACING,
+            children: [totalLegend, growthText],
+          }),
         ],
       }),
       {
@@ -276,7 +304,11 @@ export class CountsScreenView extends ScreenView {
       },
     );
 
-    const credit = new DataCreditNode({ left: MARGIN, bottom: bounds.maxY - 6, maxWidth: 680 });
+    const credit = new DataCreditNode({
+      left: MARGIN,
+      bottom: bounds.maxY - COUNTS_SCREEN_VIEW_SETTINGS.CREDIT_BOTTOM_OFFSET,
+      maxWidth: COUNTS_SCREEN_VIEW_SETTINGS.CREDIT_MAX_WIDTH,
+    });
     const resetAllButton = new ResetAllButton({
       ...FLAT_RESET_ALL_BUTTON_OPTIONS,
       listener: () => model.reset(),

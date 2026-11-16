@@ -1,3 +1,4 @@
+import { DATA_CREDIT_NODE_SETTINGS } from "../../ExoplanetsDatabaseConstants.js";
 /**
  * DataCreditNode.ts
  *
@@ -22,7 +23,7 @@ export class DataCreditNode extends Text {
     super(creditStringProperty, {
       font: FONTS.SMALL,
       fill: ExoplanetsDatabaseColors.secondaryTextColorProperty,
-      maxWidth: 700,
+      maxWidth: DATA_CREDIT_NODE_SETTINGS.CONSTRUCTOR_MAX_WIDTH,
       ...options,
     });
     this.creditStringProperty = creditStringProperty;

@@ -1,3 +1,4 @@
+import { PLANET_CARD_NODE_SETTINGS } from "../../ExoplanetsDatabaseConstants.js";
 /**
  * PlanetCardNode.ts
  *
@@ -30,10 +31,10 @@ import ExoplanetsDatabaseColors from "../../ExoplanetsDatabaseColors.js";
 import { FONTS } from "../../ExoplanetsDatabaseConstants.js";
 import { StringManager } from "../../i18n/StringManager.js";
 
-const CONTENT_WIDTH = 244;
-const LABEL_WIDTH = 112;
-const VALUE_WIDTH = 82;
-const REFERENCE_WIDTH = 38;
+const CONTENT_WIDTH: number = PLANET_CARD_NODE_SETTINGS.CONTENT_WIDTH;
+const LABEL_WIDTH: number = PLANET_CARD_NODE_SETTINGS.LABEL_WIDTH;
+const VALUE_WIDTH: number = PLANET_CARD_NODE_SETTINGS.VALUE_WIDTH;
+const REFERENCE_WIDTH: number = PLANET_CARD_NODE_SETTINGS.REFERENCE_WIDTH;
 
 const PLANET_ROWS = [Quantity.MASS, Quantity.RADIUS, Quantity.TEMPERATURE, Quantity.INSOLATION];
 const ORBIT_ROWS = [Quantity.PERIOD, Quantity.SEMI_MAJOR_AXIS, Quantity.ECCENTRICITY];
@@ -57,8 +58,8 @@ function derivedLines(catalog: ExoplanetCatalog, index: number): string[] {
     const check = keplerCheck(period, a, starMass);
     lines.push(
       fill(card.keplerPatternStringProperty.value, {
-        pSquared: formatValue(check.periodSquared, 3),
-        aCubed: formatValue(check.aCubedOverMass, 3),
+        pSquared: formatValue(check.periodSquared, PLANET_CARD_NODE_SETTINGS.PERIOD_SQUARED_FORMAT_VALUE_DIGITS),
+        aCubed: formatValue(check.aCubedOverMass, PLANET_CARD_NODE_SETTINGS.A_CUBED_OVER_MASS_FORMAT_VALUE_DIGITS),
         percent: formatPercent(Math.abs(check.fractionalDifference)),
       }),
     );
@@ -73,8 +74,8 @@ function derivedLines(catalog: ExoplanetCatalog, index: number): string[] {
     const { closest, farthest } = orbitExtremes(a, e);
     lines.push(
       fill(card.extremesPatternStringProperty.value, {
-        closest: formatValue(closest, 3),
-        farthest: formatValue(farthest, 3),
+        closest: formatValue(closest, PLANET_CARD_NODE_SETTINGS.DERIVED_LINES_DIGITS),
+        farthest: formatValue(farthest, PLANET_CARD_NODE_SETTINGS.DERIVED_LINES_DIGITS),
       }),
     );
   }
@@ -88,7 +89,10 @@ function derivedLines(catalog: ExoplanetCatalog, index: number): string[] {
   ) {
     lines.push(
       fill(card.luminosityPatternStringProperty.value, {
-        luminosity: formatValue(luminosityFromRadiusAndTemperature(starRadius, starTemperature), 3),
+        luminosity: formatValue(
+          luminosityFromRadiusAndTemperature(starRadius, starTemperature),
+          PLANET_CARD_NODE_SETTINGS.DERIVED_LINES_DIGITS,
+        ),
       }),
     );
   }
@@ -106,7 +110,7 @@ function derivedLines(catalog: ExoplanetCatalog, index: number): string[] {
     const prefix = density.limit === 1 ? "≤" : density.limit === -1 ? "≥" : estimated ? "≈" : "";
     lines.push(
       fill(card.densityPatternStringProperty.value, {
-        density: `${prefix}${formatValue(density.value, 2)}`,
+        density: `${prefix}${formatValue(density.value, PLANET_CARD_NODE_SETTINGS.DERIVED_LINES_DIGITS_SEGMENT_2)}`,
       }),
     );
   }
@@ -133,7 +137,7 @@ function noteLines(catalog: ExoplanetCatalog, index: number): string[] {
 
 export class PlanetCardNode extends ExoplanetsDatabasePanel {
   public constructor(database: ExoplanetDatabase, height: number) {
-    const content = new VBox({ align: "left", spacing: 6 });
+    const content = new VBox({ align: "left", spacing: PLANET_CARD_NODE_SETTINGS.CONTENT_SPACING });
     // Fixed size, content pinned to the top left, so the card doesn't jump as planets change.
     super(
       new AlignBox(content, {
@@ -206,11 +210,16 @@ export class PlanetCardNode extends ExoplanetsDatabasePanel {
             new Text(referenceOf(q), { ...secondary, maxWidth: REFERENCE_WIDTH }),
           ];
         });
-        return new GridBox({ rows: [header, ...rows], xSpacing: 6, ySpacing: 2, xAlign: "left" });
+        return new GridBox({
+          rows: [header, ...rows],
+          xSpacing: PLANET_CARD_NODE_SETTINGS.GRID_X_SPACING,
+          ySpacing: PLANET_CARD_NODE_SETTINGS.GRID_Y_SPACING,
+          xAlign: "left",
+        });
       };
       const earthReference = (q: Quantity): string => {
         const v = EARTH.values.get(q);
-        return v === undefined ? "" : formatValue(v, 4);
+        return v === undefined ? "" : formatValue(v, PLANET_CARD_NODE_SETTINGS.EARTH_REFERENCE_DIGITS);
       };
       const sunReference = (q: Quantity): string => (q === Quantity.PLANET_COUNT ? "8" : earthReference(q));
 
@@ -248,8 +257,11 @@ export class PlanetCardNode extends ExoplanetsDatabasePanel {
         children.push(
           paragraph(
             `${quantityName(Quantity.DISTANCE).value}: ${fill(card.distancePatternStringProperty.value, {
-              parsecs: formatValue(distance, 4),
-              lightYears: formatValue(distance * LIGHT_YEARS_PER_PARSEC, 3),
+              parsecs: formatValue(distance, PLANET_CARD_NODE_SETTINGS.REBUILD_DIGITS),
+              lightYears: formatValue(
+                distance * LIGHT_YEARS_PER_PARSEC,
+                PLANET_CARD_NODE_SETTINGS.REBUILD_DIGITS_SEGMENT_2,
+              ),
             })}`,
           ),
         );

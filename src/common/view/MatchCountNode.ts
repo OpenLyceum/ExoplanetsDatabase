@@ -1,3 +1,4 @@
+import { MATCH_COUNT_NODE_SETTINGS } from "../../ExoplanetsDatabaseConstants.js";
 /**
  * MatchCountNode.ts
  *
@@ -34,7 +35,7 @@ export class MatchCountNode extends Text {
     super(countStringProperty, {
       font: FONTS.MATCH_COUNT,
       fill: ExoplanetsDatabaseColors.textColorProperty,
-      maxWidth: 400,
+      maxWidth: MATCH_COUNT_NODE_SETTINGS.CONSTRUCTOR_MAX_WIDTH,
       ...options,
     });
     this.countStringProperty = countStringProperty;

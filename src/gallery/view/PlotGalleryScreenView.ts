@@ -1,3 +1,4 @@
+import { PLOT_GALLERY_SCREEN_VIEW_SETTINGS } from "../../ExoplanetsDatabaseConstants.js";
 /**
  * PlotGalleryScreenView.ts
  *
@@ -41,15 +42,15 @@ import { PlotGalleryScreenSummaryContent } from "./PlotGalleryScreenSummaryConte
 
 export type PlotGalleryScreenViewOptions = ScreenViewOptions;
 
-const MARGIN = 10;
-const LIST_WIDTH = 190;
-const CHART_LEFT = 268;
-const CHART_WIDTH = 500;
-const CHART_HEIGHT = 340;
-const KEY_WIDTH = 220;
+const MARGIN: number = PLOT_GALLERY_SCREEN_VIEW_SETTINGS.MARGIN;
+const LIST_WIDTH: number = PLOT_GALLERY_SCREEN_VIEW_SETTINGS.LIST_WIDTH;
+const CHART_LEFT: number = PLOT_GALLERY_SCREEN_VIEW_SETTINGS.CHART_LEFT;
+const CHART_WIDTH: number = PLOT_GALLERY_SCREEN_VIEW_SETTINGS.CHART_WIDTH;
+const CHART_HEIGHT: number = PLOT_GALLERY_SCREEN_VIEW_SETTINGS.CHART_HEIGHT;
+const KEY_WIDTH: number = PLOT_GALLERY_SCREEN_VIEW_SETTINGS.KEY_WIDTH;
 
 /** Distance histogram: bins 0.2 dex wide. */
-const DISTANCE_BIN_DEX = 0.2;
+const DISTANCE_BIN_DEX: number = PLOT_GALLERY_SCREEN_VIEW_SETTINGS.DISTANCE_BIN_DEX;
 
 type PresetStrings = Readonly<
   Record<string, { titleStringProperty: TReadOnlyProperty<string>; captionStringProperty: TReadOnlyProperty<string> }>
@@ -87,17 +88,21 @@ export class PlotGalleryScreenView extends ScreenView {
           new Text(presetText(preset).titleStringProperty, {
             font: FONTS.LABEL,
             fill: ExoplanetsDatabaseColors.textColorProperty,
-            maxWidth: LIST_WIDTH - 50,
+            maxWidth: LIST_WIDTH - PLOT_GALLERY_SCREEN_VIEW_SETTINGS.PRESET_LIST_MAX_WIDTH_OFFSET,
           }),
       })),
-      { spacing: 10, radioButtonOptions: { radius: 7 }, accessibleName: strings.presetsTitleStringProperty },
+      {
+        spacing: PLOT_GALLERY_SCREEN_VIEW_SETTINGS.PRESET_LIST_SPACING,
+        radioButtonOptions: { radius: PLOT_GALLERY_SCREEN_VIEW_SETTINGS.PRESET_LIST_RADIUS },
+        accessibleName: strings.presetsTitleStringProperty,
+      },
     );
     const solarSystemCheckbox = new Checkbox(
       model.showSolarSystemProperty,
       new Text(common.showSolarSystemStringProperty, {
         font: FONTS.LABEL,
         fill: ExoplanetsDatabaseColors.textColorProperty,
-        maxWidth: LIST_WIDTH - 50,
+        maxWidth: LIST_WIDTH - PLOT_GALLERY_SCREEN_VIEW_SETTINGS.SOLAR_SYSTEM_CHECKBOX_MAX_WIDTH_OFFSET,
       }),
       {
         ...EXOPLANETS_DATABASE_CHECKBOX_OPTIONS,
@@ -108,7 +113,7 @@ export class PlotGalleryScreenView extends ScreenView {
     const listPanel = new ExoplanetsDatabasePanel(
       new VBox({
         align: "left",
-        spacing: 10,
+        spacing: PLOT_GALLERY_SCREEN_VIEW_SETTINGS.LIST_PANEL_SPACING,
         children: [
           new Text(strings.presetsTitleStringProperty, {
             font: FONTS.HEADING,
@@ -138,7 +143,7 @@ export class PlotGalleryScreenView extends ScreenView {
     );
     for (const chart of [scatter, bars]) {
       chart.left = CHART_LEFT;
-      chart.top = MARGIN + 6;
+      chart.top = MARGIN + PLOT_GALLERY_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_TOP_OFFSET;
     }
 
     // ── Colour key and planet count ──────────────────────────────────────────
@@ -146,12 +151,12 @@ export class PlotGalleryScreenView extends ScreenView {
     const plottedText = new Text("", {
       font: FONTS.SMALL,
       fill: ExoplanetsDatabaseColors.secondaryTextColorProperty,
-      maxWidth: KEY_WIDTH - 20,
+      maxWidth: KEY_WIDTH - PLOT_GALLERY_SCREEN_VIEW_SETTINGS.PLOTTED_TEXT_MAX_WIDTH_OFFSET,
     });
     const keyPanel = new ExoplanetsDatabasePanel(
       new VBox({
         align: "left",
-        spacing: 8,
+        spacing: PLOT_GALLERY_SCREEN_VIEW_SETTINGS.KEY_PANEL_SPACING,
         children: [
           new Text(strings.colorKeyTitleStringProperty, {
             font: FONTS.HEADING,
@@ -178,12 +183,16 @@ export class PlotGalleryScreenView extends ScreenView {
       maxWidth: captionWidth,
     });
     const captionPanel = new ExoplanetsDatabasePanel(
-      new VBox({ align: "left", spacing: 4, children: [captionTitle, captionText] }),
+      new VBox({
+        align: "left",
+        spacing: PLOT_GALLERY_SCREEN_VIEW_SETTINGS.CAPTION_PANEL_SPACING,
+        children: [captionTitle, captionText],
+      }),
       {
         left: LIST_WIDTH + 2 * MARGIN,
-        top: MARGIN + CHART_HEIGHT + 62,
-        minWidth: captionWidth + 24,
-        maxWidth: captionWidth + 24,
+        top: MARGIN + CHART_HEIGHT + PLOT_GALLERY_SCREEN_VIEW_SETTINGS.CAPTION_PANEL_TOP_OFFSET,
+        minWidth: captionWidth + PLOT_GALLERY_SCREEN_VIEW_SETTINGS.CAPTION_PANEL_MIN_WIDTH_OFFSET,
+        maxWidth: captionWidth + PLOT_GALLERY_SCREEN_VIEW_SETTINGS.CAPTION_PANEL_MAX_WIDTH_OFFSET,
       },
     );
 
@@ -264,8 +273,8 @@ export class PlotGalleryScreenView extends ScreenView {
             from,
             to,
             label: strings.binRangePatternStringProperty.value
-              .replace("{{from}}", formatValue(from, 2))
-              .replace("{{to}}", formatValue(to, 2))
+              .replace("{{from}}", formatValue(from, PLOT_GALLERY_SCREEN_VIEW_SETTINGS.SHOW_BARS_DIGITS))
+              .replace("{{to}}", formatValue(to, PLOT_GALLERY_SCREEN_VIEW_SETTINGS.SHOW_BARS_DIGITS))
               .replace("{{unit}}", unit),
           };
         });
@@ -340,7 +349,11 @@ export class PlotGalleryScreenView extends ScreenView {
     model.showSolarSystemProperty.lazyLink(updateSolarSystem);
     common.solarSystem.earthStringProperty.lazyLink(updateSolarSystem);
 
-    const credit = new DataCreditNode({ left: MARGIN, bottom: bounds.maxY - 6, maxWidth: 680 });
+    const credit = new DataCreditNode({
+      left: MARGIN,
+      bottom: bounds.maxY - PLOT_GALLERY_SCREEN_VIEW_SETTINGS.CREDIT_BOTTOM_OFFSET,
+      maxWidth: PLOT_GALLERY_SCREEN_VIEW_SETTINGS.CREDIT_MAX_WIDTH,
+    });
     const resetAllButton = new ResetAllButton({
       ...FLAT_RESET_ALL_BUTTON_OPTIONS,
       listener: () => model.reset(),

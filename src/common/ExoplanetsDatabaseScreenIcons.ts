@@ -1,3 +1,4 @@
+import { EXOPLANETS_DATABASE_SCREEN_ICONS_SETTINGS } from "../ExoplanetsDatabaseConstants.js";
 /**
  * ExoplanetsDatabaseScreenIcons.ts
  *
@@ -40,10 +41,34 @@ function seeded(seed: number): () => number {
 function scatterPoints(left: number, top: number, width: number, height: number, count: number): Node[] {
   const random = seeded(7);
   const clusters = [
-    { method: DiscoveryMethod.TRANSIT, x: 0.2, y: 0.55, spread: 0.12, share: 0.5 },
-    { method: DiscoveryMethod.RADIAL_VELOCITY, x: 0.4, y: 0.4, spread: 0.13, share: 0.3 },
-    { method: DiscoveryMethod.MICROLENSING, x: 0.58, y: 0.5, spread: 0.08, share: 0.1 },
-    { method: DiscoveryMethod.IMAGING, x: 0.85, y: 0.15, spread: 0.08, share: 0.1 },
+    {
+      method: DiscoveryMethod.TRANSIT,
+      x: EXOPLANETS_DATABASE_SCREEN_ICONS_SETTINGS.CLUSTERS_X,
+      y: EXOPLANETS_DATABASE_SCREEN_ICONS_SETTINGS.CLUSTERS_Y,
+      spread: 0.12,
+      share: 0.5,
+    },
+    {
+      method: DiscoveryMethod.RADIAL_VELOCITY,
+      x: EXOPLANETS_DATABASE_SCREEN_ICONS_SETTINGS.SCATTER_POINTS_CLUSTERS_X,
+      y: EXOPLANETS_DATABASE_SCREEN_ICONS_SETTINGS.SCATTER_POINTS_CLUSTERS_Y,
+      spread: 0.13,
+      share: 0.3,
+    },
+    {
+      method: DiscoveryMethod.MICROLENSING,
+      x: EXOPLANETS_DATABASE_SCREEN_ICONS_SETTINGS.CLUSTERS_ITEM_3_X,
+      y: EXOPLANETS_DATABASE_SCREEN_ICONS_SETTINGS.CLUSTERS_ITEM_3_Y,
+      spread: 0.08,
+      share: 0.1,
+    },
+    {
+      method: DiscoveryMethod.IMAGING,
+      x: EXOPLANETS_DATABASE_SCREEN_ICONS_SETTINGS.CLUSTERS_ITEM_4_X,
+      y: EXOPLANETS_DATABASE_SCREEN_ICONS_SETTINGS.CLUSTERS_ITEM_4_Y,
+      spread: 0.08,
+      share: 0.1,
+    },
   ];
   const nodes: Node[] = [];
   for (const cluster of clusters) {
@@ -65,7 +90,10 @@ function scatterPoints(left: number, top: number, width: number, height: number,
 }
 
 function axes(left: number, top: number, width: number, height: number): Node {
-  const options = { stroke: ExoplanetsDatabaseColors.axisColorProperty, lineWidth: 6 };
+  const options = {
+    stroke: ExoplanetsDatabaseColors.axisColorProperty,
+    lineWidth: EXOPLANETS_DATABASE_SCREEN_ICONS_SETTINGS.OPTIONS_LINE_WIDTH,
+  };
   return new Node({
     children: [
       new Line(left, top, left, top + height, options),
@@ -78,35 +106,69 @@ export function createCountsIcon(): ScreenIcon {
   const lengths = [0.95, 0.3, 0.12, 0.06, 0.04];
   const bars = DiscoveryMethod.enumeration.values.map(
     (method, k) =>
-      new Rectangle(60, 40 + k * 62, 20 + (lengths[k] ?? 0) * (W - 140), 44, {
-        fill: methodColor(method),
-        cornerRadius: 4,
-      }),
+      new Rectangle(
+        EXOPLANETS_DATABASE_SCREEN_ICONS_SETTINGS.BARS_X,
+        40 + k * 62,
+        20 + (lengths[k] ?? 0) * (W - 140),
+        EXOPLANETS_DATABASE_SCREEN_ICONS_SETTINGS.BARS_HEIGHT,
+        {
+          fill: methodColor(method),
+          cornerRadius: EXOPLANETS_DATABASE_SCREEN_ICONS_SETTINGS.BARS_CORNER_RADIUS,
+        },
+      ),
   );
   return iconFrom(new Node({ children: [background(), ...bars] }));
 }
 
 export function createExploreIcon(): ScreenIcon {
-  const rows: Node[] = [new Rectangle(40, 30, W - 80, 50, { fill: ExoplanetsDatabaseColors.tableHeaderColorProperty })];
+  const rows: Node[] = [
+    new Rectangle(
+      EXOPLANETS_DATABASE_SCREEN_ICONS_SETTINGS.ROWS_X,
+      EXOPLANETS_DATABASE_SCREEN_ICONS_SETTINGS.ROWS_Y,
+      W - 80,
+      EXOPLANETS_DATABASE_SCREEN_ICONS_SETTINGS.ROWS_HEIGHT,
+      { fill: ExoplanetsDatabaseColors.tableHeaderColorProperty },
+    ),
+  ];
   for (let r = 0; r < 7; r++) {
     rows.push(
-      new Rectangle(40, 80 + r * 38, W - 80, 38, {
-        fill:
-          r === 2
-            ? ExoplanetsDatabaseColors.tableSelectedRowColorProperty
-            : r % 2 === 0
-              ? ExoplanetsDatabaseColors.tableRowColorProperty
-              : ExoplanetsDatabaseColors.tableAlternateRowColorProperty,
-      }),
+      new Rectangle(
+        EXOPLANETS_DATABASE_SCREEN_ICONS_SETTINGS.CREATE_EXPLORE_ICON_X,
+        80 + r * 38,
+        W - 80,
+        EXOPLANETS_DATABASE_SCREEN_ICONS_SETTINGS.CREATE_EXPLORE_ICON_HEIGHT,
+        {
+          fill:
+            r === 2
+              ? ExoplanetsDatabaseColors.tableSelectedRowColorProperty
+              : r % 2 === 0
+                ? ExoplanetsDatabaseColors.tableRowColorProperty
+                : ExoplanetsDatabaseColors.tableAlternateRowColorProperty,
+        },
+      ),
     );
     const method = DiscoveryMethod.enumeration.values[[0, 1, 0, 2, 0, 1, 3][r] ?? 0] as DiscoveryMethod;
-    rows.push(new Path(methodMarker(method).toShape(9), { fill: methodColor(method), x: 70, y: 99 + r * 38 }));
+    rows.push(
+      new Path(methodMarker(method).toShape(9), {
+        fill: methodColor(method),
+        x: EXOPLANETS_DATABASE_SCREEN_ICONS_SETTINGS.CREATE_EXPLORE_ICON_X_VARIANT_2,
+        y:
+          EXOPLANETS_DATABASE_SCREEN_ICONS_SETTINGS.CREATE_EXPLORE_ICON_Y_OFFSET +
+          r * EXOPLANETS_DATABASE_SCREEN_ICONS_SETTINGS.CREATE_EXPLORE_ICON_Y_FACTOR,
+      }),
+    );
     for (let c = 0; c < 4; c++) {
       rows.push(
-        new Rectangle(110 + c * 105, 93 + r * 38, 70 - ((r + c) % 3) * 12, 12, {
-          fill: ExoplanetsDatabaseColors.secondaryTextColorProperty,
-          cornerRadius: 3,
-        }),
+        new Rectangle(
+          110 + c * 105,
+          93 + r * 38,
+          70 - ((r + c) % 3) * 12,
+          EXOPLANETS_DATABASE_SCREEN_ICONS_SETTINGS.CREATE_EXPLORE_ICON_HEIGHT_SEGMENT_2,
+          {
+            fill: ExoplanetsDatabaseColors.secondaryTextColorProperty,
+            cornerRadius: EXOPLANETS_DATABASE_SCREEN_ICONS_SETTINGS.CREATE_EXPLORE_ICON_CORNER_RADIUS,
+          },
+        ),
       );
     }
   }
@@ -121,12 +183,18 @@ export function createPlotGalleryIcon(): ScreenIcon {
 
 export function createPlotBuilderIcon(): ScreenIcon {
   const chooser = (y: number): Node =>
-    new Rectangle(30, y, 120, 44, {
-      fill: ExoplanetsDatabaseColors.controlSurfaceColorProperty,
-      stroke: ExoplanetsDatabaseColors.panelBorderColorProperty,
-      lineWidth: 3,
-      cornerRadius: 6,
-    });
+    new Rectangle(
+      EXOPLANETS_DATABASE_SCREEN_ICONS_SETTINGS.CHOOSER_X,
+      y,
+      EXOPLANETS_DATABASE_SCREEN_ICONS_SETTINGS.CHOOSER_WIDTH,
+      EXOPLANETS_DATABASE_SCREEN_ICONS_SETTINGS.CHOOSER_HEIGHT,
+      {
+        fill: ExoplanetsDatabaseColors.controlSurfaceColorProperty,
+        stroke: ExoplanetsDatabaseColors.panelBorderColorProperty,
+        lineWidth: EXOPLANETS_DATABASE_SCREEN_ICONS_SETTINGS.CHOOSER_LINE_WIDTH,
+        cornerRadius: EXOPLANETS_DATABASE_SCREEN_ICONS_SETTINGS.CHOOSER_CORNER_RADIUS,
+      },
+    );
   return iconFrom(
     new Node({
       children: [

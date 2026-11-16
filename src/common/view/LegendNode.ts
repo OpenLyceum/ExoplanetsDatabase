@@ -1,3 +1,4 @@
+import { LEGEND_NODE_SETTINGS } from "../../ExoplanetsDatabaseConstants.js";
 /**
  * LegendNode.ts
  *
@@ -11,8 +12,8 @@ import { FONTS } from "../../ExoplanetsDatabaseConstants.js";
 import { formatCount } from "./format.js";
 import type { LegendEntry } from "./pointColorings.js";
 
-const LABEL_WIDTH = 140;
-const COUNT_WIDTH = 44;
+const LABEL_WIDTH: number = LEGEND_NODE_SETTINGS.LABEL_WIDTH;
+const COUNT_WIDTH: number = LEGEND_NODE_SETTINGS.COUNT_WIDTH;
 
 class LegendRow extends HBox {
   private readonly count: Text;
@@ -20,7 +21,7 @@ class LegendRow extends HBox {
   public constructor(entry: LegendEntry) {
     const count = new Text("", { font: FONTS.SMALL, fill: ExoplanetsDatabaseColors.secondaryTextColorProperty });
     super({
-      spacing: 6,
+      spacing: LEGEND_NODE_SETTINGS.CONSTRUCTOR_SPACING,
       children: [
         new Path(entry.marker.toShape(5), { fill: entry.color }),
         new RichText(entry.label, {
@@ -42,7 +43,7 @@ class LegendRow extends HBox {
 
 export class LegendNode extends VBox {
   public constructor() {
-    super({ align: "left", spacing: 5, isDisposable: false });
+    super({ align: "left", spacing: LEGEND_NODE_SETTINGS.SPACING, isDisposable: false });
   }
 
   /** Shows these entries with counts from the plotted points (rows with none plotted are dimmed). */

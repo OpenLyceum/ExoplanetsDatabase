@@ -1,3 +1,4 @@
+import { PLOT_BUILDER_SCREEN_VIEW_SETTINGS } from "../../ExoplanetsDatabaseConstants.js";
 /**
  * PlotBuilderScreenView.ts
  *
@@ -48,12 +49,12 @@ import { PlotBuilderScreenSummaryContent } from "./PlotBuilderScreenSummaryConte
 
 export type PlotBuilderScreenViewOptions = ScreenViewOptions;
 
-const MARGIN = 10;
-const LEFT_WIDTH = 200;
-const RIGHT_WIDTH = 236;
-const CHART_LEFT = 290;
-const CHART_WIDTH = 425;
-const CHART_HEIGHT = 330;
+const MARGIN: number = PLOT_BUILDER_SCREEN_VIEW_SETTINGS.MARGIN;
+const LEFT_WIDTH: number = PLOT_BUILDER_SCREEN_VIEW_SETTINGS.LEFT_WIDTH;
+const RIGHT_WIDTH: number = PLOT_BUILDER_SCREEN_VIEW_SETTINGS.RIGHT_WIDTH;
+const CHART_LEFT: number = PLOT_BUILDER_SCREEN_VIEW_SETTINGS.CHART_LEFT;
+const CHART_WIDTH: number = PLOT_BUILDER_SCREEN_VIEW_SETTINGS.CHART_WIDTH;
+const CHART_HEIGHT: number = PLOT_BUILDER_SCREEN_VIEW_SETTINGS.CHART_HEIGHT;
 
 const COLORINGS = new Map<ColorBy, PointColoring>([
   [ColorBy.METHOD, METHOD_COLORING],
@@ -65,7 +66,10 @@ const COLORINGS = new Map<ColorBy, PointColoring>([
 /** Axis range covering every planet's value, rounded out to whole decades (log) or nice numbers. */
 function dataRange(values: Float64Array, quantity: Quantity, log: boolean): Range {
   if (quantity === Quantity.DISCOVERY_YEAR) {
-    return new Range(1989, 2027);
+    return new Range(
+      PLOT_BUILDER_SCREEN_VIEW_SETTINGS.DATA_RANGE_MIN,
+      PLOT_BUILDER_SCREEN_VIEW_SETTINGS.DATA_RANGE_MAX,
+    );
   }
   const usable = Array.from(values).filter((v) => Number.isFinite(v) && (!log || v > 0));
   if (usable.length === 0) {
@@ -99,7 +103,7 @@ export class PlotBuilderScreenView extends ScreenView {
       new Text(text, {
         font: FONTS.HEADING,
         fill: ExoplanetsDatabaseColors.accentColorProperty,
-        maxWidth: LEFT_WIDTH - 20,
+        maxWidth: LEFT_WIDTH - PLOT_BUILDER_SCREEN_VIEW_SETTINGS.HEADING_MAX_WIDTH_OFFSET,
       });
     const lightText = (text: TReadOnlyProperty<string>, maxWidth: number): Text =>
       new Text(text, { font: FONTS.LABEL, fill: LIGHT_SURFACE_TEXT_FILL, maxWidth });
@@ -113,7 +117,7 @@ export class PlotBuilderScreenView extends ScreenView {
         new RichText(quantityLabelWithUnit(q), {
           font: FONTS.LABEL,
           fill: LIGHT_SURFACE_TEXT_FILL,
-          maxWidth: LEFT_WIDTH - 60,
+          maxWidth: LEFT_WIDTH - PLOT_BUILDER_SCREEN_VIEW_SETTINGS.QUANTITY_ITEMS_MAX_WIDTH_OFFSET,
         }),
       accessibleName: quantityName(q),
     }));
@@ -132,7 +136,11 @@ export class PlotBuilderScreenView extends ScreenView {
         enabledProperty: new DerivedProperty([quantityProperty], (q) => q.canUseLog),
         accessibleHelpText: strings.logScaleHelpStringProperty,
       });
-      return new VBox({ align: "left", spacing: 6, children: [heading(title), comboBox, logCheckbox] });
+      return new VBox({
+        align: "left",
+        spacing: PLOT_BUILDER_SCREEN_VIEW_SETTINGS.AXIS_CONTROLS_SPACING,
+        children: [heading(title), comboBox, logCheckbox],
+      });
     };
     const xControls = axisControls(strings.xAxisStringProperty, model.xQuantityProperty, model.xLogProperty);
     const yControls = axisControls(strings.yAxisStringProperty, model.yQuantityProperty, model.yLogProperty);
@@ -146,7 +154,11 @@ export class PlotBuilderScreenView extends ScreenView {
         createNode: () =>
           label(colorByNames[`${colorBy.key}StringProperty`] as TReadOnlyProperty<string>, LEFT_WIDTH - 50),
       })),
-      { spacing: 7, radioButtonOptions: { radius: 7 }, accessibleName: strings.colorByTitleStringProperty },
+      {
+        spacing: PLOT_BUILDER_SCREEN_VIEW_SETTINGS.COLOR_BY_GROUP_SPACING,
+        radioButtonOptions: { radius: PLOT_BUILDER_SCREEN_VIEW_SETTINGS.COLOR_BY_GROUP_RADIUS },
+        accessibleName: strings.colorByTitleStringProperty,
+      },
     );
     const solarSystemCheckbox = new Checkbox(
       model.showSolarSystemProperty,
@@ -159,13 +171,13 @@ export class PlotBuilderScreenView extends ScreenView {
     const leftPanel = new ExoplanetsDatabasePanel(
       new VBox({
         align: "left",
-        spacing: 12,
+        spacing: PLOT_BUILDER_SCREEN_VIEW_SETTINGS.LEFT_PANEL_SPACING,
         children: [
           xControls,
           yControls,
           new VBox({
             align: "left",
-            spacing: 6,
+            spacing: PLOT_BUILDER_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_LEFT_PANEL_SPACING,
             children: [heading(strings.colorByTitleStringProperty), colorByGroup],
           }),
           solarSystemCheckbox,
@@ -184,11 +196,13 @@ export class PlotBuilderScreenView extends ScreenView {
       strings.chartHelpStringProperty,
     );
     chart.left = CHART_LEFT;
-    chart.top = MARGIN + 6;
+    chart.top = MARGIN + PLOT_BUILDER_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_TOP_OFFSET;
     const legend = new LegendNode();
 
     // ── Right panel: count, methods, filters, selection ─────────────────────
-    const matchCount = new MatchCountNode(database, { maxWidth: RIGHT_WIDTH - 20 });
+    const matchCount = new MatchCountNode(database, {
+      maxWidth: RIGHT_WIDTH - PLOT_BUILDER_SCREEN_VIEW_SETTINGS.MATCH_COUNT_MAX_WIDTH_OFFSET,
+    });
     const methodCheckboxes = new MethodCheckboxGroup(database.filter, RIGHT_WIDTH - 20);
     const filterButton = (quantityProperty: typeof model.xQuantityProperty): RectangularPushButton => {
       const text = new PatternStringProperty(strings.filterAxisPatternStringProperty, {
@@ -201,7 +215,7 @@ export class PlotBuilderScreenView extends ScreenView {
         ...FLAT_PANEL_PUSH_BUTTON_OPTIONS,
         content: lightText(text, RIGHT_WIDTH - 36),
         accessibleName: text,
-        minWidth: RIGHT_WIDTH - 24,
+        minWidth: RIGHT_WIDTH - PLOT_BUILDER_SCREEN_VIEW_SETTINGS.FILTER_BUTTON_MIN_WIDTH_OFFSET,
         listener: () => showFilterDialog(database.filter.criterion(quantityProperty.value)),
       });
     };
@@ -211,14 +225,14 @@ export class PlotBuilderScreenView extends ScreenView {
       ...FLAT_PANEL_PUSH_BUTTON_OPTIONS,
       content: lightText(common.clearAllFiltersStringProperty, RIGHT_WIDTH - 36),
       accessibleName: common.clearAllFiltersStringProperty,
-      minWidth: RIGHT_WIDTH - 24,
+      minWidth: RIGHT_WIDTH - PLOT_BUILDER_SCREEN_VIEW_SETTINGS.CLEAR_BUTTON_MIN_WIDTH_OFFSET,
       listener: () => database.filter.reset(),
       enabledProperty: new DerivedProperty([database.matchingPlanetsProperty], () => database.filter.isActive),
     });
     const selectedText = new Text("", {
       font: FONTS.SMALL,
       fill: ExoplanetsDatabaseColors.textColorProperty,
-      maxWidth: RIGHT_WIDTH - 24,
+      maxWidth: RIGHT_WIDTH - PLOT_BUILDER_SCREEN_VIEW_SETTINGS.SELECTED_TEXT_MAX_WIDTH_OFFSET,
     });
     Multilink.multilink(
       [database.selectedPlanetProperty, strings.selectedPatternStringProperty, strings.noSelectionStringProperty],
@@ -230,19 +244,19 @@ export class PlotBuilderScreenView extends ScreenView {
       ...FLAT_PANEL_PUSH_BUTTON_OPTIONS,
       content: lightText(strings.showInTableStringProperty, RIGHT_WIDTH - 36),
       accessibleName: strings.showInTableStringProperty,
-      minWidth: RIGHT_WIDTH - 24,
+      minWidth: RIGHT_WIDTH - PLOT_BUILDER_SCREEN_VIEW_SETTINGS.SHOW_IN_TABLE_BUTTON_MIN_WIDTH_OFFSET,
       listener: () => model.showInTable(),
       enabledProperty: new DerivedProperty([database.selectedPlanetProperty], (index) => index !== null),
     });
     const legendBox = new VBox({
       align: "left",
-      spacing: 6,
+      spacing: PLOT_BUILDER_SCREEN_VIEW_SETTINGS.LEGEND_BOX_SPACING,
       children: [heading(common.colorKeyStringProperty), legend],
     });
     const rightPanel = new ExoplanetsDatabasePanel(
       new VBox({
         align: "left",
-        spacing: 8,
+        spacing: PLOT_BUILDER_SCREEN_VIEW_SETTINGS.RIGHT_PANEL_SPACING,
         children: [
           matchCount,
           heading(strings.filtersTitleStringProperty),
@@ -321,7 +335,11 @@ export class PlotBuilderScreenView extends ScreenView {
       update,
     );
 
-    const credit = new DataCreditNode({ left: MARGIN, bottom: bounds.maxY - 6, maxWidth: 680 });
+    const credit = new DataCreditNode({
+      left: MARGIN,
+      bottom: bounds.maxY - PLOT_BUILDER_SCREEN_VIEW_SETTINGS.CREDIT_BOTTOM_OFFSET,
+      maxWidth: PLOT_BUILDER_SCREEN_VIEW_SETTINGS.CREDIT_MAX_WIDTH,
+    });
     const resetAllButton = new ResetAllButton({
       ...FLAT_RESET_ALL_BUTTON_OPTIONS,
       listener: () => model.reset(),

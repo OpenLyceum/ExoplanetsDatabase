@@ -1,3 +1,4 @@
+import { EXPLORE_SCREEN_VIEW_SETTINGS } from "../../ExoplanetsDatabaseConstants.js";
 /**
  * ExploreScreenView.ts
  *
@@ -34,11 +35,11 @@ import { PlanetTableNode } from "./PlanetTableNode.js";
 
 export type ExploreScreenViewOptions = ScreenViewOptions;
 
-const MARGIN = 10;
-const SIDEBAR_WIDTH = 152;
-const TABLE_WIDTH = 566;
-const CARD_WIDTH = 268;
-const TABLE_ROWS = 17;
+const MARGIN: number = EXPLORE_SCREEN_VIEW_SETTINGS.MARGIN;
+const SIDEBAR_WIDTH: number = EXPLORE_SCREEN_VIEW_SETTINGS.SIDEBAR_WIDTH;
+const TABLE_WIDTH: number = EXPLORE_SCREEN_VIEW_SETTINGS.TABLE_WIDTH;
+const CARD_WIDTH: number = EXPLORE_SCREEN_VIEW_SETTINGS.CARD_WIDTH;
+const TABLE_ROWS: number = EXPLORE_SCREEN_VIEW_SETTINGS.TABLE_ROWS;
 const BUTTON_WIDTH = SIDEBAR_WIDTH - 24;
 
 export class ExploreScreenView extends ScreenView {
@@ -70,10 +71,14 @@ export class ExploreScreenView extends ScreenView {
     ): RectangularPushButton =>
       new RectangularPushButton({
         ...FLAT_PANEL_PUSH_BUTTON_OPTIONS,
-        content: new Text(label, { font: FONTS.LABEL, fill: LIGHT_SURFACE_TEXT_FILL, maxWidth: BUTTON_WIDTH - 12 }),
+        content: new Text(label, {
+          font: FONTS.LABEL,
+          fill: LIGHT_SURFACE_TEXT_FILL,
+          maxWidth: BUTTON_WIDTH - EXPLORE_SCREEN_VIEW_SETTINGS.BUTTON_MAX_WIDTH_OFFSET,
+        }),
         minWidth: BUTTON_WIDTH,
-        xMargin: 6,
-        yMargin: 4,
+        xMargin: EXPLORE_SCREEN_VIEW_SETTINGS.BUTTON_X_MARGIN,
+        yMargin: EXPLORE_SCREEN_VIEW_SETTINGS.BUTTON_Y_MARGIN,
         listener,
         accessibleName: label,
         ...extra,
@@ -103,7 +108,7 @@ export class ExploreScreenView extends ScreenView {
     const sidebar = new ExoplanetsDatabasePanel(
       new VBox({
         align: "left",
-        spacing: 6,
+        spacing: EXPLORE_SCREEN_VIEW_SETTINGS.SIDEBAR_SPACING,
         children: [
           heading(strings.presetsTitleStringProperty),
           ...presetButtons,
@@ -113,7 +118,13 @@ export class ExploreScreenView extends ScreenView {
           clearButton,
         ],
       }),
-      { left: MARGIN, top: MARGIN, minWidth: SIDEBAR_WIDTH, maxWidth: SIDEBAR_WIDTH, xMargin: 10 },
+      {
+        left: MARGIN,
+        top: MARGIN,
+        minWidth: SIDEBAR_WIDTH,
+        maxWidth: SIDEBAR_WIDTH,
+        xMargin: EXPLORE_SCREEN_VIEW_SETTINGS.SIDEBAR_X_MARGIN,
+      },
     );
 
     // ── Table, count and filter summary ──────────────────────────────────────
@@ -121,7 +132,7 @@ export class ExploreScreenView extends ScreenView {
     const matchCount = new MatchCountNode(database, { left: tableLeft, top: MARGIN });
     this.table = new PlanetTableNode(model, TABLE_WIDTH, TABLE_ROWS);
     this.table.left = tableLeft;
-    this.table.top = matchCount.bottom + 6;
+    this.table.top = matchCount.bottom + EXPLORE_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_TOP_OFFSET;
     const summary = new FilterSummaryNode(filter, TABLE_WIDTH);
     summary.left = tableLeft;
     summary.top = this.table.bottom + 8;
@@ -132,7 +143,11 @@ export class ExploreScreenView extends ScreenView {
     card.top = MARGIN;
     card.maxWidth = CARD_WIDTH;
 
-    const credit = new DataCreditNode({ left: MARGIN, bottom: bounds.maxY - 6, maxWidth: 680 });
+    const credit = new DataCreditNode({
+      left: MARGIN,
+      bottom: bounds.maxY - EXPLORE_SCREEN_VIEW_SETTINGS.CREDIT_BOTTOM_OFFSET,
+      maxWidth: EXPLORE_SCREEN_VIEW_SETTINGS.CREDIT_MAX_WIDTH,
+    });
 
     const resetAllButton = new ResetAllButton({
       ...FLAT_RESET_ALL_BUTTON_OPTIONS,

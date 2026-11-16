@@ -1,3 +1,4 @@
+import { FILTER_DIALOG_SETTINGS } from "../../ExoplanetsDatabaseConstants.js";
 /**
  * FilterDialog.ts
  *
@@ -32,7 +33,7 @@ import { plainText, quantityLabelWithUnit } from "./dataStyles.js";
 import { formatInteger, formatValue } from "./format.js";
 
 /** Width of a value field, px. */
-const FIELD_WIDTH = 110;
+const FIELD_WIDTH: number = FILTER_DIALOG_SETTINGS.FIELD_WIDTH;
 
 let keypadDialog: KeypadDialog | null = null;
 
@@ -70,13 +71,17 @@ class BoundField extends RectangularPushButton {
     accessibleName: TReadOnlyProperty<string>,
   ) {
     const strings = StringManager.getInstance();
-    const text = new Text("", { font: FONTS.LABEL, fill: LIGHT_SURFACE_TEXT_FILL, maxWidth: FIELD_WIDTH - 16 });
+    const text = new Text("", {
+      font: FONTS.LABEL,
+      fill: LIGHT_SURFACE_TEXT_FILL,
+      maxWidth: FIELD_WIDTH - FILTER_DIALOG_SETTINGS.TEXT_MAX_WIDTH_OFFSET,
+    });
     super({
       ...FLAT_PANEL_PUSH_BUTTON_OPTIONS,
       content: text,
       minWidth: FIELD_WIDTH,
-      xMargin: 8,
-      yMargin: 4,
+      xMargin: FILTER_DIALOG_SETTINGS.CONSTRUCTOR_X_MARGIN,
+      yMargin: FILTER_DIALOG_SETTINGS.CONSTRUCTOR_Y_MARGIN,
       accessibleName,
       listener: () => {
         getKeypadDialog().beginEdit(
@@ -115,7 +120,7 @@ class FilterDialog extends Dialog {
       {
         font: FONTS.TITLE,
         fill: LIGHT_SURFACE_TEXT_FILL,
-        maxWidth: 380,
+        maxWidth: FILTER_DIALOG_SETTINGS.TITLE_MAX_WIDTH,
       },
     );
 
@@ -125,7 +130,7 @@ class FilterDialog extends Dialog {
         content: new Text(strings.clearBoundStringProperty, {
           font: FONTS.SMALL,
           fill: LIGHT_SURFACE_TEXT_FILL,
-          maxWidth: 60,
+          maxWidth: FILTER_DIALOG_SETTINGS.CLEAR_BUTTON_MAX_WIDTH,
         }),
         listener: () => {
           boundProperty.value = null;
@@ -137,9 +142,13 @@ class FilterDialog extends Dialog {
         }),
       });
       return new HBox({
-        spacing: 10,
+        spacing: FILTER_DIALOG_SETTINGS.BOUND_ROW_SPACING,
         children: [
-          new Text(labelProperty, { font: FONTS.LABEL, fill: LIGHT_SURFACE_TEXT_FILL, maxWidth: 90 }),
+          new Text(labelProperty, {
+            font: FONTS.LABEL,
+            fill: LIGHT_SURFACE_TEXT_FILL,
+            maxWidth: FILTER_DIALOG_SETTINGS.BOUND_ROW_MAX_WIDTH,
+          }),
           new BoundField(boundProperty, quantity, labelProperty),
           clearButton,
         ],
@@ -148,10 +157,14 @@ class FilterDialog extends Dialog {
 
     const requireValueCheckbox = new Checkbox(
       criterion.requireValueProperty,
-      new Text(strings.requireValueStringProperty, { font: FONTS.LABEL, fill: LIGHT_SURFACE_TEXT_FILL, maxWidth: 300 }),
+      new Text(strings.requireValueStringProperty, {
+        font: FONTS.LABEL,
+        fill: LIGHT_SURFACE_TEXT_FILL,
+        maxWidth: FILTER_DIALOG_SETTINGS.REQUIRE_VALUE_CHECKBOX_MAX_WIDTH,
+      }),
       {
-        boxWidth: 16,
-        spacing: 6,
+        boxWidth: FILTER_DIALOG_SETTINGS.REQUIRE_VALUE_CHECKBOX_BOX_WIDTH,
+        spacing: FILTER_DIALOG_SETTINGS.REQUIRE_VALUE_CHECKBOX_SPACING,
         checkboxColor: ExoplanetsDatabaseColors.controlSurfaceTextColorProperty,
         checkboxColorBackground: ExoplanetsDatabaseColors.controlSurfaceColorProperty,
         accessibleName: strings.requireValueStringProperty,
@@ -163,8 +176,8 @@ class FilterDialog extends Dialog {
     const archiveText = new RichText(archiveTextProperty, {
       font: FONTS.SMALL,
       fill: LIGHT_SURFACE_TEXT_FILL,
-      maxWidth: 380,
-      lineWrap: 380,
+      maxWidth: FILTER_DIALOG_SETTINGS.ARCHIVE_TEXT_MAX_WIDTH,
+      lineWrap: FILTER_DIALOG_SETTINGS.ARCHIVE_TEXT_LINE_WRAP,
       visibleProperty: exoplanetsDatabasePreferences.showArchiveSyntaxProperty,
     });
     Multilink.multilink(
@@ -193,14 +206,14 @@ class FilterDialog extends Dialog {
       content: new Text(strings.clearFilterStringProperty, {
         font: FONTS.LABEL,
         fill: LIGHT_SURFACE_TEXT_FILL,
-        maxWidth: 200,
+        maxWidth: FILTER_DIALOG_SETTINGS.CONSTRUCTOR_CLEAR_BUTTON_MAX_WIDTH,
       }),
       listener: () => criterion.reset(),
       accessibleName: strings.clearFilterStringProperty,
     });
 
     const content = new VBox({
-      spacing: 12,
+      spacing: FILTER_DIALOG_SETTINGS.CONTENT_SPACING,
       align: "left",
       children: [
         boundRow(strings.atLeastStringProperty, criterion.minProperty),

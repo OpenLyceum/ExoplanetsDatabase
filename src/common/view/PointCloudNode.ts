@@ -1,3 +1,4 @@
+import { POINT_CLOUD_NODE_SETTINGS } from "../../ExoplanetsDatabaseConstants.js";
 /**
  * PointCloudNode.ts
  *
@@ -118,7 +119,7 @@ export class PointCloudNode extends CanvasNode {
     });
     context.globalAlpha = 1;
     if (this.rings.length > 0) {
-      context.lineWidth = 2;
+      context.lineWidth = POINT_CLOUD_NODE_SETTINGS.LINE_WIDTH_LINE_WIDTH;
       context.strokeStyle = this.ringColor();
       for (const index of this.rings) {
         const position = this.viewPositionOf(index);

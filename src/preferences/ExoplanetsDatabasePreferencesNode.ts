@@ -1,3 +1,4 @@
+import { EXOPLANETS_DATABASE_PREFERENCES_NODE_SETTINGS } from "../ExoplanetsDatabaseConstants.js";
 /**
  * ExoplanetsDatabasePreferencesNode.ts
  *
@@ -23,20 +24,20 @@ export class ExoplanetsDatabasePreferencesNode extends VBox {
     // colors (readable on white in both default and projector profiles), not textColorProperty
     // (which is near-white in default mode and would be invisible on the white dialog).
     const header = new Text(prefStrings.titleStringProperty, {
-      font: new PhetFont({ size: 18, weight: "bold" }),
+      font: new PhetFont({ size: EXOPLANETS_DATABASE_PREFERENCES_NODE_SETTINGS.HEADER_FONT_SIZE, weight: "bold" }),
       fill: ExoplanetsDatabaseColors.controlSurfaceTextColorProperty,
     });
 
     const archiveSyntaxCheckbox = new Checkbox(
       preferencesModel.showArchiveSyntaxProperty,
       new Text(prefStrings.showArchiveSyntaxStringProperty, {
-        font: new PhetFont(14),
+        font: new PhetFont(EXOPLANETS_DATABASE_PREFERENCES_NODE_SETTINGS.ARCHIVE_SYNTAX_CHECKBOX_FONT_SIZE),
         fill: ExoplanetsDatabaseColors.controlSurfaceTextColorProperty,
       }),
       {
         checkboxColor: ExoplanetsDatabaseColors.controlSurfaceTextColorProperty,
         checkboxColorBackground: ExoplanetsDatabaseColors.controlSurfaceColorProperty,
-        spacing: 8,
+        spacing: EXOPLANETS_DATABASE_PREFERENCES_NODE_SETTINGS.ARCHIVE_SYNTAX_CHECKBOX_SPACING,
         accessibleHelpText: prefStrings.showArchiveSyntaxHelpStringProperty,
         ...(tandem && { tandem: tandem.createTandem("archiveSyntaxCheckbox") }),
       },
@@ -44,7 +45,7 @@ export class ExoplanetsDatabasePreferencesNode extends VBox {
 
     super({
       align: "left",
-      spacing: 12,
+      spacing: EXOPLANETS_DATABASE_PREFERENCES_NODE_SETTINGS.CONSTRUCTOR_SPACING,
       children: [header, archiveSyntaxCheckbox],
     });
   }

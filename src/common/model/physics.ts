@@ -1,3 +1,5 @@
+import { PHYSICS_SETTINGS } from "../../ExoplanetsDatabaseConstants.js";
+
 /**
  * physics.ts
  *
@@ -6,19 +8,19 @@
  */
 
 /** Days in a Julian year. */
-const DAYS_PER_YEAR = 365.25;
+const DAYS_PER_YEAR: number = PHYSICS_SETTINGS.DAYS_PER_YEAR;
 
 /** The Sun's effective temperature, K (IAU 2015 nominal value). */
-const SUN_TEMPERATURE_K = 5772;
+const SUN_TEMPERATURE_K: number = PHYSICS_SETTINGS.SUN_TEMPERATURE_K;
 
 /** Earth's mean density, g/cm³. */
-const EARTH_DENSITY_G_CM3 = 5.51;
+const EARTH_DENSITY_G_CM3: number = PHYSICS_SETTINGS.EARTH_DENSITY_G_CM3;
 
 /** Light years in a parsec. */
-export const LIGHT_YEARS_PER_PARSEC = 3.2616;
+export const LIGHT_YEARS_PER_PARSEC: number = PHYSICS_SETTINGS.LIGHT_YEARS_PER_PARSEC;
 
 /** Core mass fraction of an Earth-like rocky planet (Zeng, Sasselov & Jacobsen 2016). */
-const EARTH_LIKE_CORE_MASS_FRACTION = 0.325;
+const EARTH_LIKE_CORE_MASS_FRACTION: number = PHYSICS_SETTINGS.EARTH_LIKE_CORE_MASS_FRACTION;
 
 export type KeplerCheck = {
   /** Period in years. */

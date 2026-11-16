@@ -1,3 +1,4 @@
+import { STACKED_BAR_CHART_NODE_SETTINGS } from "../../ExoplanetsDatabaseConstants.js";
 /**
  * StackedBarChartNode.ts
  *
@@ -79,8 +80,8 @@ export class StackedBarChartNode extends Node {
       leading: 2,
     });
     this.tooltip = new ExoplanetsDatabasePanel(this.tooltipText, {
-      xMargin: 6,
-      yMargin: 4,
+      xMargin: STACKED_BAR_CHART_NODE_SETTINGS.TOOLTIP_X_MARGIN,
+      yMargin: STACKED_BAR_CHART_NODE_SETTINGS.TOOLTIP_Y_MARGIN,
       pickable: false,
       visible: false,
       stroke: ExoplanetsDatabaseColors.accentColorProperty,
@@ -156,9 +157,12 @@ export class StackedBarChartNode extends Node {
     this.tooltip.visible = true;
     const barTop = Math.min(...bar.children.slice(1).map((child) => child.top));
     this.tooltip.centerX = bar.centerX;
-    this.tooltip.bottom = Math.max(this.tooltip.height + 2, barTop - 6);
+    this.tooltip.bottom = Math.max(
+      this.tooltip.height + 2,
+      barTop - STACKED_BAR_CHART_NODE_SETTINGS.SHOW_TOOLTIP_BOTTOM_OFFSET,
+    );
     if (this.tooltip.left < 2) {
-      this.tooltip.left = 2;
+      this.tooltip.left = STACKED_BAR_CHART_NODE_SETTINGS.LEFT_LEFT;
     }
     if (this.tooltip.right > this.frame.viewWidth - 2) {
       this.tooltip.right = this.frame.viewWidth - 2;

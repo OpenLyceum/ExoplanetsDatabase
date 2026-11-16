@@ -1,3 +1,4 @@
+import { PLANET_TABLE_NODE_SETTINGS } from "../../ExoplanetsDatabaseConstants.js";
 /**
  * PlanetTableNode.ts
  *
@@ -33,22 +34,22 @@ import { FONTS } from "../../ExoplanetsDatabaseConstants.js";
 import { StringManager } from "../../i18n/StringManager.js";
 import type { ExploreModel } from "../model/ExploreModel.js";
 
-const ROW_HEIGHT = 22;
-const HEADER_HEIGHT = 40;
-const SCROLL_BAR_WIDTH = 18;
-const NAME_COLUMN_WIDTH = 138;
-const METHOD_COLUMN_WIDTH = 72;
-const CELL_PADDING = 5;
-const FILTER_BUTTON_SIZE = 14;
+const ROW_HEIGHT: number = PLANET_TABLE_NODE_SETTINGS.ROW_HEIGHT;
+const HEADER_HEIGHT: number = PLANET_TABLE_NODE_SETTINGS.HEADER_HEIGHT;
+const SCROLL_BAR_WIDTH: number = PLANET_TABLE_NODE_SETTINGS.SCROLL_BAR_WIDTH;
+const NAME_COLUMN_WIDTH: number = PLANET_TABLE_NODE_SETTINGS.NAME_COLUMN_WIDTH;
+const METHOD_COLUMN_WIDTH: number = PLANET_TABLE_NODE_SETTINGS.METHOD_COLUMN_WIDTH;
+const CELL_PADDING: number = PLANET_TABLE_NODE_SETTINGS.CELL_PADDING;
+const FILTER_BUTTON_SIZE: number = PLANET_TABLE_NODE_SETTINGS.FILTER_BUTTON_SIZE;
 
 /** A funnel, the usual filter icon. */
 const FUNNEL_SHAPE = new Shape()
   .moveTo(0, 0)
-  .lineTo(10, 0)
-  .lineTo(6, 5)
-  .lineTo(6, 10)
-  .lineTo(4, 9)
-  .lineTo(4, 5)
+  .lineTo(PLANET_TABLE_NODE_SETTINGS.FUNNEL_SHAPE_X, 0)
+  .lineTo(PLANET_TABLE_NODE_SETTINGS.FUNNEL_SHAPE_X_SEGMENT_2, PLANET_TABLE_NODE_SETTINGS.FUNNEL_SHAPE_Y)
+  .lineTo(PLANET_TABLE_NODE_SETTINGS.FUNNEL_SHAPE_X_SEGMENT_2, PLANET_TABLE_NODE_SETTINGS.FUNNEL_SHAPE_Y_SEGMENT_2)
+  .lineTo(PLANET_TABLE_NODE_SETTINGS.FUNNEL_SHAPE_X_SEGMENT_3, PLANET_TABLE_NODE_SETTINGS.FUNNEL_SHAPE_Y_SEGMENT_3)
+  .lineTo(PLANET_TABLE_NODE_SETTINGS.FUNNEL_SHAPE_X_SEGMENT_3, PLANET_TABLE_NODE_SETTINGS.FUNNEL_SHAPE_Y)
   .close();
 
 /** One column's header and its column of cells, built once and repositioned when columns change. */
@@ -95,7 +96,10 @@ class ColumnNodes {
       font: FONTS.SMALL,
       fill: ExoplanetsDatabaseColors.secondaryTextColorProperty,
     });
-    this.sortIndicator = new Text("", { font: new PhetFont(9), fill: ExoplanetsDatabaseColors.accentColorProperty });
+    this.sortIndicator = new Text("", {
+      font: new PhetFont(PLANET_TABLE_NODE_SETTINGS.SORT_INDICATOR_FONT_SIZE),
+      fill: ExoplanetsDatabaseColors.accentColorProperty,
+    });
 
     const sortLabel = new PatternStringProperty(strings.sortByPatternStringProperty, {
       column: quantity === null ? label : quantityShortName(quantity),
@@ -114,8 +118,8 @@ class ColumnNodes {
       this.filterButton = new RectangularPushButton({
         content: this.filterIcon,
         baseColor: ExoplanetsDatabaseColors.tableHeaderColorProperty,
-        xMargin: 2,
-        yMargin: 2,
+        xMargin: PLANET_TABLE_NODE_SETTINGS.FILTER_BUTTON_X_MARGIN,
+        yMargin: PLANET_TABLE_NODE_SETTINGS.FILTER_BUTTON_Y_MARGIN,
         minWidth: FILTER_BUTTON_SIZE,
         minHeight: FILTER_BUTTON_SIZE,
         accessibleName: new PatternStringProperty(strings.filterColumnPatternStringProperty, {
@@ -160,12 +164,15 @@ class ColumnNodes {
   public layout(width: number): void {
     this.headerBackground.setRectWidth(width);
     const filterRoom = this.filterButton ? FILTER_BUTTON_SIZE + 4 : 0;
-    this.headerLabel.maxWidth = width - 2 * CELL_PADDING - 8;
+    this.headerLabel.maxWidth = width - 2 * CELL_PADDING - PLANET_TABLE_NODE_SETTINGS.LAYOUT_MAX_WIDTH_OFFSET;
     this.headerLabel.left = CELL_PADDING;
-    this.headerLabel.top = 4;
-    this.unitLabel.maxWidth = Math.max(10, width - 2 * CELL_PADDING - filterRoom);
+    this.headerLabel.top = PLANET_TABLE_NODE_SETTINGS.TOP_TOP;
+    this.unitLabel.maxWidth = Math.max(
+      PLANET_TABLE_NODE_SETTINGS.LAYOUT_MAX_WIDTH,
+      width - 2 * CELL_PADDING - filterRoom,
+    );
     this.unitLabel.left = CELL_PADDING;
-    this.unitLabel.bottom = HEADER_HEIGHT - 4;
+    this.unitLabel.bottom = HEADER_HEIGHT - PLANET_TABLE_NODE_SETTINGS.LAYOUT_BOTTOM_OFFSET;
     this.sortIndicator.right = width - 2;
     this.sortIndicator.top = 2;
     if (this.filterButton) {
@@ -279,7 +286,7 @@ export class PlanetTableNode extends Node {
       font: FONTS.LABEL,
       fill: ExoplanetsDatabaseColors.secondaryTextColorProperty,
       left: CELL_PADDING,
-      top: HEADER_HEIGHT + 6,
+      top: HEADER_HEIGHT + PLANET_TABLE_NODE_SETTINGS.CONSTRUCTOR_TOP_OFFSET,
       maxWidth: this.tableWidth - 2 * CELL_PADDING,
     });
 
@@ -347,14 +354,14 @@ export class PlanetTableNode extends Node {
       this.refresh();
     });
     this.scrollBar = new VSlider(scrollProperty, new Range(0, 1), {
-      trackSize: new Dimension2(4, bodyHeight - 24),
-      thumbSize: new Dimension2(SCROLL_BAR_WIDTH, 24),
+      trackSize: new Dimension2(PLANET_TABLE_NODE_SETTINGS.DIMENSION2_WIDTH, bodyHeight - 24),
+      thumbSize: new Dimension2(SCROLL_BAR_WIDTH, PLANET_TABLE_NODE_SETTINGS.SCROLL_BAR_HEIGHT),
       trackFillEnabled: ExoplanetsDatabaseColors.tableHeaderColorProperty,
-      keyboardStep: 0.02,
-      shiftKeyboardStep: 0.005,
-      pageKeyboardStep: 0.1,
+      keyboardStep: PLANET_TABLE_NODE_SETTINGS.SCROLL_BAR_KEYBOARD_STEP,
+      shiftKeyboardStep: PLANET_TABLE_NODE_SETTINGS.SCROLL_BAR_SHIFT_KEYBOARD_STEP,
+      pageKeyboardStep: PLANET_TABLE_NODE_SETTINGS.SCROLL_BAR_PAGE_KEYBOARD_STEP,
       accessibleName: strings.scrollBarStringProperty,
-      left: this.tableWidth + 4,
+      left: this.tableWidth + PLANET_TABLE_NODE_SETTINGS.CONSTRUCTOR_LEFT_OFFSET,
       top: HEADER_HEIGHT + 12,
     });
 

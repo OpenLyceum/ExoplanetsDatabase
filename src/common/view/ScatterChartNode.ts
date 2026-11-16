@@ -1,3 +1,4 @@
+import { SCATTER_CHART_NODE_SETTINGS } from "../../ExoplanetsDatabaseConstants.js";
 /**
  * ScatterChartNode.ts
  *
@@ -21,7 +22,7 @@ import { type PlotAxis, PlotFrameNode } from "./PlotFrameNode.js";
 import { PointCloudNode, type PointStyle } from "./PointCloudNode.js";
 
 /** How close (px) the pointer must be to a planet to pick it. */
-const PICK_DISTANCE = 9;
+const PICK_DISTANCE: number = SCATTER_CHART_NODE_SETTINGS.PICK_DISTANCE;
 
 export type ScatterAxis = PlotAxis & AxisRequest;
 
@@ -101,8 +102,8 @@ export class ScatterChartNode extends Node {
       leading: 2,
     });
     this.tooltip = new ExoplanetsDatabasePanel(this.tooltipText, {
-      xMargin: 6,
-      yMargin: 4,
+      xMargin: SCATTER_CHART_NODE_SETTINGS.TOOLTIP_X_MARGIN,
+      yMargin: SCATTER_CHART_NODE_SETTINGS.TOOLTIP_Y_MARGIN,
       pickable: false,
       visible: false,
       stroke: ExoplanetsDatabaseColors.accentColorProperty,
@@ -169,7 +170,7 @@ export class ScatterChartNode extends Node {
           x: position.x,
           y: position.y,
           stroke: ExoplanetsDatabaseColors.solarSystemColorProperty,
-          lineWidth: 1.5,
+          lineWidth: SCATTER_CHART_NODE_SETTINGS.CIRCLES_LINE_WIDTH,
         }),
     );
     // Each label tries right, left, below and above its marker, keeping clear of the plot edge,
@@ -260,13 +261,16 @@ export class ScatterChartNode extends Node {
     this.tooltip.visible = true;
     // Beside the point, flipped to stay inside the plot.
     const { viewWidth, viewHeight } = this.frame;
-    this.tooltip.left = position.x + 12;
+    this.tooltip.left = position.x + SCATTER_CHART_NODE_SETTINGS.UPDATE_HIGHLIGHT_LEFT_OFFSET;
     if (this.tooltip.right > viewWidth) {
-      this.tooltip.right = position.x - 12;
+      this.tooltip.right = position.x - SCATTER_CHART_NODE_SETTINGS.UPDATE_HIGHLIGHT_RIGHT_OFFSET;
     }
-    this.tooltip.bottom = position.y - 8;
+    this.tooltip.bottom = position.y - SCATTER_CHART_NODE_SETTINGS.UPDATE_HIGHLIGHT_BOTTOM_OFFSET;
     if (this.tooltip.top < 0) {
-      this.tooltip.top = Math.min(position.y + 8, viewHeight - this.tooltip.height);
+      this.tooltip.top = Math.min(
+        position.y + SCATTER_CHART_NODE_SETTINGS.UPDATE_HIGHLIGHT_TOP_OFFSET,
+        viewHeight - this.tooltip.height,
+      );
     }
   }
 }

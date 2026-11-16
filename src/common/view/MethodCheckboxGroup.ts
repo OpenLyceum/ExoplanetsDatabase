@@ -1,3 +1,4 @@
+import { METHOD_CHECKBOX_GROUP_SETTINGS } from "../../ExoplanetsDatabaseConstants.js";
 /**
  * MethodCheckboxGroup.ts
  *
@@ -24,13 +25,13 @@ export class MethodCheckboxGroup extends VBox {
         new Checkbox(
           filter.methodVisibleProperty(method),
           new HBox({
-            spacing: 6,
+            spacing: METHOD_CHECKBOX_GROUP_SETTINGS.CHECKBOXES_SPACING,
             children: [
               new Path(methodMarker(method).toShape(5), { fill: methodColor(method) }),
               new Text(methodName(method), {
                 font: FONTS.LABEL,
                 fill: ExoplanetsDatabaseColors.textColorProperty,
-                maxWidth: width - 50,
+                maxWidth: width - METHOD_CHECKBOX_GROUP_SETTINGS.CHECKBOXES_MAX_WIDTH_OFFSET,
               }),
             ],
           }),
@@ -46,7 +47,7 @@ export class MethodCheckboxGroup extends VBox {
       new Text(common.measuredMassesOnlyStringProperty, {
         font: FONTS.LABEL,
         fill: ExoplanetsDatabaseColors.textColorProperty,
-        maxWidth: width - 30,
+        maxWidth: width - METHOD_CHECKBOX_GROUP_SETTINGS.MEASURED_MASS_CHECKBOX_MAX_WIDTH_OFFSET,
       }),
       {
         ...EXOPLANETS_DATABASE_CHECKBOX_OPTIONS,
@@ -54,7 +55,11 @@ export class MethodCheckboxGroup extends VBox {
         accessibleHelpText: common.estimatedMassNoteStringProperty,
       },
     );
-    super({ align: "left", spacing: 5, children: [...checkboxes, measuredMassCheckbox] });
+    super({
+      align: "left",
+      spacing: METHOD_CHECKBOX_GROUP_SETTINGS.CONSTRUCTOR_SPACING,
+      children: [...checkboxes, measuredMassCheckbox],
+    });
     this.disposeMethodCheckboxGroup = () => {
       for (const checkbox of [...checkboxes, measuredMassCheckbox]) {
         // The labels link to string Properties, so they need disposing too.

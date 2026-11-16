@@ -1,3 +1,4 @@
+import { EXOPLANETS_DATABASE_PANEL_SETTINGS } from "../ExoplanetsDatabaseConstants.js";
 /**
  * ExoplanetsDatabasePanel.ts
  *
@@ -40,8 +41,8 @@ export class ExoplanetsDatabasePanel extends Panel {
         fill: ExoplanetsDatabaseColors.panelBackgroundColorProperty,
         stroke: ExoplanetsDatabaseColors.panelBorderColorProperty,
         cornerRadius: PANEL_CORNER_RADIUS,
-        xMargin: 12,
-        yMargin: 10,
+        xMargin: EXOPLANETS_DATABASE_PANEL_SETTINGS.OPTIONS_X_MARGIN,
+        yMargin: EXOPLANETS_DATABASE_PANEL_SETTINGS.OPTIONS_Y_MARGIN,
       },
       providedOptions,
     );

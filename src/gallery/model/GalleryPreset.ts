@@ -1,3 +1,4 @@
+import { GALLERY_PRESET_SETTINGS } from "../../ExoplanetsDatabaseConstants.js";
 /**
  * GalleryPreset.ts
  *
@@ -39,15 +40,38 @@ type GalleryPresetOptions = {
   readonly solarSystem?: boolean;
 };
 
-const PERIOD_AXIS: GalleryAxis = { quantity: Quantity.PERIOD, log: true, range: new Range(0.1, 1e7) };
-const MASS_AXIS: GalleryAxis = { quantity: Quantity.MASS, log: true, range: new Range(0.05, 1e5) };
-const RADIUS_AXIS: GalleryAxis = { quantity: Quantity.RADIUS, log: true, range: new Range(0.3, 30) };
-const YEAR_AXIS: GalleryAxis = { quantity: Quantity.DISCOVERY_YEAR, log: false, range: new Range(1989, 2027) };
+const PERIOD_AXIS: GalleryAxis = {
+  quantity: Quantity.PERIOD,
+  log: true,
+  range: new Range(GALLERY_PRESET_SETTINGS.PERIOD_AXIS_RANGE_MIN, GALLERY_PRESET_SETTINGS.PERIOD_AXIS_RANGE_MAX),
+};
+const MASS_AXIS: GalleryAxis = {
+  quantity: Quantity.MASS,
+  log: true,
+  range: new Range(GALLERY_PRESET_SETTINGS.MASS_AXIS_RANGE_MIN, GALLERY_PRESET_SETTINGS.MASS_AXIS_RANGE_MAX),
+};
+const RADIUS_AXIS: GalleryAxis = {
+  quantity: Quantity.RADIUS,
+  log: true,
+  range: new Range(GALLERY_PRESET_SETTINGS.RADIUS_AXIS_RANGE_MIN, GALLERY_PRESET_SETTINGS.RADIUS_AXIS_RANGE_MAX),
+};
+const YEAR_AXIS: GalleryAxis = {
+  quantity: Quantity.DISCOVERY_YEAR,
+  log: false,
+  range: new Range(GALLERY_PRESET_SETTINGS.YEAR_AXIS_RANGE_MIN, GALLERY_PRESET_SETTINGS.YEAR_AXIS_RANGE_MAX),
+};
 
 export class GalleryPreset extends EnumerationValue {
   public static readonly MASS_VS_ORBIT = new GalleryPreset("massVsOrbit", {
     kind: "scatter",
-    x: { quantity: Quantity.SEMI_MAJOR_AXIS, log: true, range: new Range(0.003, 1e4) },
+    x: {
+      quantity: Quantity.SEMI_MAJOR_AXIS,
+      log: true,
+      range: new Range(
+        GALLERY_PRESET_SETTINGS.MASS_VS_ORBIT_RANGE_MIN,
+        GALLERY_PRESET_SETTINGS.MASS_VS_ORBIT_RANGE_MAX,
+      ),
+    },
     y: MASS_AXIS,
     measuredOnly: [Quantity.MASS],
     solarSystem: true,
@@ -68,7 +92,14 @@ export class GalleryPreset extends EnumerationValue {
 
   public static readonly RADIUS_VS_PERIOD = new GalleryPreset("radiusVsPeriod", {
     kind: "scatter",
-    x: { quantity: Quantity.PERIOD, log: true, range: new Range(0.1, 1e5) },
+    x: {
+      quantity: Quantity.PERIOD,
+      log: true,
+      range: new Range(
+        GALLERY_PRESET_SETTINGS.RADIUS_VS_PERIOD_RANGE_MIN,
+        GALLERY_PRESET_SETTINGS.RADIUS_VS_PERIOD_RANGE_MAX,
+      ),
+    },
     y: RADIUS_AXIS,
     measuredOnly: [Quantity.RADIUS],
     solarSystem: true,
@@ -76,7 +107,14 @@ export class GalleryPreset extends EnumerationValue {
 
   public static readonly MASS_VS_RADIUS = new GalleryPreset("massVsRadius", {
     kind: "scatter",
-    x: { quantity: Quantity.MASS, log: true, range: new Range(0.1, 1e4) },
+    x: {
+      quantity: Quantity.MASS,
+      log: true,
+      range: new Range(
+        GALLERY_PRESET_SETTINGS.MASS_VS_RADIUS_RANGE_MIN,
+        GALLERY_PRESET_SETTINGS.MASS_VS_RADIUS_RANGE_MAX,
+      ),
+    },
     y: RADIUS_AXIS,
     measuredOnly: [Quantity.MASS, Quantity.RADIUS],
     guides: ["composition"],
@@ -85,7 +123,14 @@ export class GalleryPreset extends EnumerationValue {
 
   public static readonly KEPLERS_THIRD_LAW = new GalleryPreset("keplersThirdLaw", {
     kind: "scatter",
-    x: { quantity: Quantity.SEMI_MAJOR_AXIS, log: true, range: new Range(0.003, 1e4) },
+    x: {
+      quantity: Quantity.SEMI_MAJOR_AXIS,
+      log: true,
+      range: new Range(
+        GALLERY_PRESET_SETTINGS.KEPLERS_THIRD_LAW_RANGE_MIN,
+        GALLERY_PRESET_SETTINGS.KEPLERS_THIRD_LAW_RANGE_MAX,
+      ),
+    },
     y: { quantity: Quantity.PERIOD, log: true, range: new Range(0.05, 1e9) },
     coloring: "starMass",
     guides: ["keplerLines"],
@@ -94,7 +139,11 @@ export class GalleryPreset extends EnumerationValue {
 
   public static readonly DISTANCE_HISTOGRAM = new GalleryPreset("distanceHistogram", {
     kind: "histogram",
-    x: { quantity: Quantity.DISTANCE, log: true, range: new Range(1, 1e4) },
+    x: {
+      quantity: Quantity.DISTANCE,
+      log: true,
+      range: new Range(1, GALLERY_PRESET_SETTINGS.DISTANCE_HISTOGRAM_RANGE_MAX),
+    },
   });
 
   public static readonly SIZE_OVER_TIME = new GalleryPreset("sizeOverTime", {

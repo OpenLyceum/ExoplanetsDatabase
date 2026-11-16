@@ -1,3 +1,4 @@
+import { FILTER_SUMMARY_NODE_SETTINGS } from "../../ExoplanetsDatabaseConstants.js";
 /**
  * FilterSummaryNode.ts
  *
@@ -22,7 +23,7 @@ import { methodName, plainText, quantityName, quantityUnit } from "./dataStyles.
 import { formatInteger, formatValue } from "./format.js";
 
 /** Most filter lines shown; the rest are summarised as "…". */
-const MAX_LINES = 5;
+const MAX_LINES: number = FILTER_SUMMARY_NODE_SETTINGS.MAX_LINES;
 
 const fill = (pattern: string, values: Record<string, string>): string =>
   pattern.replace(/\{\{(\w+)\}\}/g, (match, key: string) => values[key] ?? match);
@@ -33,7 +34,8 @@ type SummaryLine = { readonly readable: string; readonly column: string; readonl
 function describeCriterion(criterion: RangeCriterion): SummaryLine {
   const summary = StringManager.getInstance().getExploreStrings().summary;
   const q = criterion.quantity;
-  const format = (v: number): string => (q.isInteger ? formatInteger(v) : formatValue(v, 4));
+  const format = (v: number): string =>
+    q.isInteger ? formatInteger(v) : formatValue(v, FILTER_SUMMARY_NODE_SETTINGS.FORMAT_DIGITS);
   const min = criterion.minProperty.value;
   const max = criterion.maxProperty.value;
   const values = {
@@ -81,8 +83,13 @@ function describeFilters(filter: PlanetFilter): SummaryLine[] {
 
 export class FilterSummaryNode extends ExoplanetsDatabasePanel {
   public constructor(filter: PlanetFilter, width: number) {
-    const content = new VBox({ align: "left", spacing: 4 });
-    super(content, { minWidth: width, maxWidth: width, xMargin: 10, yMargin: 6 });
+    const content = new VBox({ align: "left", spacing: FILTER_SUMMARY_NODE_SETTINGS.CONTENT_SPACING });
+    super(content, {
+      minWidth: width,
+      maxWidth: width,
+      xMargin: FILTER_SUMMARY_NODE_SETTINGS.CONSTRUCTOR_X_MARGIN,
+      yMargin: FILTER_SUMMARY_NODE_SETTINGS.CONSTRUCTOR_Y_MARGIN,
+    });
 
     const strings = StringManager.getInstance().getExploreStrings();
     const summary = strings.summary;
@@ -117,7 +124,9 @@ export class FilterSummaryNode extends ExoplanetsDatabasePanel {
         );
       }
       if (lines.length === 0) {
-        children.push(new GridBox({ rows: [headings], xSpacing: 12, xAlign: "left" }));
+        children.push(
+          new GridBox({ rows: [headings], xSpacing: FILTER_SUMMARY_NODE_SETTINGS.REBUILD_X_SPACING, xAlign: "left" }),
+        );
         children.push(
           new Text(archiveColumn ? strings.archiveNoFiltersStringProperty : summary.noneStringProperty, {
             font: FONTS.SMALL,
@@ -149,7 +158,14 @@ export class FilterSummaryNode extends ExoplanetsDatabasePanel {
         if (lines.length > MAX_LINES) {
           rows.push([new Text("…", { font: FONTS.SMALL, fill: ExoplanetsDatabaseColors.secondaryTextColorProperty })]);
         }
-        children.push(new GridBox({ rows, xSpacing: 12, ySpacing: 3, xAlign: "left" }));
+        children.push(
+          new GridBox({
+            rows,
+            xSpacing: FILTER_SUMMARY_NODE_SETTINGS.REBUILD_X_SPACING,
+            ySpacing: FILTER_SUMMARY_NODE_SETTINGS.REBUILD_Y_SPACING,
+            xAlign: "left",
+          }),
+        );
       }
       content.children = children;
     };

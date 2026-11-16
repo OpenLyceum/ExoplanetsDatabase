@@ -1,3 +1,4 @@
+import { GUIDES_SETTINGS } from "../../ExoplanetsDatabaseConstants.js";
 /**
  * guides.ts
  *
@@ -17,12 +18,12 @@ import { StringManager } from "../../i18n/StringManager.js";
 import type { PlotFrameNode } from "./PlotFrameNode.js";
 
 /** Rocky curves stop here, Earth masses (the fit's range, generously). */
-const ROCKY_MAX_MASS = 30;
+const ROCKY_MAX_MASS: number = GUIDES_SETTINGS.ROCKY_MAX_MASS;
 
 /** Density of water, g/cm³. */
 const WATER_DENSITY = 1;
 
-const SAMPLES = 60;
+const SAMPLES: number = GUIDES_SETTINGS.SAMPLES;
 
 /** A curve y(x) sampled log-evenly between x0 and x1 (data units). */
 function curve(frame: PlotFrameNode, x0: number, x1: number, y: (x: number) => number): Shape {
@@ -48,15 +49,15 @@ function backedText(text: TReadOnlyProperty<string>): Node {
   const textNode = new Text(text, {
     font: FONTS.SMALL,
     fill: ExoplanetsDatabaseColors.guideLineColorProperty,
-    maxWidth: 120,
+    maxWidth: GUIDES_SETTINGS.TEXT_NODE_MAX_WIDTH,
   });
   const backdrop = new Rectangle(0, 0, 1, 1, {
     fill: ExoplanetsDatabaseColors.chartBackgroundColorProperty,
-    opacity: 0.8,
-    cornerRadius: 2,
+    opacity: GUIDES_SETTINGS.BACKDROP_OPACITY,
+    cornerRadius: GUIDES_SETTINGS.BACKDROP_CORNER_RADIUS,
   });
   const fit = (): void => {
-    backdrop.setRectBounds(textNode.bounds.dilatedXY(3, 1));
+    backdrop.setRectBounds(textNode.bounds.dilatedXY(GUIDES_SETTINGS.FIT_X_DILATION, 1));
   };
   textNode.boundsProperty.link(fit);
   const node = new Node({ children: [backdrop, textNode] });
@@ -74,16 +75,23 @@ function label(frame: PlotFrameNode, text: TReadOnlyProperty<string>, x: number,
     return null;
   }
   const node = backedText(text);
-  node.right = Math.min(point.x - 4, frame.viewWidth - 4);
+  node.right = Math.min(
+    point.x - GUIDES_SETTINGS.LABEL_RIGHT_OFFSET,
+    frame.viewWidth - GUIDES_SETTINGS.LABEL_RIGHT_OFFSET,
+  );
   if (above) {
-    node.bottom = point.y - 4;
+    node.bottom = point.y - GUIDES_SETTINGS.LABEL_BOTTOM_OFFSET;
   } else {
-    node.top = point.y + 4;
+    node.top = point.y + GUIDES_SETTINGS.LABEL_TOP_OFFSET;
   }
   return node;
 }
 
-const lineOptions = { stroke: ExoplanetsDatabaseColors.guideLineColorProperty, lineWidth: 1.5, lineDash: [6, 4] };
+const lineOptions = {
+  stroke: ExoplanetsDatabaseColors.guideLineColorProperty,
+  lineWidth: GUIDES_SETTINGS.LINE_OPTIONS_LINE_WIDTH,
+  lineDash: [GUIDES_SETTINGS.LINE_OPTIONS_LINE_DASH_DASH, 4],
+};
 
 /** Pure-iron, Earth-like-rock and water curves for mass (x) against radius (y). */
 export function compositionGuides(frame: PlotFrameNode): Node[] {

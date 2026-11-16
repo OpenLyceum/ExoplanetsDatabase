@@ -1,3 +1,4 @@
+import { POINT_COLORINGS_SETTINGS } from "../../ExoplanetsDatabaseConstants.js";
 /**
  * pointColorings.ts
  *
@@ -86,9 +87,9 @@ export const STAR_MASS_COLORING: PointColoring = {
 };
 
 /** First and last years of the year colour scale. */
-const FIRST_YEAR = 1990;
-const LAST_YEAR = 2030;
-const YEAR_STEP = 2;
+const FIRST_YEAR: number = POINT_COLORINGS_SETTINGS.FIRST_YEAR;
+const LAST_YEAR: number = POINT_COLORINGS_SETTINGS.LAST_YEAR;
+const YEAR_STEP: number = POINT_COLORINGS_SETTINGS.YEAR_STEP;
 const YEAR_GROUPS = (LAST_YEAR - FIRST_YEAR) / YEAR_STEP;
 
 const yearColor = (t: number): Color =>
