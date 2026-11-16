@@ -56,8 +56,8 @@ describe("physics", () => {
   });
 
   it("puts Earth on its own density and rocky curves", () => {
-    expect(densityFromMassAndRadius(1, 1)).toBeCloseTo(5.51, 6);
-    expect(constantDensityRadius(1, 5.51)).toBeCloseTo(1, 6);
+    expect(densityFromMassAndRadius(1, 1)).toBeCloseTo(5.514, 6);
+    expect(constantDensityRadius(1, 5.514)).toBeCloseTo(1, 6);
     expect(rockyRadius(1)).toBeCloseTo(EARTH.values.get(Quantity.RADIUS) ?? 0, 1);
   });
 });

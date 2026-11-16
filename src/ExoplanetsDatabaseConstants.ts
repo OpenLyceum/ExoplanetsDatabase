@@ -13,8 +13,6 @@
  *  - Layout / chrome values are in screen pixels.
  *  - Colour strings live in ExoplanetsDatabaseColors.ts, not here.
  *  - Computed expressions (e.g. `2 * Math.PI`) may stay inline.
- *
- * Remove the example constants below and replace them with the sim's own.
  */
 
 import { PhetFont } from "scenerystack/scenery-phet";
@@ -43,9 +41,6 @@ export const FONTS = {
   AXIS_LABEL: new PhetFont(13),
   CAPTION: new PhetFont(13),
 } as const;
-
-/** Vertical space between controls in a panel, px. */
-const CONTROL_SPACING = 8;
 
 /** Size of a plot marker, px. */
 export const MARKER_SIZE = 5;
@@ -114,20 +109,20 @@ export const EXOPLANETS_DATABASE_PANEL_SETTINGS = {
 
 /** Settings for common/ExoplanetsDatabaseScreenIcons.ts. Layout lengths are in px; counts and ratios are dimensionless. */
 export const EXOPLANETS_DATABASE_SCREEN_ICONS_SETTINGS = {
-  CLUSTERS_ITEM_3_X: 0.58, // px
-  CLUSTERS_ITEM_3_Y: 0.5, // px
-  CLUSTERS_ITEM_4_X: 0.85, // px
-  CLUSTERS_ITEM_4_Y: 0.15, // px
+  CLUSTERS_ITEM_3_X: 0.58, // fraction of icon width
+  CLUSTERS_ITEM_3_Y: 0.5, // fraction of icon height
+  CLUSTERS_ITEM_4_X: 0.85, // fraction of icon width
+  CLUSTERS_ITEM_4_Y: 0.15, // fraction of icon height
   CREATE_EXPLORE_ICON_X_VARIANT_2: 70, // px
   CREATE_EXPLORE_ICON_HEIGHT_SEGMENT_2: 12, // px
 
-  SCATTER_POINTS_CLUSTERS_X: 0.4, // px
-  SCATTER_POINTS_CLUSTERS_Y: 0.4, // px
+  SCATTER_POINTS_CLUSTERS_X: 0.4, // fraction of icon width
+  SCATTER_POINTS_CLUSTERS_Y: 0.4, // fraction of icon height
   CREATE_EXPLORE_ICON_Y_OFFSET: 99, // px
   CREATE_EXPLORE_ICON_Y_FACTOR: 38, // dimensionless
 
-  CLUSTERS_X: 0.2,
-  CLUSTERS_Y: 0.55,
+  CLUSTERS_X: 0.2, // fraction of icon width
+  CLUSTERS_Y: 0.55, // fraction of icon height
   OPTIONS_LINE_WIDTH: 6,
   BARS_X: 60,
   BARS_HEIGHT: 44,
@@ -151,8 +146,8 @@ export const PHYSICS_SETTINGS = {
   DAYS_PER_YEAR: 365.25,
   /** The Sun's effective temperature, K (IAU 2015 nominal value). */
   SUN_TEMPERATURE_K: 5772,
-  /** Earth's mean density, g/cm³. */
-  EARTH_DENSITY_G_CM3: 5.51,
+  /** Earth's mean density, g/cm³ (matches TransitHunter / Zeng formulas). */
+  EARTH_DENSITY_G_CM3: 5.514,
   /** Light years in a parsec. */
   LIGHT_YEARS_PER_PARSEC: 3.2616,
   /** Core mass fraction of an Earth-like rocky planet (Zeng, Sasselov & Jacobsen 2016). */
@@ -511,7 +506,6 @@ export const EXOPLANETS_DATABASE_PREFERENCES_NODE_SETTINGS = {
 ExoplanetsDatabaseNamespace.register("ExoplanetsDatabaseConstants", {
   SCREEN_VIEW_MARGIN,
   PANEL_CORNER_RADIUS,
-  CONTROL_SPACING,
   MARKER_SIZE,
   FOUR_THOUSAND_PLANETS_YEAR,
 });
