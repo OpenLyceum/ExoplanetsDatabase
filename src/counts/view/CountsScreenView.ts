@@ -10,7 +10,7 @@ import { COUNTS_SCREEN_VIEW_SETTINGS } from "../../ExoplanetsDatabaseConstants.j
  */
 
 import { DerivedProperty, Multilink, PatternStringProperty, type TReadOnlyProperty } from "scenerystack/axon";
-import { Bounds2, Range } from "scenerystack/dot";
+import { Bounds2, Range, toFixed } from "scenerystack/dot";
 import { Shape } from "scenerystack/kite";
 import { type EmptySelfOptions, optionize } from "scenerystack/phet-core";
 import { AlignBox, HBox, Line, Node, Path, Rectangle, RichText, Text, VBox } from "scenerystack/scenery";
@@ -272,7 +272,7 @@ export class CountsScreenView extends ScreenView {
     const growthText = new Text(
       new PatternStringProperty(strings.growthPatternStringProperty, {
         count: formatCount(h.confirmed),
-        factor: (h.confirmed / FOUR_THOUSAND).toFixed(COUNTS_SCREEN_VIEW_SETTINGS.GROWTH_TEXT_DECIMAL_PLACES),
+        factor: toFixed(h.confirmed / FOUR_THOUSAND, COUNTS_SCREEN_VIEW_SETTINGS.GROWTH_TEXT_DECIMAL_PLACES),
       }),
       {
         font: FONTS.LABEL,
