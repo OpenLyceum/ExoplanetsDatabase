@@ -19,7 +19,8 @@ import { EARTH, SOLAR_SYSTEM } from "../src/common/model/SolarSystem.js";
 describe("physics", () => {
   it("propagates one-sided density bounds and rejects ambiguous combinations", () => {
     const bound = densityConstraint(4, 0.54, 1, 0, false);
-    expect(bound?.value).toBeCloseTo(139.9685, 4);
+    // ρ = 5.514 g/cm³ × (M/M⊕) / (R/R⊕)³, using the same Earth reference as the density curves.
+    expect(bound?.value).toBeCloseTo(140.0701, 4);
     expect(bound?.limit).toBe(1);
     expect(densityConstraint(1, 1, 0, 1, false)?.limit).toBe(-1);
     expect(densityConstraint(1, 1, -1, 1, false)?.limit).toBe(-1);
