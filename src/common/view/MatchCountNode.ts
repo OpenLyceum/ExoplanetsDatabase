@@ -35,7 +35,7 @@ export class MatchCountNode extends Text {
     super(countStringProperty, {
       font: FONTS.MATCH_COUNT,
       fill: ExoplanetsDatabaseColors.textColorProperty,
-      maxWidth: MATCH_COUNT_NODE_SETTINGS.CONSTRUCTOR_MAX_WIDTH,
+      maxWidth: MATCH_COUNT_NODE_SETTINGS.MAX_WIDTH,
       ...options,
     });
     this.countStringProperty = countStringProperty;

@@ -110,7 +110,7 @@ function derivedLines(catalog: ExoplanetCatalog, index: number): string[] {
     const prefix = density.limit === 1 ? "≤" : density.limit === -1 ? "≥" : estimated ? "≈" : "";
     lines.push(
       fill(card.densityPatternStringProperty.value, {
-        density: `${prefix}${formatValue(density.value, PLANET_CARD_NODE_SETTINGS.DERIVED_LINES_DIGITS_SEGMENT_2)}`,
+        density: `${prefix}${formatValue(density.value, PLANET_CARD_NODE_SETTINGS.DENSITY_DIGITS)}`,
       }),
     );
   }
@@ -258,10 +258,7 @@ export class PlanetCardNode extends ExoplanetsDatabasePanel {
           paragraph(
             `${quantityName(Quantity.DISTANCE).value}: ${fill(card.distancePatternStringProperty.value, {
               parsecs: formatValue(distance, PLANET_CARD_NODE_SETTINGS.REBUILD_DIGITS),
-              lightYears: formatValue(
-                distance * LIGHT_YEARS_PER_PARSEC,
-                PLANET_CARD_NODE_SETTINGS.REBUILD_DIGITS_SEGMENT_2,
-              ),
+              lightYears: formatValue(distance * LIGHT_YEARS_PER_PARSEC, PLANET_CARD_NODE_SETTINGS.LIGHT_YEARS_DIGITS),
             })}`,
           ),
         );

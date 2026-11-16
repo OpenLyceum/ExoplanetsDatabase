@@ -87,8 +87,8 @@ export class FilterSummaryNode extends ExoplanetsDatabasePanel {
     super(content, {
       minWidth: width,
       maxWidth: width,
-      xMargin: FILTER_SUMMARY_NODE_SETTINGS.CONSTRUCTOR_X_MARGIN,
-      yMargin: FILTER_SUMMARY_NODE_SETTINGS.CONSTRUCTOR_Y_MARGIN,
+      xMargin: FILTER_SUMMARY_NODE_SETTINGS.X_MARGIN,
+      yMargin: FILTER_SUMMARY_NODE_SETTINGS.Y_MARGIN,
     });
 
     const strings = StringManager.getInstance().getExploreStrings();

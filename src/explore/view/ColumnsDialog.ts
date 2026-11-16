@@ -65,7 +65,7 @@ export class ColumnsDialog extends Dialog {
     super(
       new VBox({
         align: "left",
-        spacing: COLUMNS_DIALOG_SETTINGS.CONSTRUCTOR_SPACING,
+        spacing: COLUMNS_DIALOG_SETTINGS.SPACING,
         children: [hint, ...checkboxes],
       }),
       {

@@ -56,8 +56,8 @@ export const FOUR_THOUSAND_PLANETS_YEAR = 2019 + 5.5 / 12;
 export const PLOT_BUILDER_SCREEN_VIEW_SETTINGS = {
   HEADING_MAX_WIDTH_OFFSET: 20, // px
   QUANTITY_ITEMS_MAX_WIDTH_OFFSET: 60, // px
-  CONSTRUCTOR_LEFT_PANEL_SPACING: 6, // px
-  CONSTRUCTOR_TOP_OFFSET: 6, // px
+  COLOR_BY_SECTION_SPACING: 6, // px
+  TOP_GAP: 6, // px
   MATCH_COUNT_MAX_WIDTH_OFFSET: 20, // px
   FILTER_BUTTON_MIN_WIDTH_OFFSET: 24, // px
   CLEAR_BUTTON_MIN_WIDTH_OFFSET: 24, // px
@@ -113,8 +113,8 @@ export const EXOPLANETS_DATABASE_SCREEN_ICONS_SETTINGS = {
   CLUSTERS_ITEM_3_Y: 0.5, // fraction of icon height
   CLUSTERS_ITEM_4_X: 0.85, // fraction of icon width
   CLUSTERS_ITEM_4_Y: 0.15, // fraction of icon height
-  CREATE_EXPLORE_ICON_X_VARIANT_2: 70, // px
-  CREATE_EXPLORE_ICON_HEIGHT_SEGMENT_2: 12, // px
+  CREATE_EXPLORE_ICON_MARKER_X: 70, // px
+  CREATE_EXPLORE_ICON_CELL_HEIGHT: 12, // px
 
   SCATTER_POINTS_CLUSTERS_X: 0.4, // fraction of icon width
   SCATTER_POINTS_CLUSTERS_Y: 0.4, // fraction of icon height
@@ -162,19 +162,19 @@ export const PLOT_POINTS_SETTINGS = {
 
 /** Settings for common/view/DataCreditNode.ts. Layout lengths are in px; counts and ratios are dimensionless. */
 export const DATA_CREDIT_NODE_SETTINGS = {
-  CONSTRUCTOR_MAX_WIDTH: 700,
+  MAX_WIDTH: 700,
 } as const;
 
 /** Settings for common/view/FilterDialog.ts. Layout lengths are in px; counts and ratios are dimensionless. */
 export const FILTER_DIALOG_SETTINGS = {
   TEXT_MAX_WIDTH_OFFSET: 16, // px
   ARCHIVE_TEXT_LINE_WRAP: 380, // px
-  CONSTRUCTOR_CLEAR_BUTTON_MAX_WIDTH: 200, // px
+  DIALOG_CLEAR_BUTTON_MAX_WIDTH: 200, // px
 
   /** Width of a value field, px. */
   FIELD_WIDTH: 110,
-  CONSTRUCTOR_X_MARGIN: 8,
-  CONSTRUCTOR_Y_MARGIN: 4,
+  X_MARGIN: 8,
+  Y_MARGIN: 4,
   TITLE_MAX_WIDTH: 380,
   CLEAR_BUTTON_MAX_WIDTH: 60,
   BOUND_ROW_SPACING: 10,
@@ -193,24 +193,24 @@ export const FILTER_SUMMARY_NODE_SETTINGS = {
   /** Most filter lines shown; the rest are summarised as "…". */
   MAX_LINES: 5,
   CONTENT_SPACING: 4,
-  CONSTRUCTOR_X_MARGIN: 10,
-  CONSTRUCTOR_Y_MARGIN: 6,
+  X_MARGIN: 10,
+  Y_MARGIN: 6,
   REBUILD_X_SPACING: 12,
   REBUILD_Y_SPACING: 3,
 } as const;
 
 /** Settings for common/view/LegendNode.ts. Layout lengths are in px; counts and ratios are dimensionless. */
 export const LEGEND_NODE_SETTINGS = {
-  SPACING: 5, // px
+  ROW_SPACING: 5, // px
 
   LABEL_WIDTH: 140,
   COUNT_WIDTH: 44,
-  CONSTRUCTOR_SPACING: 6,
+  SPACING: 6,
 } as const;
 
 /** Settings for common/view/MatchCountNode.ts. Layout lengths are in px; counts and ratios are dimensionless. */
 export const MATCH_COUNT_NODE_SETTINGS = {
-  CONSTRUCTOR_MAX_WIDTH: 400,
+  MAX_WIDTH: 400,
 } as const;
 
 /** Settings for common/view/MethodCheckboxGroup.ts. Layout lengths are in px; counts and ratios are dimensionless. */
@@ -219,7 +219,7 @@ export const METHOD_CHECKBOX_GROUP_SETTINGS = {
   MEASURED_MASS_CHECKBOX_MAX_WIDTH_OFFSET: 30, // px
 
   CHECKBOXES_SPACING: 6,
-  CONSTRUCTOR_SPACING: 5,
+  SPACING: 5,
 } as const;
 
 /** Settings for common/view/PlotFrameNode.ts. Layout lengths are in px; counts and ratios are dimensionless. */
@@ -305,15 +305,15 @@ export const COUNTS_SCREEN_VIEW_SETTINGS = {
   OTHER_LIST_LINE_WRAP_OFFSET: 24, // px
   OTHER_LIST_MAX_WIDTH_OFFSET: 24, // px
   TOTAL_TEXT_MAX_WIDTH_OFFSET: 24, // px
-  CONSTRUCTOR_METHODS_PANEL_SPACING: 10, // px
+  YEAR_SPINNER_ROW_SPACING: 10, // px
   METHODS_PANEL_TOP_OFFSET: 12, // px
   MARKER_OPTIONS_LINE_DASH_DASH: 5, // px
-  CONSTRUCTOR_MARKER_OPTIONS_LINE_DASH_DASH: 4, // px
+  MARKER_LINE_DASH_GAP: 4, // px
   MARKER_RIGHT_OFFSET: 6, // px
   MARKER_BOTTOM_OFFSET: 4, // px
   MARKER_MAX_WIDTH_OFFSET: 10, // px
   GROWTH_TEXT_MAX_WIDTH_OFFSET: 60, // px
-  CONSTRUCTOR_GROWTH_PANEL_SPACING: 16, // px
+  GROWTH_CAPTION_SPACING: 16, // px
   CREDIT_BOTTOM_OFFSET: 6, // px
 
   MARGIN: 10,
@@ -352,13 +352,13 @@ export const COLUMNS_DIALOG_SETTINGS = {
   CHECKBOXES_BOX_WIDTH: 16,
   CHECKBOXES_SPACING: 6,
   HINT_MAX_WIDTH: 300,
-  CONSTRUCTOR_SPACING: 6,
+  SPACING: 6,
 } as const;
 
 /** Settings for explore/view/ExploreScreenView.ts. Layout lengths are in px; counts and ratios are dimensionless. */
 export const EXPLORE_SCREEN_VIEW_SETTINGS = {
   BUTTON_MAX_WIDTH_OFFSET: 12, // px
-  CONSTRUCTOR_TOP_OFFSET: 6, // px
+  TOP_GAP: 6, // px
   CREDIT_BOTTOM_OFFSET: 6, // px
 
   MARGIN: 10,
@@ -378,10 +378,10 @@ export const PLANET_CARD_NODE_SETTINGS = {
   PERIOD_SQUARED_FORMAT_VALUE_DIGITS: 3, // digits
   A_CUBED_OVER_MASS_FORMAT_VALUE_DIGITS: 3, // digits
   DERIVED_LINES_DIGITS: 3, // digits
-  DERIVED_LINES_DIGITS_SEGMENT_2: 2, // digits
+  DENSITY_DIGITS: 2, // digits
   EARTH_REFERENCE_DIGITS: 4, // digits
   REBUILD_DIGITS: 4, // digits
-  REBUILD_DIGITS_SEGMENT_2: 3, // digits
+  LIGHT_YEARS_DIGITS: 3, // digits
 
   CONTENT_WIDTH: 244,
   LABEL_WIDTH: 112,
@@ -394,17 +394,17 @@ export const PLANET_CARD_NODE_SETTINGS = {
 
 /** Settings for explore/view/PlanetTableNode.ts. Layout lengths are in px; counts and ratios are dimensionless. */
 export const PLANET_TABLE_NODE_SETTINGS = {
-  FUNNEL_SHAPE_X_SEGMENT_2: 6, // px
-  FUNNEL_SHAPE_Y_SEGMENT_2: 10, // px
-  FUNNEL_SHAPE_X_SEGMENT_3: 4, // px
-  FUNNEL_SHAPE_Y_SEGMENT_3: 9, // px
+  FUNNEL_NECK_X: 6, // px
+  FUNNEL_NECK_BOTTOM_Y: 10, // px
+  FUNNEL_TIP_X: 4, // px
+  FUNNEL_TIP_Y: 9, // px
   DIMENSION2_WIDTH: 4, // px
 
   LAYOUT_MAX_WIDTH_OFFSET: 8, // px
   LAYOUT_MAX_WIDTH: 10, // px
   LAYOUT_BOTTOM_OFFSET: 4, // px
-  CONSTRUCTOR_TOP_OFFSET: 6, // px
-  CONSTRUCTOR_LEFT_OFFSET: 4, // px
+  TOP_GAP: 6, // px
+  SCROLL_BAR_LEFT_GAP: 4, // px
 
   ROW_HEIGHT: 22,
   HEADER_HEIGHT: 40,
@@ -472,7 +472,7 @@ export const PLOT_GALLERY_SCREEN_VIEW_SETTINGS = {
 
   PRESET_LIST_MAX_WIDTH_OFFSET: 50, // px
   SOLAR_SYSTEM_CHECKBOX_MAX_WIDTH_OFFSET: 50, // px
-  CONSTRUCTOR_TOP_OFFSET: 6, // px
+  TOP_GAP: 6, // px
   PLOTTED_TEXT_MAX_WIDTH_OFFSET: 20, // px
   CAPTION_PANEL_TOP_OFFSET: 62, // px
   CAPTION_PANEL_MIN_WIDTH_OFFSET: 24, // px
@@ -500,7 +500,7 @@ export const EXOPLANETS_DATABASE_PREFERENCES_NODE_SETTINGS = {
   HEADER_FONT_SIZE: 18,
   ARCHIVE_SYNTAX_CHECKBOX_FONT_SIZE: 14,
   ARCHIVE_SYNTAX_CHECKBOX_SPACING: 8,
-  CONSTRUCTOR_SPACING: 12,
+  SPACING: 12,
 } as const;
 
 ExoplanetsDatabaseNamespace.register("ExoplanetsDatabaseConstants", {

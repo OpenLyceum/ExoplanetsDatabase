@@ -21,7 +21,7 @@ class LegendRow extends HBox {
   public constructor(entry: LegendEntry) {
     const count = new Text("", { font: FONTS.SMALL, fill: ExoplanetsDatabaseColors.secondaryTextColorProperty });
     super({
-      spacing: LEGEND_NODE_SETTINGS.CONSTRUCTOR_SPACING,
+      spacing: LEGEND_NODE_SETTINGS.ROW_SPACING,
       children: [
         new Path(entry.marker.toShape(5), { fill: entry.color }),
         new RichText(entry.label, {

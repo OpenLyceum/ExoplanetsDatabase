@@ -80,8 +80,8 @@ class BoundField extends RectangularPushButton {
       ...FLAT_PANEL_PUSH_BUTTON_OPTIONS,
       content: text,
       minWidth: FIELD_WIDTH,
-      xMargin: FILTER_DIALOG_SETTINGS.CONSTRUCTOR_X_MARGIN,
-      yMargin: FILTER_DIALOG_SETTINGS.CONSTRUCTOR_Y_MARGIN,
+      xMargin: FILTER_DIALOG_SETTINGS.X_MARGIN,
+      yMargin: FILTER_DIALOG_SETTINGS.Y_MARGIN,
       accessibleName,
       listener: () => {
         getKeypadDialog().beginEdit(
@@ -206,7 +206,7 @@ class FilterDialog extends Dialog {
       content: new Text(strings.clearFilterStringProperty, {
         font: FONTS.LABEL,
         fill: LIGHT_SURFACE_TEXT_FILL,
-        maxWidth: FILTER_DIALOG_SETTINGS.CONSTRUCTOR_CLEAR_BUTTON_MAX_WIDTH,
+        maxWidth: FILTER_DIALOG_SETTINGS.DIALOG_CLEAR_BUTTON_MAX_WIDTH,
       }),
       listener: () => criterion.reset(),
       accessibleName: strings.clearFilterStringProperty,

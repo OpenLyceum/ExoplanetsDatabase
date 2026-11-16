@@ -57,7 +57,7 @@ export class MethodCheckboxGroup extends VBox {
     );
     super({
       align: "left",
-      spacing: METHOD_CHECKBOX_GROUP_SETTINGS.CONSTRUCTOR_SPACING,
+      spacing: METHOD_CHECKBOX_GROUP_SETTINGS.SPACING,
       children: [...checkboxes, measuredMassCheckbox],
     });
     this.disposeMethodCheckboxGroup = () => {

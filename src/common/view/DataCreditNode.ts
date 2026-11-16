@@ -23,7 +23,7 @@ export class DataCreditNode extends Text {
     super(creditStringProperty, {
       font: FONTS.SMALL,
       fill: ExoplanetsDatabaseColors.secondaryTextColorProperty,
-      maxWidth: DATA_CREDIT_NODE_SETTINGS.CONSTRUCTOR_MAX_WIDTH,
+      maxWidth: DATA_CREDIT_NODE_SETTINGS.MAX_WIDTH,
       ...options,
     });
     this.creditStringProperty = creditStringProperty;

@@ -143,7 +143,7 @@ export class PlotGalleryScreenView extends ScreenView {
     );
     for (const chart of [scatter, bars]) {
       chart.left = CHART_LEFT;
-      chart.top = MARGIN + PLOT_GALLERY_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_TOP_OFFSET;
+      chart.top = MARGIN + PLOT_GALLERY_SCREEN_VIEW_SETTINGS.TOP_GAP;
     }
 
     // ── Colour key and planet count ──────────────────────────────────────────

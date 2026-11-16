@@ -5,6 +5,8 @@ import { COUNTS_SCREEN_VIEW_SETTINGS } from "../../ExoplanetsDatabaseConstants.j
  * The Counts screen, the sim's version of the archive's Exoplanet Counts page: headline numbers
  * across the top, planets per discovery method (optionally only recent ones) on the left, and
  * the growth of the confirmed count since the first discoveries on the right.
+ *
+ * Aggregation lives on CountsModel; this file only paints.
  */
 
 import { DerivedProperty, Multilink, PatternStringProperty, type TReadOnlyProperty } from "scenerystack/axon";
@@ -18,8 +20,6 @@ import { NumberSpinner } from "scenerystack/sun";
 import { FLAT_RESET_ALL_BUTTON_OPTIONS } from "../../common/ExoplanetsDatabaseButtonOptions.js";
 import { ExoplanetsDatabasePanel } from "../../common/ExoplanetsDatabasePanel.js";
 import { DiscoveryMethod } from "../../common/model/DiscoveryMethod.js";
-import { FacilityGroup } from "../../common/model/FacilityGroup.js";
-import { Quantity } from "../../common/model/Quantity.js";
 import { DataCreditNode } from "../../common/view/DataCreditNode.js";
 import { methodColor, methodMarker, methodName } from "../../common/view/dataStyles.js";
 import { formatCount, formatPercent } from "../../common/view/format.js";
@@ -52,7 +52,6 @@ export class CountsScreenView extends ScreenView {
     super(options);
 
     const strings = StringManager.getInstance().getCountsStrings();
-    const catalog = model.catalog;
     const bounds = this.layoutBounds;
     const heading = (text: TReadOnlyProperty<string>): Text =>
       new Text(text, {
@@ -62,13 +61,13 @@ export class CountsScreenView extends ScreenView {
       });
 
     // ── Headline tiles ────────────────────────────────────────────────────────
-    const facilityCount = (group: FacilityGroup): number => catalog.facilityGroups.filter((g) => g === group).length;
+    const h = model.headlines;
     const tileValues: [TReadOnlyProperty<string>, number][] = [
-      [strings.tiles.confirmedStringProperty, catalog.size],
-      [strings.tiles.tessCandidatesStringProperty, catalog.tessCandidates],
-      [strings.tiles.keplerCandidatesStringProperty, catalog.keplerCandidates],
-      [strings.tiles.byTessStringProperty, facilityCount(FacilityGroup.TESS)],
-      [strings.tiles.byKeplerStringProperty, facilityCount(FacilityGroup.KEPLER)],
+      [strings.tiles.confirmedStringProperty, h.confirmed],
+      [strings.tiles.tessCandidatesStringProperty, h.tessCandidates],
+      [strings.tiles.keplerCandidatesStringProperty, h.keplerCandidates],
+      [strings.tiles.byTessStringProperty, h.byTess],
+      [strings.tiles.byKeplerStringProperty, h.byKepler],
     ];
     const tileWidth = (bounds.width - 2 * MARGIN - 4 * MARGIN) / 5;
     const tiles = tileValues.map(([label, value], k) => {
@@ -153,19 +152,23 @@ export class CountsScreenView extends ScreenView {
       maxWidth: METHODS_WIDTH - COUNTS_SCREEN_VIEW_SETTINGS.TOTAL_TEXT_MAX_WIDTH_OFFSET,
     });
     Multilink.multilink(
-      [model.sinceYearProperty, strings.methodTotalPatternStringProperty, strings.methodRowPatternStringProperty],
-      (sinceYear, totalPattern, rowPattern) => {
-        const counts = model.methodCounts(sinceYear);
-        const total = counts.reduce((a, b) => a + b, 0);
-        const max = Math.max(1, ...counts);
+      [
+        model.methodCountsProperty,
+        model.sinceYearProperty,
+        strings.methodTotalPatternStringProperty,
+        strings.methodRowPatternStringProperty,
+      ],
+      (presentation, sinceYear, totalPattern, rowPattern) => {
         rows.forEach(({ bar, value }, k) => {
-          const n = counts[k] ?? 0;
-          bar.rectWidth = Math.max(n > 0 ? 1 : 0, (BAR_MAX_WIDTH * n) / max);
+          const n = presentation.counts[k] ?? 0;
+          bar.rectWidth = Math.max(n > 0 ? 1 : 0, (BAR_MAX_WIDTH * n) / presentation.max);
           value.string = rowPattern
             .replace("{{count}}", formatCount(n))
-            .replace("{{percent}}", formatPercent(total > 0 ? n / total : Number.NaN));
+            .replace("{{percent}}", formatPercent(presentation.total > 0 ? n / presentation.total : Number.NaN));
         });
-        totalText.string = totalPattern.replace("{{count}}", formatCount(total)).replace("{{year}}", String(sinceYear));
+        totalText.string = totalPattern
+          .replace("{{count}}", formatCount(presentation.total))
+          .replace("{{year}}", String(sinceYear));
       },
     );
     const methodsPanel = new ExoplanetsDatabasePanel(
@@ -175,7 +178,7 @@ export class CountsScreenView extends ScreenView {
         children: [
           heading(strings.methodsTitleStringProperty),
           new HBox({
-            spacing: COUNTS_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_METHODS_PANEL_SPACING,
+            spacing: COUNTS_SCREEN_VIEW_SETTINGS.YEAR_SPINNER_ROW_SPACING,
             children: [
               new Text(strings.sinceYearStringProperty, {
                 font: FONTS.LABEL,
@@ -199,48 +202,44 @@ export class CountsScreenView extends ScreenView {
     );
 
     // ── Growth over time ─────────────────────────────────────────────────────
+    const growth = model.growth;
     const frame = new PlotFrameNode(CHART_WIDTH, CHART_HEIGHT);
-    const firstYear = 1990;
-    const lastYear = Math.ceil(Math.max(...Array.from(catalog.discoveryMonths).filter(Number.isFinite))) + 0.5;
-    const yMax = Math.ceil((catalog.size * 1.08) / 1000) * 1000;
-    frame.setAxes({ range: new Range(firstYear, lastYear), log: false }, { range: new Range(0, yMax), log: false });
+    frame.setAxes(
+      { range: new Range(growth.firstYear, growth.lastYear), log: false },
+      { range: new Range(0, growth.yMax), log: false },
+    );
     frame.setAxisLabels(strings.yearAxisStringProperty, strings.growthAxisStringProperty);
-    const dates = Array.from({ length: catalog.size }, (_, i) => {
-      const month = catalog.discoveryMonths[i] ?? Number.NaN;
-      return Number.isFinite(month) ? month : catalog.value(i, Quantity.DISCOVERY_YEAR) + 0.5;
-    });
-    const stepLine = (include: (i: number) => boolean): Shape => {
-      const times = dates.filter((_, i) => include(i)).sort((a, b) => a - b);
+    const stepLine = (times: number[]): Shape => {
       const shape = new Shape().moveTo(
-        frame.chartTransform.modelToViewX(firstYear),
+        frame.chartTransform.modelToViewX(growth.firstYear),
         frame.chartTransform.modelToViewY(0),
       );
       times.forEach((t, k) => {
         shape.lineTo(frame.chartTransform.modelToViewX(t), frame.chartTransform.modelToViewY(k + 1));
       });
-      return shape.lineTo(frame.chartTransform.modelToViewX(lastYear), frame.chartTransform.modelToViewY(times.length));
+      return shape.lineTo(
+        frame.chartTransform.modelToViewX(growth.lastYear),
+        frame.chartTransform.modelToViewY(times.length),
+      );
     };
     const methodLines = methods.map(
-      (method) =>
-        new Path(
-          stepLine((i) => catalog.methods[i] === method),
-          { stroke: methodColor(method), lineWidth: COUNTS_SCREEN_VIEW_SETTINGS.METHOD_LINES_LINE_WIDTH },
-        ),
+      (method, k) =>
+        new Path(stepLine(growth.methodTimes[k] ?? []), {
+          stroke: methodColor(method),
+          lineWidth: COUNTS_SCREEN_VIEW_SETTINGS.METHOD_LINES_LINE_WIDTH,
+        }),
     );
-    const totalLine = new Path(
-      stepLine(() => true),
-      {
-        stroke: ExoplanetsDatabaseColors.textColorProperty,
-        lineWidth: COUNTS_SCREEN_VIEW_SETTINGS.TOTAL_LINE_LINE_WIDTH,
-      },
-    );
+    const totalLine = new Path(stepLine(growth.allTimes), {
+      stroke: ExoplanetsDatabaseColors.textColorProperty,
+      lineWidth: COUNTS_SCREEN_VIEW_SETTINGS.TOTAL_LINE_LINE_WIDTH,
+    });
     const y4000 = frame.chartTransform.modelToViewY(FOUR_THOUSAND);
     const x2019 = frame.chartTransform.modelToViewX(FOUR_THOUSAND_PLANETS_YEAR);
     const markerOptions = {
       stroke: ExoplanetsDatabaseColors.guideLineColorProperty,
       lineDash: [
         COUNTS_SCREEN_VIEW_SETTINGS.MARKER_OPTIONS_LINE_DASH_DASH,
-        COUNTS_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_MARKER_OPTIONS_LINE_DASH_DASH,
+        COUNTS_SCREEN_VIEW_SETTINGS.MARKER_LINE_DASH_GAP,
       ],
     };
     const marker = new Node({
@@ -272,8 +271,8 @@ export class CountsScreenView extends ScreenView {
     });
     const growthText = new Text(
       new PatternStringProperty(strings.growthPatternStringProperty, {
-        count: formatCount(catalog.size),
-        factor: (catalog.size / FOUR_THOUSAND).toFixed(COUNTS_SCREEN_VIEW_SETTINGS.GROWTH_TEXT_DECIMAL_PLACES),
+        count: formatCount(h.confirmed),
+        factor: (h.confirmed / FOUR_THOUSAND).toFixed(COUNTS_SCREEN_VIEW_SETTINGS.GROWTH_TEXT_DECIMAL_PLACES),
       }),
       {
         font: FONTS.LABEL,
@@ -289,7 +288,7 @@ export class CountsScreenView extends ScreenView {
           heading(strings.growthTitleStringProperty),
           new Node({ children: [frame] }),
           new HBox({
-            spacing: COUNTS_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_GROWTH_PANEL_SPACING,
+            spacing: COUNTS_SCREEN_VIEW_SETTINGS.GROWTH_CAPTION_SPACING,
             children: [totalLegend, growthText],
           }),
         ],
@@ -299,7 +298,7 @@ export class CountsScreenView extends ScreenView {
         top: methodsPanel.top,
         tagName: "div",
         accessibleParagraph: new PatternStringProperty(strings.growthDescriptionPatternStringProperty, {
-          count: formatCount(catalog.size),
+          count: formatCount(h.confirmed),
         }),
       },
     );

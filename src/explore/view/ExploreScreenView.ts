@@ -132,7 +132,7 @@ export class ExploreScreenView extends ScreenView {
     const matchCount = new MatchCountNode(database, { left: tableLeft, top: MARGIN });
     this.table = new PlanetTableNode(model, TABLE_WIDTH, TABLE_ROWS);
     this.table.left = tableLeft;
-    this.table.top = matchCount.bottom + EXPLORE_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_TOP_OFFSET;
+    this.table.top = matchCount.bottom + EXPLORE_SCREEN_VIEW_SETTINGS.TOP_GAP;
     const summary = new FilterSummaryNode(filter, TABLE_WIDTH);
     summary.left = tableLeft;
     summary.top = this.table.bottom + 8;

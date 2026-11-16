@@ -45,7 +45,7 @@ export class ExoplanetsDatabasePreferencesNode extends VBox {
 
     super({
       align: "left",
-      spacing: EXOPLANETS_DATABASE_PREFERENCES_NODE_SETTINGS.CONSTRUCTOR_SPACING,
+      spacing: EXOPLANETS_DATABASE_PREFERENCES_NODE_SETTINGS.SPACING,
       children: [header, archiveSyntaxCheckbox],
     });
   }

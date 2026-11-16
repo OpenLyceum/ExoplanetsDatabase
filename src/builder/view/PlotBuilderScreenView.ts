@@ -177,7 +177,7 @@ export class PlotBuilderScreenView extends ScreenView {
           yControls,
           new VBox({
             align: "left",
-            spacing: PLOT_BUILDER_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_LEFT_PANEL_SPACING,
+            spacing: PLOT_BUILDER_SCREEN_VIEW_SETTINGS.COLOR_BY_SECTION_SPACING,
             children: [heading(strings.colorByTitleStringProperty), colorByGroup],
           }),
           solarSystemCheckbox,
@@ -196,7 +196,7 @@ export class PlotBuilderScreenView extends ScreenView {
       strings.chartHelpStringProperty,
     );
     chart.left = CHART_LEFT;
-    chart.top = MARGIN + PLOT_BUILDER_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_TOP_OFFSET;
+    chart.top = MARGIN + PLOT_BUILDER_SCREEN_VIEW_SETTINGS.TOP_GAP;
     const legend = new LegendNode();
 
     // ── Right panel: count, methods, filters, selection ─────────────────────

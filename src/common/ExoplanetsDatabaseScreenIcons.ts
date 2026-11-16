@@ -151,7 +151,7 @@ export function createExploreIcon(): ScreenIcon {
     rows.push(
       new Path(methodMarker(method).toShape(9), {
         fill: methodColor(method),
-        x: EXOPLANETS_DATABASE_SCREEN_ICONS_SETTINGS.CREATE_EXPLORE_ICON_X_VARIANT_2,
+        x: EXOPLANETS_DATABASE_SCREEN_ICONS_SETTINGS.CREATE_EXPLORE_ICON_MARKER_X,
         y:
           EXOPLANETS_DATABASE_SCREEN_ICONS_SETTINGS.CREATE_EXPLORE_ICON_Y_OFFSET +
           r * EXOPLANETS_DATABASE_SCREEN_ICONS_SETTINGS.CREATE_EXPLORE_ICON_Y_FACTOR,
@@ -163,7 +163,7 @@ export function createExploreIcon(): ScreenIcon {
           110 + c * 105,
           93 + r * 38,
           70 - ((r + c) % 3) * 12,
-          EXOPLANETS_DATABASE_SCREEN_ICONS_SETTINGS.CREATE_EXPLORE_ICON_HEIGHT_SEGMENT_2,
+          EXOPLANETS_DATABASE_SCREEN_ICONS_SETTINGS.CREATE_EXPLORE_ICON_CELL_HEIGHT,
           {
             fill: ExoplanetsDatabaseColors.secondaryTextColorProperty,
             cornerRadius: EXOPLANETS_DATABASE_SCREEN_ICONS_SETTINGS.CREATE_EXPLORE_ICON_CORNER_RADIUS,

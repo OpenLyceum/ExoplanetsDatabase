@@ -7,6 +7,9 @@ import { PLANET_TABLE_NODE_SETTINGS } from "../../ExoplanetsDatabaseConstants.js
  * Each header sorts by its column (press again to reverse) and has a filter button that opens the
  * column's FilterDialog, as the archive puts a filter box under every header.
  *
+ * Sort/filter window state (first row, visible indices, sort indicators) lives on ExploreModel;
+ * this node owns virtualization and Scenery/DOM only.
+ *
  * Keyboard: the table body is one focusable element; the up/down arrows, Page Up/Down, Home and
  * End move the selected planet, and the table scrolls to keep it in view.
  */
@@ -32,7 +35,7 @@ import { formatInteger, formatValue } from "../../common/view/format.js";
 import ExoplanetsDatabaseColors from "../../ExoplanetsDatabaseColors.js";
 import { FONTS } from "../../ExoplanetsDatabaseConstants.js";
 import { StringManager } from "../../i18n/StringManager.js";
-import type { ExploreModel } from "../model/ExploreModel.js";
+import type { ColumnSortState, ExploreModel } from "../model/ExploreModel.js";
 
 const ROW_HEIGHT: number = PLANET_TABLE_NODE_SETTINGS.ROW_HEIGHT;
 const HEADER_HEIGHT: number = PLANET_TABLE_NODE_SETTINGS.HEADER_HEIGHT;
@@ -46,10 +49,10 @@ const FILTER_BUTTON_SIZE: number = PLANET_TABLE_NODE_SETTINGS.FILTER_BUTTON_SIZE
 const FUNNEL_SHAPE = new Shape()
   .moveTo(0, 0)
   .lineTo(PLANET_TABLE_NODE_SETTINGS.FUNNEL_SHAPE_X, 0)
-  .lineTo(PLANET_TABLE_NODE_SETTINGS.FUNNEL_SHAPE_X_SEGMENT_2, PLANET_TABLE_NODE_SETTINGS.FUNNEL_SHAPE_Y)
-  .lineTo(PLANET_TABLE_NODE_SETTINGS.FUNNEL_SHAPE_X_SEGMENT_2, PLANET_TABLE_NODE_SETTINGS.FUNNEL_SHAPE_Y_SEGMENT_2)
-  .lineTo(PLANET_TABLE_NODE_SETTINGS.FUNNEL_SHAPE_X_SEGMENT_3, PLANET_TABLE_NODE_SETTINGS.FUNNEL_SHAPE_Y_SEGMENT_3)
-  .lineTo(PLANET_TABLE_NODE_SETTINGS.FUNNEL_SHAPE_X_SEGMENT_3, PLANET_TABLE_NODE_SETTINGS.FUNNEL_SHAPE_Y)
+  .lineTo(PLANET_TABLE_NODE_SETTINGS.FUNNEL_NECK_X, PLANET_TABLE_NODE_SETTINGS.FUNNEL_SHAPE_Y)
+  .lineTo(PLANET_TABLE_NODE_SETTINGS.FUNNEL_NECK_X, PLANET_TABLE_NODE_SETTINGS.FUNNEL_NECK_BOTTOM_Y)
+  .lineTo(PLANET_TABLE_NODE_SETTINGS.FUNNEL_TIP_X, PLANET_TABLE_NODE_SETTINGS.FUNNEL_TIP_Y)
+  .lineTo(PLANET_TABLE_NODE_SETTINGS.FUNNEL_TIP_X, PLANET_TABLE_NODE_SETTINGS.FUNNEL_SHAPE_Y)
   .close();
 
 /** One column's header and its column of cells, built once and repositioned when columns change. */
@@ -191,7 +194,7 @@ class ColumnNodes {
     });
   }
 
-  public setSortState(state: "none" | "ascending" | "descending"): void {
+  public setSortState(state: ColumnSortState): void {
     this.sortIndicator.string = state === "ascending" ? "▲" : state === "descending" ? "▼" : "";
     this.sortIndicator.right = this.headerBackground.right - 2;
   }
@@ -244,7 +247,6 @@ export class PlanetTableNode extends Node {
   private readonly model: ExploreModel;
   private readonly rowCount: number;
   private readonly tableWidth: number;
-  private readonly firstRowProperty = new NumberProperty(0);
   private readonly columnNodes = new Map<TableColumn, ColumnNodes>();
   private readonly columnsLayer = new Node();
   private readonly rowBackgrounds: Rectangle[] = [];
@@ -255,7 +257,7 @@ export class PlanetTableNode extends Node {
   public readonly bodyNode: Node;
   public readonly scrollBar: VSlider;
 
-  public constructor(model: ExploreModel, width: number, rowCount: number) {
+  public constructor(model: ExploreModel, width: number, rowCount: number = model.rowCount) {
     // Lives as long as the Explore screen, which lives as long as the sim.
     super({ isDisposable: false });
     this.model = model;
@@ -272,8 +274,8 @@ export class PlanetTableNode extends Node {
         inputListeners: [
           new FireListener({
             fire: () => {
-              const index = database.sortedPlanetsProperty.value[this.firstRowProperty.value + r];
-              if (index !== undefined) {
+              const index = model.planetAtRow(r);
+              if (index !== null) {
                 database.selectedPlanetProperty.value = index;
               }
             },
@@ -286,7 +288,7 @@ export class PlanetTableNode extends Node {
       font: FONTS.LABEL,
       fill: ExoplanetsDatabaseColors.secondaryTextColorProperty,
       left: CELL_PADDING,
-      top: HEADER_HEIGHT + PLANET_TABLE_NODE_SETTINGS.CONSTRUCTOR_TOP_OFFSET,
+      top: HEADER_HEIGHT + PLANET_TABLE_NODE_SETTINGS.TOP_GAP,
       maxWidth: this.tableWidth - 2 * CELL_PADDING,
     });
 
@@ -328,7 +330,7 @@ export class PlanetTableNode extends Node {
     this.bodyNode.addInputListener({
       wheel: (event) => {
         const delta = event.domEvent?.deltaY ?? 0;
-        this.scrollBy(Math.sign(delta) * Math.max(1, Math.round(Math.abs(delta) / ROW_HEIGHT)));
+        model.scrollBy(Math.sign(delta) * Math.max(1, Math.round(Math.abs(delta) / ROW_HEIGHT)));
         event.handle();
       },
     });
@@ -336,19 +338,17 @@ export class PlanetTableNode extends Node {
     // ── Scroll bar: a vertical slider on 0 (bottom) … 1 (top) ────────────────
     const scrollProperty = new NumberProperty(1, { range: new Range(0, 1) });
     let syncing = false;
-    const maxFirstRow = (): number => Math.max(0, database.sortedPlanetsProperty.value.length - rowCount);
     scrollProperty.lazyLink((scroll) => {
       if (!syncing) {
         syncing = true;
-        this.firstRowProperty.value = Math.round((1 - scroll) * maxFirstRow());
+        model.setFirstRowFromScrollFraction(scroll);
         syncing = false;
       }
     });
-    this.firstRowProperty.lazyLink((first) => {
+    model.firstRowProperty.lazyLink(() => {
       if (!syncing) {
         syncing = true;
-        const max = maxFirstRow();
-        scrollProperty.value = max === 0 ? 1 : 1 - first / max;
+        scrollProperty.value = model.scrollFractionFromFirstRow();
         syncing = false;
       }
       this.refresh();
@@ -361,31 +361,27 @@ export class PlanetTableNode extends Node {
       shiftKeyboardStep: PLANET_TABLE_NODE_SETTINGS.SCROLL_BAR_SHIFT_KEYBOARD_STEP,
       pageKeyboardStep: PLANET_TABLE_NODE_SETTINGS.SCROLL_BAR_PAGE_KEYBOARD_STEP,
       accessibleName: strings.scrollBarStringProperty,
-      left: this.tableWidth + PLANET_TABLE_NODE_SETTINGS.CONSTRUCTOR_LEFT_OFFSET,
+      left: this.tableWidth + PLANET_TABLE_NODE_SETTINGS.SCROLL_BAR_LEFT_GAP,
       top: HEADER_HEIGHT + 12,
     });
 
     this.children = [this.bodyNode, this.columnsLayer, this.scrollBar];
 
     // ── Updates ───────────────────────────────────────────────────────────────
-    for (const property of model.columnVisibleProperties.values()) {
-      property.lazyLink(() => this.relayout());
-    }
+    model.visibleColumnsProperty.lazyLink(() => this.relayout());
     database.sortedPlanetsProperty.link(() => {
-      this.firstRowProperty.value = Math.min(this.firstRowProperty.value, maxFirstRow());
       syncing = true;
-      const max = maxFirstRow();
-      scrollProperty.value = max === 0 ? 1 : 1 - this.firstRowProperty.value / max;
+      scrollProperty.value = model.scrollFractionFromFirstRow();
       syncing = false;
-      this.scrollBar.enabled = max > 0;
-      this.scrollToSelection();
+      this.scrollBar.enabled = model.maxFirstRowProperty.value > 0;
+      model.scrollToSelection();
       this.refresh();
     });
     Multilink.multilink([database.sortColumnProperty, database.sortAscendingProperty], () =>
       this.updateSortIndicators(),
     );
     database.selectedPlanetProperty.lazyLink(() => {
-      this.scrollToSelection();
+      model.scrollToSelection();
       this.refresh();
     });
     // Method names are written into cells, so rewrite them when the language changes.
@@ -393,29 +389,6 @@ export class PlanetTableNode extends Node {
       this.refresh(),
     );
     this.relayout();
-  }
-
-  private scrollBy(rows: number): void {
-    const max = Math.max(0, this.model.database.sortedPlanetsProperty.value.length - this.rowCount);
-    this.firstRowProperty.value = Math.max(0, Math.min(max, this.firstRowProperty.value + rows));
-  }
-
-  /** Scrolls so the selected planet's row is visible. */
-  private scrollToSelection(): void {
-    const selected = this.model.database.selectedPlanetProperty.value;
-    if (selected === null) {
-      return;
-    }
-    const position = this.model.database.sortedPlanetsProperty.value.indexOf(selected);
-    if (position < 0) {
-      return;
-    }
-    const first = this.firstRowProperty.value;
-    if (position < first) {
-      this.firstRowProperty.value = position;
-    } else if (position >= first + this.rowCount) {
-      this.firstRowProperty.value = position - this.rowCount + 1;
-    }
   }
 
   /** Rebuilds the column layout after the visible columns change. */
@@ -458,41 +431,34 @@ export class PlanetTableNode extends Node {
   }
 
   private updateSortIndicators(): void {
-    const database = this.model.database;
     for (const nodes of this.columnNodes.values()) {
-      nodes.setSortState(
-        nodes.column !== database.sortColumnProperty.value
-          ? "none"
-          : database.sortAscendingProperty.value
-            ? "ascending"
-            : "descending",
-      );
+      nodes.setSortState(this.model.sortStateFor(nodes.column));
     }
   }
 
   /** Writes the visible window of planets into the rows. */
   private refresh(): void {
-    const database = this.model.database;
-    const sorted = database.sortedPlanetsProperty.value;
-    const first = this.firstRowProperty.value;
-    const selected = database.selectedPlanetProperty.value;
+    const model = this.model;
+    const window = model.visiblePlanetIndicesProperty.value;
+    const selected = model.database.selectedPlanetProperty.value;
+    const first = model.firstRowProperty.value;
     for (let r = 0; r < this.rowCount; r++) {
-      const index = sorted[first + r];
+      const index = window[r] ?? null;
       const background = this.rowBackgrounds[r] as Rectangle;
       background.fill =
-        index !== undefined && index === selected
+        index !== null && index === selected
           ? ExoplanetsDatabaseColors.tableSelectedRowColorProperty
           : (first + r) % 2 === 0
             ? ExoplanetsDatabaseColors.tableRowColorProperty
             : ExoplanetsDatabaseColors.tableAlternateRowColorProperty;
       for (const nodes of this.visibleColumnNodes) {
-        nodes.fill(r, index ?? null, this.model);
+        nodes.fill(r, index, model);
       }
     }
-    this.noMatchesText.visible = sorted.length === 0;
+    this.noMatchesText.visible = model.database.sortedPlanetsProperty.value.length === 0;
   }
 
   public reset(): void {
-    this.firstRowProperty.reset();
+    this.model.firstRowProperty.reset();
   }
 }
