@@ -70,7 +70,8 @@ Data and formulas: [`doc/model.md`](doc/model.md). Architecture and decisions:
 Standard fleet pattern:
 
 - Per-screen a11y strings live under `a11y.<screenKey>` in each locale JSON. Explore and Plot Builder
-  summaries are live (match count, selection, plotted quantities).
+  summaries are live (match count, selection, plotted quantities). The Counts summary reports the
+  confirmed total and the method-chart count for the selected starting year.
 - Every screen has a wrapper `Node` with `pdomOrder` (Reset All last) and a `*KeyboardHelpContent`.
 - Custom keyboard interactions: the table body (arrows, Page Up/Down, Home/End move the selection),
   scatter plots (left/right step through planets from left to right), bar charts (left/right step

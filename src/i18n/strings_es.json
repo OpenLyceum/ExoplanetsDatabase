@@ -285,7 +285,7 @@
         "controlArea": "El área de control tiene un botón Restablecer todo.",
         "interactionHint": "Cambie el primer año de descubrimiento para contar solo los descubrimientos recientes de cada método."
       },
-      "currentDetails": "Los datos provienen de la NASA Exoplanet Archive."
+      "currentDetailsPattern": "La instantánea contiene {{confirmed}} planetas confirmados. El gráfico por método muestra {{count}} planetas descubiertos en {{year}} o después."
     },
     "explore": {
       "screenSummary": {

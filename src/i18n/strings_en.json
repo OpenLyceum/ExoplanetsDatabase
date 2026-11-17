@@ -285,7 +285,7 @@
         "controlArea": "The control area has a Reset All button.",
         "interactionHint": "Change the first discovery year to count only recent discoveries by each method."
       },
-      "currentDetails": "The data come from the NASA Exoplanet Archive."
+      "currentDetailsPattern": "The snapshot contains {{confirmed}} confirmed planets. The method chart shows {{count}} planets discovered in {{year}} or later."
     },
     "explore": {
       "screenSummary": {

@@ -285,7 +285,7 @@
         "controlArea": "La zone de contrôle contient un bouton Tout réinitialiser.",
         "interactionHint": "Changez la première année de découverte pour ne compter que les découvertes récentes de chaque méthode."
       },
-      "currentDetails": "Les données viennent de la NASA Exoplanet Archive."
+      "currentDetailsPattern": "Les données contiennent {{confirmed}} planètes confirmées. Le graphique par méthode montre {{count}} planètes découvertes en {{year}} ou après."
     },
     "explore": {
       "screenSummary": {
