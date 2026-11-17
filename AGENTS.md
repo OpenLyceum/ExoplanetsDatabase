@@ -80,7 +80,7 @@ Standard fleet pattern:
 
 ## Compliance carve-outs
 
-- None.
+- `memory-leak:BoundField`: file-private keypad field inside `FilterDialog`; not exported for `describeDisposalLeaks`.
 
 ## Commands
 
