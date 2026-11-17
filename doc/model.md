@@ -85,17 +85,9 @@ null), Earth-like orbits (a 0.72–1.5 au and M★ 0.9–1.1).
 - The Solar System reference values are the NASA Planetary Fact Sheet's; planet temperatures are
   its black-body temperatures.
 
-## Preserving the frozen snapshot when adding limit flags
+## Limit flags on the frozen snapshot
 
-`fetch-archive.ts` now requests and writes limit flags on future refreshes. To repair an older
-snapshot without changing its values or counts, query the ten parameter/limit pairs listed in
-`scripts/archive/add-limit-flags.ts` from NASA TAP, save the JSON, and run:
-
-```bash
-node scripts/archive/add-limit-flags.ts /path/to/archive-limit-rows.json
-```
-
-The updater verifies every parameter against the frozen, rounded value and refuses source drift
-or missing metadata before writing. The 2026-11-06 enrichment matched all 6,464 planets and all
-ten retained parameters. It adds 225 upper and 13 lower mass limits; there are 3,163 measured
-masses, 3,032 estimated masses, and 238 mass bounds among 6,433 listed masses.
+`fetch-archive.ts` requests and writes limit flags on refreshes. The committed snapshot was
+enriched once on 2026-11-06 (the one-shot updater has since been removed): all 6,464 planets and
+all ten retained parameters matched; it added 225 upper and 13 lower mass limits. There are
+3,163 measured masses, 3,032 estimated masses, and 238 mass bounds among 6,433 listed masses.
