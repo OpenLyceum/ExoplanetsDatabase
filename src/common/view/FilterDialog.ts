@@ -172,15 +172,8 @@ class FilterDialog extends Dialog {
     );
 
     // What to type in the archive's box for this column.
-    const archiveTextProperty = new StringProperty("");
-    const archiveText = new RichText(archiveTextProperty, {
-      font: FONTS.SMALL,
-      fill: LIGHT_SURFACE_TEXT_FILL,
-      maxWidth: FILTER_DIALOG_SETTINGS.ARCHIVE_TEXT_MAX_WIDTH,
-      lineWrap: FILTER_DIALOG_SETTINGS.ARCHIVE_TEXT_LINE_WRAP,
-      visibleProperty: exoplanetsDatabasePreferences.showArchiveSyntaxProperty,
-    });
-    Multilink.multilink(
+    // archiveSyntax reads the bounds and the require-value flag, so all three are dependencies.
+    const archiveTextProperty = new DerivedProperty(
       [
         criterion.minProperty,
         criterion.maxProperty,
@@ -190,11 +183,18 @@ class FilterDialog extends Dialog {
       ],
       (_min, _max, _require, pattern, none) => {
         const syntax = criterion.archiveSyntax;
-        archiveTextProperty.value = (syntax === null ? none : pattern)
+        return (syntax === null ? none : pattern)
           .replace("{{text}}", `<b>${syntax ?? ""}</b>`)
           .replace("{{column}}", `“${quantity.archiveTitle}”`);
       },
     );
+    const archiveText = new RichText(archiveTextProperty, {
+      font: FONTS.SMALL,
+      fill: LIGHT_SURFACE_TEXT_FILL,
+      maxWidth: FILTER_DIALOG_SETTINGS.ARCHIVE_TEXT_MAX_WIDTH,
+      lineWrap: FILTER_DIALOG_SETTINGS.ARCHIVE_TEXT_LINE_WRAP,
+      visibleProperty: exoplanetsDatabasePreferences.showArchiveSyntaxProperty,
+    });
 
     // Requiring a value is implied by a bound, so the checkbox is only meaningful without one.
     Multilink.multilink([criterion.minProperty, criterion.maxProperty], (min, max) => {

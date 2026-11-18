@@ -7,7 +7,7 @@ import { EXPLORE_MODEL_SETTINGS, EXPLORE_SCREEN_VIEW_SETTINGS } from "../../Exop
  * (first visible row). PlanetTableNode keeps DOM / Scenery virtualization only.
  */
 
-import { BooleanProperty, DerivedProperty, NumberProperty, Property, type TReadOnlyProperty } from "scenerystack/axon";
+import { BooleanProperty, DerivedProperty, NumberProperty, type TReadOnlyProperty } from "scenerystack/axon";
 import type { TModel } from "scenerystack/joist";
 import type { ExoplanetDatabase } from "../../common/model/ExoplanetDatabase.js";
 import { TableColumn } from "../../common/model/TableColumn.js";
@@ -61,17 +61,11 @@ export class ExploreModel implements TModel {
       TableColumn.enumeration.values.map((column) => [column, new BooleanProperty(DEFAULT_COLUMNS.has(column))]),
     );
 
-    const recomputeVisibleColumns = (): TableColumn[] =>
+    this.visibleColumnsProperty = DerivedProperty.deriveAny([...this.columnVisibleProperties.values()], () =>
       TableColumn.enumeration.values.filter(
         (column) => column === TableColumn.NAME || this.columnVisibleProperties.get(column)?.value,
-      );
-    const visibleColumnsProperty = new Property(recomputeVisibleColumns());
-    for (const property of this.columnVisibleProperties.values()) {
-      property.lazyLink(() => {
-        visibleColumnsProperty.value = recomputeVisibleColumns();
-      });
-    }
-    this.visibleColumnsProperty = visibleColumnsProperty;
+      ),
+    );
 
     this.firstRowProperty = new NumberProperty(0);
     this.maxFirstRowProperty = new DerivedProperty([database.sortedPlanetsProperty], (sorted) =>

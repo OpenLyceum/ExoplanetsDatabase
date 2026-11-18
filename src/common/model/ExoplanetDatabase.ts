@@ -6,7 +6,13 @@
  * both screens, so a filtered table and its plot always show the same planets.
  */
 
-import { BooleanProperty, EnumerationProperty, Property } from "scenerystack/axon";
+import {
+  BooleanProperty,
+  DerivedProperty,
+  EnumerationProperty,
+  Property,
+  type TReadOnlyProperty,
+} from "scenerystack/axon";
 import { CATALOG, type ExoplanetCatalog } from "./ExoplanetCatalog.js";
 import { PlanetFilter } from "./PlanetFilter.js";
 import { sortPlanets } from "./sortPlanets.js";
@@ -17,10 +23,11 @@ export class ExoplanetDatabase {
   public readonly filter = new PlanetFilter();
 
   /** Planets passing the filters, in catalog order. */
-  public readonly matchingPlanetsProperty: Property<Uint32Array>;
+  public readonly matchingPlanetsProperty: TReadOnlyProperty<Uint32Array>;
+  private readonly _matchingPlanetsProperty: Property<Uint32Array>;
 
   /** Planets passing the filters, in table order. */
-  public readonly sortedPlanetsProperty: Property<Uint32Array>;
+  public readonly sortedPlanetsProperty: TReadOnlyProperty<Uint32Array>;
 
   /** Newest discoveries first by default. */
   public readonly sortColumnProperty = new EnumerationProperty(TableColumn.DISCOVERY_YEAR);
@@ -31,18 +38,16 @@ export class ExoplanetDatabase {
 
   public constructor(catalog: ExoplanetCatalog = CATALOG) {
     this.catalog = catalog;
-    this.matchingPlanetsProperty = new Property(this.filter.matches(catalog));
-    this.sortedPlanetsProperty = new Property(this.sort(this.matchingPlanetsProperty.value));
+    this._matchingPlanetsProperty = new Property(this.filter.matches(catalog));
+    this.matchingPlanetsProperty = this._matchingPlanetsProperty;
+    this.sortedPlanetsProperty = new DerivedProperty(
+      [this.matchingPlanetsProperty, this.sortColumnProperty, this.sortAscendingProperty],
+      (matching, column, ascending) => sortPlanets(catalog, matching, column, ascending),
+    );
 
     this.filter.changedEmitter.addListener(() => {
-      this.matchingPlanetsProperty.value = this.filter.matches(catalog);
+      this._matchingPlanetsProperty.value = this.filter.matches(catalog);
     });
-    const resort = (): void => {
-      this.sortedPlanetsProperty.value = this.sort(this.matchingPlanetsProperty.value);
-    };
-    this.matchingPlanetsProperty.lazyLink(resort);
-    this.sortColumnProperty.lazyLink(resort);
-    this.sortAscendingProperty.lazyLink(resort);
   }
 
   /** Sorts by a column; choosing the current sort column again reverses the order. */
@@ -53,10 +58,6 @@ export class ExoplanetDatabase {
       this.sortColumnProperty.value = column;
       this.sortAscendingProperty.value = true;
     }
-  }
-
-  private sort(indices: Uint32Array): Uint32Array {
-    return sortPlanets(this.catalog, indices, this.sortColumnProperty.value, this.sortAscendingProperty.value);
   }
 
   public reset(): void {
