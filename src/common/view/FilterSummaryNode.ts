@@ -97,8 +97,9 @@ export class FilterSummaryNode extends ExoplanetsDatabasePanel {
     const showArchive = exoplanetsDatabasePreferences.showArchiveSyntaxProperty;
 
     const rebuild = (): void => {
+      // disposeSubtree: the grid's Text cells link to localized string and color Properties.
       for (const child of content.children) {
-        child.dispose();
+        child.disposeSubtree();
       }
       const archiveColumn = showArchive.value;
       const readableWidth = archiveColumn ? innerWidth * 0.42 : innerWidth;
@@ -178,7 +179,7 @@ export class FilterSummaryNode extends ExoplanetsDatabasePanel {
       filter.changedEmitter.removeListener(rebuild);
       multilink.dispose();
       for (const child of content.children) {
-        child.dispose();
+        child.disposeSubtree();
       }
     };
   }

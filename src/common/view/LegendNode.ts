@@ -48,8 +48,9 @@ export class LegendNode extends VBox {
 
   /** Shows these entries with counts from the plotted points (rows with none plotted are dimmed). */
   public setEntries(entries: readonly LegendEntry[], points: PointSet): void {
+    // disposeSubtree: each row's label and count link to localized string and color Properties.
     for (const child of this.children) {
-      child.dispose();
+      child.disposeSubtree();
     }
     const counts = new Map<number, number>();
     for (const group of points.groups) {
