@@ -140,6 +140,7 @@ export class ScatterChartNode extends Node {
 
   /** Replaces the guide curves (nodes in view coordinates). */
   public setGuides(nodes: Node[]): void {
+    // Guide wrappers dispose their own Text/backdrop in disposeEmitter; curves are leaf Paths.
     for (const child of this.guidesLayer.children) {
       child.dispose();
     }
@@ -153,6 +154,7 @@ export class ScatterChartNode extends Node {
   }
 
   private layoutReferences(): void {
+    // Circles and Texts are leaves; dispose() is enough (no nested string Property trees).
     for (const child of this.referenceLayer.children) {
       child.dispose();
     }

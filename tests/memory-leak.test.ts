@@ -69,4 +69,26 @@ describe("Rebuilt rows release their localized text", () => {
       { label: "filter changes must not pile up summary text subscribers" },
     );
   });
+
+  it("PlanetCardNode disposes nested grid text on selection rebuild and dispose", async () => {
+    const card = StringManager.getInstance().getExploreStrings().card;
+    const previous = database.selectedPlanetProperty.value;
+    await expectNoListenerGrowth(
+      [
+        card.emptyStringProperty,
+        card.planetHeadingStringProperty,
+        ExoplanetsDatabaseColors.accentColorProperty,
+        ExoplanetsDatabaseColors.textColorProperty,
+        ExoplanetsDatabaseColors.secondaryTextColorProperty,
+        ExoplanetsDatabaseColors.estimatedTextColorProperty,
+      ],
+      () => {
+        const node = new PlanetCardNode(database, 500);
+        database.selectedPlanetProperty.value = previous === 0 ? 1 : 0;
+        database.selectedPlanetProperty.value = previous;
+        node.dispose();
+      },
+      { label: "planet/locale card rebuilds must not pile up text subscribers" },
+    );
+  });
 });

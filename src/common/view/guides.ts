@@ -61,9 +61,11 @@ function backedText(text: TReadOnlyProperty<string>): Node {
   };
   textNode.boundsProperty.link(fit);
   const node = new Node({ children: [backdrop, textNode] });
+  // Outer dispose() (from ScatterChartNode.setGuides) does not dispose children — tear both down here.
   node.disposeEmitter.addListener(() => {
     textNode.boundsProperty.unlink(fit);
     textNode.dispose();
+    backdrop.dispose();
   });
   return node;
 }

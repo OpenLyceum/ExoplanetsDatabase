@@ -109,8 +109,9 @@ export class StackedBarChartNode extends Node {
     this.frame.setAxes(xAxis, { range: new Range(0, Math.ceil((maxTotal * 1.05) / step) * step), log: false });
     this.frame.setAxisLabels(xLabel, yLabel);
 
+    // disposeSubtree: each bar wraps a hit Rectangle plus fill Rectangles.
     for (const node of this.barNodes) {
-      node.dispose();
+      node.disposeSubtree();
     }
     const transform = this.frame.chartTransform;
     this.barNodes = bins.map((bin, b) => {

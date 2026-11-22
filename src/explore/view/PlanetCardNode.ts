@@ -162,8 +162,9 @@ export class PlanetCardNode extends ExoplanetsDatabasePanel {
       new RichText(text, { ...options, lineWrap: CONTENT_WIDTH, maxWidth: CONTENT_WIDTH });
 
     const rebuild = (): void => {
+      // disposeSubtree: GridBox / RichText trees link to localized string and color Properties.
       for (const child of content.children) {
-        child.dispose();
+        child.disposeSubtree();
       }
       const index = database.selectedPlanetProperty.value;
       if (index === null) {
@@ -290,7 +291,7 @@ export class PlanetCardNode extends ExoplanetsDatabasePanel {
       database.selectedPlanetProperty.unlink(rebuild);
       localeProperty.unlink(rebuild);
       for (const child of content.children) {
-        child.dispose();
+        child.disposeSubtree();
       }
     };
   }
