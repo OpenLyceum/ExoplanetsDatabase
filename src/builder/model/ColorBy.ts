@@ -6,6 +6,8 @@
 
 import { Enumeration, EnumerationValue } from "scenerystack/phet-core";
 
+type ColorByKey = "method" | "facility" | "year" | "starMass";
+
 export class ColorBy extends EnumerationValue {
   public static readonly METHOD = new ColorBy("method");
   public static readonly FACILITY = new ColorBy("facility");
@@ -15,9 +17,9 @@ export class ColorBy extends EnumerationValue {
   public static readonly enumeration = new Enumeration(ColorBy);
 
   /** Key into the builder's `colorBy` string group. */
-  public readonly key: string;
+  public readonly key: ColorByKey;
 
-  public constructor(key: string) {
+  public constructor(key: ColorByKey) {
     super();
     this.key = key;
   }

@@ -7,7 +7,7 @@ import { PLOT_GALLERY_SCREEN_VIEW_SETTINGS } from "../../ExoplanetsDatabaseConst
  * charts are separate nodes; the preset decides which one shows.
  */
 
-import { DerivedProperty, Multilink, type TReadOnlyProperty } from "scenerystack/axon";
+import { DerivedProperty, Multilink } from "scenerystack/axon";
 import { type EmptySelfOptions, optionize } from "scenerystack/phet-core";
 import { Node, RichText, Text, VBox } from "scenerystack/scenery";
 import { ResetAllButton } from "scenerystack/scenery-phet";
@@ -52,10 +52,6 @@ const KEY_WIDTH: number = PLOT_GALLERY_SCREEN_VIEW_SETTINGS.KEY_WIDTH;
 /** Distance histogram: bins 0.2 dex wide. */
 const DISTANCE_BIN_DEX: number = PLOT_GALLERY_SCREEN_VIEW_SETTINGS.DISTANCE_BIN_DEX;
 
-type PresetStrings = Readonly<
-  Record<string, { titleStringProperty: TReadOnlyProperty<string>; captionStringProperty: TReadOnlyProperty<string> }>
->;
-
 export class PlotGalleryScreenView extends ScreenView {
   public constructor(model: PlotGalleryModel, providedOptions?: PlotGalleryScreenViewOptions) {
     const options = optionize<PlotGalleryScreenViewOptions, EmptySelfOptions, ScreenViewOptions>()(
@@ -66,14 +62,7 @@ export class PlotGalleryScreenView extends ScreenView {
 
     const strings = StringManager.getInstance().getPlotGalleryStrings();
     const common = StringManager.getInstance().getCommonStrings();
-    const presetStrings = strings.presets as unknown as PresetStrings;
-    const presetText = (preset: GalleryPreset) => {
-      const entry = presetStrings[preset.key];
-      if (!entry) {
-        throw new Error(`No strings for ${preset.key}`);
-      }
-      return entry;
-    };
+    const presetText = (preset: GalleryPreset) => strings.presets[preset.key];
     const catalog = model.catalog;
     const bounds = this.layoutBounds;
     const allPlanets = Uint32Array.from({ length: catalog.size }, (_, i) => i);
@@ -321,14 +310,14 @@ export class PlotGalleryScreenView extends ScreenView {
         scatter.setReferencePoints([]);
         return;
       }
-      const names = common.solarSystem as unknown as Readonly<Record<string, TReadOnlyProperty<string>>>;
+      const names = common.solarSystem;
       scatter.setReferencePoints(
         SOLAR_SYSTEM.flatMap((planet) => {
           const x = planet.values.get(preset.x.quantity);
           const yValue = planet.values.get(y.quantity);
           return x === undefined || yValue === undefined
             ? []
-            : [{ label: names[`${planet.key}StringProperty`]?.value ?? planet.key, x, y: yValue }];
+            : [{ label: names[`${planet.key}StringProperty`].value, x, y: yValue }];
         }),
       );
     };

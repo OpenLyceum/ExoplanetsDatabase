@@ -61,6 +61,16 @@ const YEAR_AXIS: GalleryAxis = {
   range: new Range(GALLERY_PRESET_SETTINGS.YEAR_AXIS_RANGE_MIN, GALLERY_PRESET_SETTINGS.YEAR_AXIS_RANGE_MAX),
 };
 
+type GalleryPresetKey =
+  | "massVsOrbit"
+  | "massVsPeriod"
+  | "discoveriesPerYear"
+  | "radiusVsPeriod"
+  | "massVsRadius"
+  | "keplersThirdLaw"
+  | "distanceHistogram"
+  | "sizeOverTime";
+
 export class GalleryPreset extends EnumerationValue {
   public static readonly MASS_VS_ORBIT = new GalleryPreset("massVsOrbit", {
     kind: "scatter",
@@ -158,7 +168,7 @@ export class GalleryPreset extends EnumerationValue {
   public static readonly enumeration = new Enumeration(GalleryPreset);
 
   /** Key into the `gallery.presets` string group. */
-  public readonly key: string;
+  public readonly key: GalleryPresetKey;
   public readonly kind: GalleryChartKind;
   public readonly x: GalleryAxis;
   public readonly y: GalleryAxis | null;
@@ -168,7 +178,7 @@ export class GalleryPreset extends EnumerationValue {
   public readonly xFromDiscoveryMonth: boolean;
   public readonly solarSystem: boolean;
 
-  public constructor(key: string, options: GalleryPresetOptions) {
+  public constructor(key: GalleryPresetKey, options: GalleryPresetOptions) {
     super();
     this.key = key;
     this.kind = options.kind;

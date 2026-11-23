@@ -85,19 +85,10 @@ export class ExploreScreenView extends ScreenView {
       });
 
     // ── Sidebar ───────────────────────────────────────────────────────────────
-    const presetLabels = common.presets as unknown as Record<string, typeof strings.presetsTitleStringProperty>;
-    const presetHelp = common.presetDescriptions as unknown as Record<
-      string,
-      typeof strings.presetsTitleStringProperty
-    >;
     const presetButtons = FilterPreset.enumeration.values.map((preset) =>
-      button(
-        presetLabels[`${preset.key}StringProperty`] as typeof strings.presetsTitleStringProperty,
-        () => filter.applyPreset(preset),
-        {
-          accessibleHelpText: presetHelp[`${preset.key}StringProperty`] ?? null,
-        },
-      ),
+      button(common.presets[`${preset.key}StringProperty`], () => filter.applyPreset(preset), {
+        accessibleHelpText: common.presetDescriptions[`${preset.key}StringProperty`],
+      }),
     );
     const methodCheckboxes = new MethodCheckboxGroup(filter, SIDEBAR_WIDTH - 20);
     const columnsDialog = new ColumnsDialog(model);

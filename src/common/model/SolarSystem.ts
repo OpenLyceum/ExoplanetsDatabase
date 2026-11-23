@@ -7,14 +7,16 @@
 
 import { Quantity } from "./Quantity.js";
 
+type SolarSystemPlanetKey = "mercury" | "venus" | "earth" | "mars" | "jupiter" | "saturn" | "uranus" | "neptune";
+
 export type SolarSystemPlanet = {
   /** Key into the `solarSystem` string group. */
-  readonly key: string;
+  readonly key: SolarSystemPlanetKey;
   readonly values: ReadonlyMap<Quantity, number>;
 };
 
 const planet = (
-  key: string,
+  key: SolarSystemPlanetKey,
   periodDays: number,
   semiMajorAxisAu: number,
   eccentricity: number,

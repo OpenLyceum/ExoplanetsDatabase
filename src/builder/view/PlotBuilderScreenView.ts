@@ -145,14 +145,13 @@ export class PlotBuilderScreenView extends ScreenView {
     const xControls = axisControls(strings.xAxisStringProperty, model.xQuantityProperty, model.xLogProperty);
     const yControls = axisControls(strings.yAxisStringProperty, model.yQuantityProperty, model.yLogProperty);
 
-    const colorByNames = strings.colorBy as unknown as Readonly<Record<string, TReadOnlyProperty<string>>>;
+    const colorByNames = strings.colorBy;
     const colorByGroup = new AquaRadioButtonGroup(
       model.colorByProperty,
       ColorBy.enumeration.values.map((colorBy) => ({
         value: colorBy,
-        options: { accessibleName: colorByNames[`${colorBy.key}StringProperty`] ?? null },
-        createNode: () =>
-          label(colorByNames[`${colorBy.key}StringProperty`] as TReadOnlyProperty<string>, LEFT_WIDTH - 50),
+        options: { accessibleName: colorByNames[`${colorBy.key}StringProperty`] },
+        createNode: () => label(colorByNames[`${colorBy.key}StringProperty`], LEFT_WIDTH - 50),
       })),
       {
         spacing: PLOT_BUILDER_SCREEN_VIEW_SETTINGS.COLOR_BY_GROUP_SPACING,
@@ -308,7 +307,7 @@ export class PlotBuilderScreenView extends ScreenView {
       // The method checkboxes already show the method colours.
       legendBox.visible = model.colorByProperty.value !== ColorBy.METHOD;
 
-      const names = common.solarSystem as unknown as Readonly<Record<string, TReadOnlyProperty<string>>>;
+      const names = common.solarSystem;
       chart.setReferencePoints(
         model.showSolarSystemProperty.value
           ? SOLAR_SYSTEM.flatMap((planet) => {
@@ -316,7 +315,7 @@ export class PlotBuilderScreenView extends ScreenView {
               const y = planet.values.get(yQuantity);
               return x === undefined || y === undefined
                 ? []
-                : [{ label: names[`${planet.key}StringProperty`]?.value ?? planet.key, x, y }];
+                : [{ label: names[`${planet.key}StringProperty`].value, x, y }];
             })
           : [],
       );

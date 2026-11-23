@@ -15,6 +15,8 @@ export type PresetRange = {
   readonly requireValue?: boolean;
 };
 
+type FilterPresetKey = "sunLikeStars" | "recent" | "orbitKnown" | "earthLikeOrbits";
+
 export class FilterPreset extends EnumerationValue {
   /** Stars within 5 % of the Sun's mass. */
   public static readonly SUN_LIKE_STARS = new FilterPreset("sunLikeStars", [
@@ -42,10 +44,10 @@ export class FilterPreset extends EnumerationValue {
   public static readonly enumeration = new Enumeration(FilterPreset);
 
   /** Key into the `presets` string group. */
-  public readonly key: string;
+  public readonly key: FilterPresetKey;
   public readonly ranges: readonly PresetRange[];
 
-  public constructor(key: string, ranges: readonly PresetRange[]) {
+  public constructor(key: FilterPresetKey, ranges: readonly PresetRange[]) {
     super();
     this.key = key;
     this.ranges = ranges;
