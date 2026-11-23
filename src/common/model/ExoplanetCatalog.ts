@@ -160,4 +160,4 @@ export class ExoplanetCatalog {
 }
 
 /** The bundled snapshot. */
-export const CATALOG = new ExoplanetCatalog(snapshotJson as unknown as ArchiveSnapshot);
+export const CATALOG = new ExoplanetCatalog(snapshotJson);
