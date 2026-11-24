@@ -6,14 +6,14 @@ import { FORMAT_SETTINGS } from "../../ExoplanetsDatabaseConstants.js";
  * chartUtils): significant figures with a true minus sign, grouped integers, and powers of ten.
  */
 
-import { toFixed } from "scenerystack/dot";
+import { roundSymmetric, toFixed } from "scenerystack/dot";
 
 /** Narrow no-break space, the SI thousands separator, which reads the same in every locale. */
 const GROUP_SEPARATOR = " ";
 
 /** An integer with grouped thousands: 6 464. */
 export const formatCount = (value: number): string =>
-  String(Math.round(value)).replace(/\B(?=(\d{3})+(?!\d))/g, GROUP_SEPARATOR);
+  String(roundSymmetric(value)).replace(/\B(?=(\d{3})+(?!\d))/g, GROUP_SEPARATOR);
 
 /** Superscript digits for plain-text exponents. */
 const SUPERSCRIPTS: Record<string, string> = {
@@ -59,11 +59,11 @@ export const formatValue = (value: number, digits: number = FORMAT_SETTINGS.DEFA
 };
 
 /** A whole number (year, count) without grouping. */
-export const formatInteger = (value: number): string => (Number.isFinite(value) ? String(Math.round(value)) : "—");
+export const formatInteger = (value: number): string => (Number.isFinite(value) ? String(roundSymmetric(value)) : "—");
 
 /** A decade tick label: 0.01, 0.1, 1, 10, 100, 1000, then 10⁴, 10⁵, … */
 export const formatDecade = (exponent: number): string => {
-  const n = Math.round(exponent);
+  const n = roundSymmetric(exponent);
   if (n >= -2 && n <= 3) {
     return String(Number((10 ** n).toPrecision(1)));
   }

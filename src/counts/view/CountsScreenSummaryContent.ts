@@ -8,7 +8,7 @@ import type { CountsModel } from "../model/CountsModel.js";
 export class CountsScreenSummaryContent extends ScreenSummaryContent {
   public constructor(model: CountsModel) {
     const a11y = StringManager.getInstance().getCountsA11yStrings();
-    const currentDetails = new DerivedProperty(
+    const currentDetailsProperty = new DerivedProperty(
       [model.methodCountsProperty, model.sinceYearProperty, a11y.currentDetailsPatternStringProperty],
       (presentation, year, pattern) =>
         pattern
@@ -19,9 +19,9 @@ export class CountsScreenSummaryContent extends ScreenSummaryContent {
     super({
       playAreaContent: a11y.screenSummary.playAreaStringProperty,
       controlAreaContent: a11y.screenSummary.controlAreaStringProperty,
-      currentDetailsContent: currentDetails,
+      currentDetailsContent: currentDetailsProperty,
       interactionHintContent: a11y.screenSummary.interactionHintStringProperty,
     });
-    this.disposeEmitter.addListener(() => currentDetails.dispose());
+    this.disposeEmitter.addListener(() => currentDetailsProperty.dispose());
   }
 }

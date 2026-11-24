@@ -16,7 +16,7 @@ import type { ExoplanetsDatabasePreferencesModel } from "../../preferences/Exopl
  */
 
 import { Multilink, NumberProperty, PatternStringProperty, type TReadOnlyProperty } from "scenerystack/axon";
-import { Dimension2, Range } from "scenerystack/dot";
+import { Dimension2, Range, roundSymmetric } from "scenerystack/dot";
 import { Shape } from "scenerystack/kite";
 import { FireListener, KeyboardListener, Node, Path, Rectangle, RichText, Text } from "scenerystack/scenery";
 import { PhetFont } from "scenerystack/scenery-phet";
@@ -343,7 +343,7 @@ export class PlanetTableNode extends Node {
     this.bodyNode.addInputListener({
       wheel: (event) => {
         const delta = event.domEvent?.deltaY ?? 0;
-        model.scrollBy(Math.sign(delta) * Math.max(1, Math.round(Math.abs(delta) / ROW_HEIGHT)));
+        model.scrollBy(Math.sign(delta) * Math.max(1, roundSymmetric(Math.abs(delta) / ROW_HEIGHT)));
         event.handle();
       },
     });
