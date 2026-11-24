@@ -1,3 +1,4 @@
+import { roundSymmetric } from "scenerystack/dot";
 import { EXOPLANETS_DATABASE_SCREEN_ICONS_SETTINGS } from "../ExoplanetsDatabaseConstants.js";
 /**
  * ExoplanetsDatabaseScreenIcons.ts
@@ -72,7 +73,7 @@ function scatterPoints(left: number, top: number, width: number, height: number,
   ];
   const nodes: Node[] = [];
   for (const cluster of clusters) {
-    const n = Math.round(count * cluster.share);
+    const n = roundSymmetric(count * cluster.share);
     for (let k = 0; k < n; k++) {
       const gauss = (): number => (random() + random() + random() - 1.5) * 2 * cluster.spread;
       const x = Math.min(0.97, Math.max(0.03, cluster.x + gauss()));

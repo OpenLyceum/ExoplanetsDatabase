@@ -1,3 +1,4 @@
+import { roundSymmetric } from "scenerystack/dot";
 import { PLOT_GALLERY_SCREEN_VIEW_SETTINGS } from "../../ExoplanetsDatabaseConstants.js";
 /**
  * PlotGalleryScreenView.ts
@@ -253,7 +254,7 @@ export class PlotGalleryScreenView extends ScreenView {
         binOf = (i) => catalog.value(i, Quantity.DISCOVERY_YEAR) - first;
       } else {
         const lo = Math.log10(preset.x.range.min);
-        const n = Math.round((Math.log10(preset.x.range.max) - lo) / DISTANCE_BIN_DEX);
+        const n = roundSymmetric((Math.log10(preset.x.range.max) - lo) / DISTANCE_BIN_DEX);
         const unit = quantityUnit(preset.x.quantity).value;
         bins = Array.from({ length: n }, (_, b) => {
           const from = 10 ** (lo + b * DISTANCE_BIN_DEX);

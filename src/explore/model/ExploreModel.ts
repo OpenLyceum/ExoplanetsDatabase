@@ -1,3 +1,4 @@
+import { roundSymmetric } from "scenerystack/dot";
 import { EXPLORE_MODEL_SETTINGS, EXPLORE_SCREEN_VIEW_SETTINGS } from "../../ExoplanetsDatabaseConstants.js";
 /**
  * ExploreModel.ts
@@ -113,7 +114,7 @@ export class ExploreModel implements TModel {
 
   /** Sets firstRow from a 0 (bottom) … 1 (top) scroll-bar fraction. */
   public setFirstRowFromScrollFraction(scroll: number): void {
-    this.firstRowProperty.value = Math.round((1 - scroll) * this.maxFirstRowProperty.value);
+    this.firstRowProperty.value = roundSymmetric((1 - scroll) * this.maxFirstRowProperty.value);
   }
 
   public scrollBy(rows: number): void {

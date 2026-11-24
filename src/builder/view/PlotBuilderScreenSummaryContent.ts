@@ -18,7 +18,7 @@ export class PlotBuilderScreenSummaryContent extends ScreenSummaryContent {
     const a11y = strings.getPlotBuilderA11yStrings();
     const explore = strings.getExploreA11yStrings();
     const database = model.database;
-    const currentDetails = new DerivedProperty(
+    const currentDetailsProperty = new DerivedProperty(
       [
         model.xQuantityProperty,
         model.yQuantityProperty,
@@ -41,7 +41,7 @@ export class PlotBuilderScreenSummaryContent extends ScreenSummaryContent {
     super({
       playAreaContent: a11y.screenSummary.playAreaStringProperty,
       controlAreaContent: a11y.screenSummary.controlAreaStringProperty,
-      currentDetailsContent: currentDetails,
+      currentDetailsContent: currentDetailsProperty,
       interactionHintContent: a11y.screenSummary.interactionHintStringProperty,
     });
   }

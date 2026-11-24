@@ -16,7 +16,7 @@ import {
   StringProperty,
   type TReadOnlyProperty,
 } from "scenerystack/axon";
-import { Range } from "scenerystack/dot";
+import { Range, roundSymmetric } from "scenerystack/dot";
 import { HBox, RichText, Text, VBox } from "scenerystack/scenery";
 import { Keypad } from "scenerystack/scenery-phet";
 import { Dialog, KeypadDialog } from "scenerystack/sim";
@@ -86,7 +86,7 @@ class BoundField extends RectangularPushButton {
       listener: () => {
         getKeypadDialog().beginEdit(
           (value: number) => {
-            boundProperty.value = quantity.isInteger ? Math.round(value) : value;
+            boundProperty.value = quantity.isInteger ? roundSymmetric(value) : value;
           },
           boundRange(quantity),
           strings.getCommonStrings().keypadRangePatternStringProperty,
@@ -113,7 +113,7 @@ class FilterDialog extends Dialog {
     const strings = StringManager.getInstance().getExploreStrings();
     const quantity = criterion.quantity;
     const label = quantityLabelWithUnit(quantity);
-    const plainLabel = new DerivedProperty([label], plainText);
+    const plainLabelProperty = new DerivedProperty([label], plainText);
 
     const title = new RichText(
       new PatternStringProperty(strings.filterDialogTitlePatternStringProperty, { quantity: label }),
@@ -227,7 +227,7 @@ class FilterDialog extends Dialog {
     super(content, {
       title,
       fill: ExoplanetsDatabaseColors.controlSurfaceColorProperty,
-      accessibleName: plainLabel,
+      accessibleName: plainLabelProperty,
       isDisposable: false,
     });
   }

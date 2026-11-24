@@ -15,7 +15,7 @@ export class ExploreScreenSummaryContent extends ScreenSummaryContent {
   public constructor(model: ExploreModel) {
     const a11y = StringManager.getInstance().getExploreA11yStrings();
     const database = model.database;
-    const currentDetails = new DerivedProperty(
+    const currentDetailsProperty = new DerivedProperty(
       [
         database.matchingPlanetsProperty,
         database.selectedPlanetProperty,
@@ -34,7 +34,7 @@ export class ExploreScreenSummaryContent extends ScreenSummaryContent {
     super({
       playAreaContent: a11y.screenSummary.playAreaStringProperty,
       controlAreaContent: a11y.screenSummary.controlAreaStringProperty,
-      currentDetailsContent: currentDetails,
+      currentDetailsContent: currentDetailsProperty,
       interactionHintContent: a11y.screenSummary.interactionHintStringProperty,
     });
   }
