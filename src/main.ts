@@ -28,7 +28,7 @@ import ExoplanetsDatabaseColors from "./ExoplanetsDatabaseColors.js";
 import { ExploreScreen } from "./explore/ExploreScreen.js";
 import { PlotGalleryScreen } from "./gallery/PlotGalleryScreen.js";
 import { StringManager } from "./i18n/StringManager.js";
-import { exoplanetsDatabasePreferences } from "./preferences/ExoplanetsDatabasePreferencesModel.js";
+import { ExoplanetsDatabasePreferencesModel } from "./preferences/ExoplanetsDatabasePreferencesModel.js";
 import { ExoplanetsDatabasePreferencesNode } from "./preferences/ExoplanetsDatabasePreferencesNode.js";
 
 onReadyToLaunch(() => {
@@ -40,6 +40,7 @@ onReadyToLaunch(() => {
   // The Plot Builder's "Show in Table" switches to the Explore screen; `sim` is assigned below.
   let sim: Sim | null = null;
 
+  const simPreferences = new ExoplanetsDatabasePreferencesModel(Tandem.ROOT.createTandem("preferences"));
   const screens = [
     new CountsScreen({
       name: stringManager.getScreenNames().countsStringProperty,
@@ -47,6 +48,7 @@ onReadyToLaunch(() => {
       backgroundColorProperty: ExoplanetsDatabaseColors.backgroundColorProperty,
     }),
     new ExploreScreen(database, {
+      preferences: simPreferences,
       name: stringManager.getScreenNames().exploreStringProperty,
       tandem: Tandem.ROOT.createTandem("exploreScreen"),
       backgroundColorProperty: ExoplanetsDatabaseColors.backgroundColorProperty,
@@ -57,6 +59,7 @@ onReadyToLaunch(() => {
       backgroundColorProperty: ExoplanetsDatabaseColors.backgroundColorProperty,
     }),
     new PlotBuilderScreen(database, () => sim?.selectedScreenProperty.set(screens[1] as ExploreScreen), {
+      preferences: simPreferences,
       name: stringManager.getScreenNames().builderStringProperty,
       tandem: Tandem.ROOT.createTandem("builderScreen"),
       backgroundColorProperty: ExoplanetsDatabaseColors.backgroundColorProperty,
@@ -74,8 +77,7 @@ onReadyToLaunch(() => {
       simulationOptions: {
         customPreferences: [
           {
-            createContent: (tandem: Tandem) =>
-              new ExoplanetsDatabasePreferencesNode(exoplanetsDatabasePreferences, tandem),
+            createContent: (tandem: Tandem) => new ExoplanetsDatabasePreferencesNode(simPreferences, tandem),
           },
         ],
       },

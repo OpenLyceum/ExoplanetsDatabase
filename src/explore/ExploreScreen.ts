@@ -8,6 +8,7 @@
  * Registered in the screens array in src/main.ts. Its home-screen and navigation-bar
  * icons come from createExploreIcon() in src/common/ExoplanetsDatabaseScreenIcons.ts.
  */
+
 import { type EmptySelfOptions, optionize } from "scenerystack/phet-core";
 import type { ScreenOptions } from "scenerystack/sim";
 import { Screen } from "scenerystack/sim";
@@ -15,12 +16,13 @@ import type { Tandem } from "scenerystack/tandem";
 import { createExploreIcon } from "../common/ExoplanetsDatabaseScreenIcons.js";
 import type { ExoplanetDatabase } from "../common/model/ExoplanetDatabase.js";
 import ExoplanetsDatabaseColors from "../ExoplanetsDatabaseColors.js";
+import type { ExoplanetsDatabasePreferencesModel } from "../preferences/ExoplanetsDatabasePreferencesModel.js";
 import { ExploreModel } from "./model/ExploreModel.js";
 import { ExploreKeyboardHelpContent } from "./view/ExploreKeyboardHelpContent.js";
 import { ExploreScreenView } from "./view/ExploreScreenView.js";
 
 // Require tandem to be explicit — accidental omission would break PhET-iO.
-type ExploreScreenOptions = ScreenOptions & { tandem: Tandem };
+type ExploreScreenOptions = ScreenOptions & { tandem: Tandem; preferences: ExoplanetsDatabasePreferencesModel };
 
 export class ExploreScreen extends Screen<ExploreModel, ExploreScreenView> {
   public constructor(database: ExoplanetDatabase, options: ExploreScreenOptions) {
@@ -29,7 +31,7 @@ export class ExploreScreen extends Screen<ExploreModel, ExploreScreenView> {
       () => new ExploreModel(database),
       // View factory — receives the model instance
       (model) =>
-        new ExploreScreenView(model, {
+        new ExploreScreenView(model, options.preferences, {
           tandem: options.tandem.createTandem("view"),
         }),
       optionize<ExploreScreenOptions, EmptySelfOptions, ScreenOptions>()(

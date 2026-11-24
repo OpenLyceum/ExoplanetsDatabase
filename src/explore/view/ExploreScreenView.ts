@@ -1,4 +1,5 @@
 import { EXPLORE_SCREEN_VIEW_SETTINGS } from "../../ExoplanetsDatabaseConstants.js";
+import type { ExoplanetsDatabasePreferencesModel } from "../../preferences/ExoplanetsDatabasePreferencesModel.js";
 /**
  * ExploreScreenView.ts
  *
@@ -45,7 +46,11 @@ const BUTTON_WIDTH = SIDEBAR_WIDTH - 24;
 export class ExploreScreenView extends ScreenView {
   private readonly table: PlanetTableNode;
 
-  public constructor(model: ExploreModel, providedOptions?: ExploreScreenViewOptions) {
+  public constructor(
+    model: ExploreModel,
+    preferences: ExoplanetsDatabasePreferencesModel,
+    providedOptions?: ExploreScreenViewOptions,
+  ) {
     const options = optionize<ExploreScreenViewOptions, EmptySelfOptions, ScreenViewOptions>()(
       { screenSummaryContent: new ExploreScreenSummaryContent(model) },
       providedOptions,
@@ -121,10 +126,10 @@ export class ExploreScreenView extends ScreenView {
     // ── Table, count and filter summary ──────────────────────────────────────
     const tableLeft = sidebar.right + MARGIN;
     const matchCount = new MatchCountNode(database, { left: tableLeft, top: MARGIN });
-    this.table = new PlanetTableNode(model, TABLE_WIDTH, TABLE_ROWS);
+    this.table = new PlanetTableNode(model, preferences, TABLE_WIDTH, TABLE_ROWS);
     this.table.left = tableLeft;
     this.table.top = matchCount.bottom + EXPLORE_SCREEN_VIEW_SETTINGS.TOP_GAP;
-    const summary = new FilterSummaryNode(filter, TABLE_WIDTH);
+    const summary = new FilterSummaryNode(filter, preferences, TABLE_WIDTH);
     summary.left = tableLeft;
     summary.top = this.table.bottom + 8;
 

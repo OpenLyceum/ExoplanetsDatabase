@@ -1,4 +1,5 @@
 import { PLANET_TABLE_NODE_SETTINGS } from "../../ExoplanetsDatabaseConstants.js";
+import type { ExoplanetsDatabasePreferencesModel } from "../../preferences/ExoplanetsDatabasePreferencesModel.js";
 /**
  * PlanetTableNode.ts
  *
@@ -70,7 +71,12 @@ class ColumnNodes {
 
   public readonly column: TableColumn;
 
-  public constructor(column: TableColumn, model: ExploreModel, rowCount: number) {
+  public constructor(
+    column: TableColumn,
+    model: ExploreModel,
+    rowCount: number,
+    preferences: ExoplanetsDatabasePreferencesModel,
+  ) {
     this.column = column;
     const strings = StringManager.getInstance().getExploreStrings();
     const quantity = column.quantity;
@@ -128,7 +134,7 @@ class ColumnNodes {
         accessibleName: new PatternStringProperty(strings.filterColumnPatternStringProperty, {
           column: quantityShortName(quantity),
         }),
-        listener: () => showFilterDialog(criterion),
+        listener: () => showFilterDialog(criterion, preferences),
       });
       const updateIcon = (): void => {
         (this.filterIcon as Path).fill = criterion.isActive
@@ -244,6 +250,7 @@ class ColumnNodes {
 }
 
 export class PlanetTableNode extends Node {
+  private readonly preferences: ExoplanetsDatabasePreferencesModel;
   private readonly model: ExploreModel;
   private readonly rowCount: number;
   private readonly tableWidth: number;
@@ -257,9 +264,15 @@ export class PlanetTableNode extends Node {
   public readonly bodyNode: Node;
   public readonly scrollBar: VSlider;
 
-  public constructor(model: ExploreModel, width: number, rowCount: number = model.rowCount) {
+  public constructor(
+    model: ExploreModel,
+    preferences: ExoplanetsDatabasePreferencesModel,
+    width: number,
+    rowCount: number = model.rowCount,
+  ) {
     // Lives as long as the Explore screen, which lives as long as the sim.
     super({ isDisposable: false });
+    this.preferences = preferences;
     this.model = model;
     this.rowCount = rowCount;
     this.tableWidth = width - SCROLL_BAR_WIDTH - 4;
@@ -397,7 +410,7 @@ export class PlanetTableNode extends Node {
     this.visibleColumnNodes = columns.map((column) => {
       let nodes = this.columnNodes.get(column);
       if (!nodes) {
-        nodes = new ColumnNodes(column, this.model, this.rowCount);
+        nodes = new ColumnNodes(column, this.model, this.rowCount, this.preferences);
         this.columnNodes.set(column, nodes);
       }
       return nodes;

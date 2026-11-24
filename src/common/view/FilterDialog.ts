@@ -27,7 +27,7 @@ import type { RangeCriterion } from "../../common/model/RangeCriterion.js";
 import ExoplanetsDatabaseColors from "../../ExoplanetsDatabaseColors.js";
 import { FONTS } from "../../ExoplanetsDatabaseConstants.js";
 import { StringManager } from "../../i18n/StringManager.js";
-import { exoplanetsDatabasePreferences } from "../../preferences/ExoplanetsDatabasePreferencesModel.js";
+import type { ExoplanetsDatabasePreferencesModel } from "../../preferences/ExoplanetsDatabasePreferencesModel.js";
 import { FLAT_PANEL_PUSH_BUTTON_OPTIONS, LIGHT_SURFACE_TEXT_FILL } from "../ExoplanetsDatabaseButtonOptions.js";
 import { plainText, quantityLabelWithUnit } from "./dataStyles.js";
 import { formatInteger, formatValue } from "./format.js";
@@ -109,7 +109,7 @@ class BoundField extends RectangularPushButton {
 }
 
 class FilterDialog extends Dialog {
-  public constructor(criterion: RangeCriterion) {
+  public constructor(criterion: RangeCriterion, preferences: ExoplanetsDatabasePreferencesModel) {
     const strings = StringManager.getInstance().getExploreStrings();
     const quantity = criterion.quantity;
     const label = quantityLabelWithUnit(quantity);
@@ -193,7 +193,7 @@ class FilterDialog extends Dialog {
       fill: LIGHT_SURFACE_TEXT_FILL,
       maxWidth: FILTER_DIALOG_SETTINGS.ARCHIVE_TEXT_MAX_WIDTH,
       lineWrap: FILTER_DIALOG_SETTINGS.ARCHIVE_TEXT_LINE_WRAP,
-      visibleProperty: exoplanetsDatabasePreferences.showArchiveSyntaxProperty,
+      visibleProperty: preferences.showArchiveSyntaxProperty,
     });
 
     // Requiring a value is implied by a bound, so the checkbox is only meaningful without one.
@@ -233,13 +233,18 @@ class FilterDialog extends Dialog {
   }
 }
 
-const dialogs = new Map<RangeCriterion, FilterDialog>();
+const dialogsByPreferences = new WeakMap<ExoplanetsDatabasePreferencesModel, Map<RangeCriterion, FilterDialog>>();
 
 /** Shows the filter dialog for a criterion, creating it the first time. */
-export function showFilterDialog(criterion: RangeCriterion): void {
+export function showFilterDialog(criterion: RangeCriterion, preferences: ExoplanetsDatabasePreferencesModel): void {
+  let dialogs = dialogsByPreferences.get(preferences);
+  if (!dialogs) {
+    dialogs = new Map();
+    dialogsByPreferences.set(preferences, dialogs);
+  }
   let dialog = dialogs.get(criterion);
   if (!dialog) {
-    dialog = new FilterDialog(criterion);
+    dialog = new FilterDialog(criterion, preferences);
     dialogs.set(criterion, dialog);
   }
   dialog.show();

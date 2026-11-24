@@ -20,8 +20,10 @@ import { STAR_MASS_COLORING } from "../src/common/view/pointColorings.js";
 import ExoplanetsDatabaseColors from "../src/ExoplanetsDatabaseColors.js";
 import { PlanetCardNode } from "../src/explore/view/PlanetCardNode.js";
 import { StringManager } from "../src/i18n/StringManager.js";
+import { ExoplanetsDatabasePreferencesModel } from "../src/preferences/ExoplanetsDatabasePreferencesModel.js";
 import { describeDisposalLeaks, expectNoListenerGrowth } from "./helpers/memoryLeak.js";
 
+const preferences = new ExoplanetsDatabasePreferencesModel();
 const database = new ExoplanetDatabase();
 database.selectedPlanetProperty.value = 0;
 
@@ -29,7 +31,7 @@ describeDisposalLeaks([
   { name: "MatchCountNode", create: () => new MatchCountNode(database) },
   { name: "DataCreditNode", create: () => new DataCreditNode() },
   { name: "MethodCheckboxGroup", create: () => new MethodCheckboxGroup(database.filter, 150) },
-  { name: "FilterSummaryNode", create: () => new FilterSummaryNode(database.filter, 500) },
+  { name: "FilterSummaryNode", create: () => new FilterSummaryNode(database.filter, preferences, 500) },
   { name: "PlanetCardNode", create: () => new PlanetCardNode(database, 500) },
 ]);
 
@@ -61,7 +63,7 @@ describe("Rebuilt rows release their localized text", () => {
         ExoplanetsDatabaseColors.secondaryTextColorProperty,
       ],
       () => {
-        const node = new FilterSummaryNode(database.filter, 500);
+        const node = new FilterSummaryNode(database.filter, preferences, 500);
         methodVisible.value = !methodVisible.value;
         methodVisible.value = !methodVisible.value;
         node.dispose();

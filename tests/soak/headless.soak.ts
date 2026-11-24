@@ -21,6 +21,7 @@ import ExoplanetsDatabaseColors from "../../src/ExoplanetsDatabaseColors.js";
 import { ExploreScreen } from "../../src/explore/ExploreScreen.js";
 import { PlotGalleryScreen } from "../../src/gallery/PlotGalleryScreen.js";
 import { StringManager } from "../../src/i18n/StringManager.js";
+import { ExoplanetsDatabasePreferencesModel } from "../../src/preferences/ExoplanetsDatabasePreferencesModel.js";
 import { describeHeadlessSoak } from "../helpers/headlessSoak.js";
 
 function buildSim() {
@@ -32,6 +33,7 @@ function buildSim() {
   // The Plot Builder's "Show in Table" switches to the Explore screen; `sim` is assigned below.
   const sim = null as Sim | null;
 
+  const simPreferences = new ExoplanetsDatabasePreferencesModel(Tandem.ROOT.createTandem("preferences"));
   const screens = [
     new CountsScreen({
       name: stringManager.getScreenNames().countsStringProperty,
@@ -39,6 +41,7 @@ function buildSim() {
       backgroundColorProperty: ExoplanetsDatabaseColors.backgroundColorProperty,
     }),
     new ExploreScreen(database, {
+      preferences: simPreferences,
       name: stringManager.getScreenNames().exploreStringProperty,
       tandem: Tandem.ROOT.createTandem("exploreScreen"),
       backgroundColorProperty: ExoplanetsDatabaseColors.backgroundColorProperty,
@@ -49,6 +52,7 @@ function buildSim() {
       backgroundColorProperty: ExoplanetsDatabaseColors.backgroundColorProperty,
     }),
     new PlotBuilderScreen(database, () => sim?.selectedScreenProperty.set(screens[1] as ExploreScreen), {
+      preferences: simPreferences,
       name: stringManager.getScreenNames().builderStringProperty,
       tandem: Tandem.ROOT.createTandem("builderScreen"),
       backgroundColorProperty: ExoplanetsDatabaseColors.backgroundColorProperty,

@@ -17,7 +17,7 @@ import type { RangeCriterion } from "../../common/model/RangeCriterion.js";
 import ExoplanetsDatabaseColors from "../../ExoplanetsDatabaseColors.js";
 import { FONTS } from "../../ExoplanetsDatabaseConstants.js";
 import { StringManager } from "../../i18n/StringManager.js";
-import { exoplanetsDatabasePreferences } from "../../preferences/ExoplanetsDatabasePreferencesModel.js";
+import type { ExoplanetsDatabasePreferencesModel } from "../../preferences/ExoplanetsDatabasePreferencesModel.js";
 import { ExoplanetsDatabasePanel } from "../ExoplanetsDatabasePanel.js";
 import { methodName, plainText, quantityName, quantityUnit } from "./dataStyles.js";
 import { formatInteger, formatValue } from "./format.js";
@@ -82,7 +82,7 @@ function describeFilters(filter: PlanetFilter): SummaryLine[] {
 }
 
 export class FilterSummaryNode extends ExoplanetsDatabasePanel {
-  public constructor(filter: PlanetFilter, width: number) {
+  public constructor(filter: PlanetFilter, preferences: ExoplanetsDatabasePreferencesModel, width: number) {
     const content = new VBox({ align: "left", spacing: FILTER_SUMMARY_NODE_SETTINGS.CONTENT_SPACING });
     super(content, {
       minWidth: width,
@@ -94,7 +94,7 @@ export class FilterSummaryNode extends ExoplanetsDatabasePanel {
     const strings = StringManager.getInstance().getExploreStrings();
     const summary = strings.summary;
     const innerWidth = width - 20;
-    const showArchive = exoplanetsDatabasePreferences.showArchiveSyntaxProperty;
+    const showArchive = preferences.showArchiveSyntaxProperty;
 
     const rebuild = (): void => {
       // disposeSubtree: the grid's Text cells link to localized string and color Properties.

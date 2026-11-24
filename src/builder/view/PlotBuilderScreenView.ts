@@ -1,4 +1,5 @@
 import { PLOT_BUILDER_SCREEN_VIEW_SETTINGS } from "../../ExoplanetsDatabaseConstants.js";
+import type { ExoplanetsDatabasePreferencesModel } from "../../preferences/ExoplanetsDatabasePreferencesModel.js";
 /**
  * PlotBuilderScreenView.ts
  *
@@ -85,7 +86,11 @@ function dataRange(values: Float64Array, quantity: Quantity, log: boolean): Rang
 }
 
 export class PlotBuilderScreenView extends ScreenView {
-  public constructor(model: PlotBuilderModel, providedOptions?: PlotBuilderScreenViewOptions) {
+  public constructor(
+    model: PlotBuilderModel,
+    preferences: ExoplanetsDatabasePreferencesModel,
+    providedOptions?: PlotBuilderScreenViewOptions,
+  ) {
     const options = optionize<PlotBuilderScreenViewOptions, EmptySelfOptions, ScreenViewOptions>()(
       { screenSummaryContent: new PlotBuilderScreenSummaryContent(model) },
       providedOptions,
@@ -215,7 +220,7 @@ export class PlotBuilderScreenView extends ScreenView {
         content: lightText(text, RIGHT_WIDTH - 36),
         accessibleName: text,
         minWidth: RIGHT_WIDTH - PLOT_BUILDER_SCREEN_VIEW_SETTINGS.FILTER_BUTTON_MIN_WIDTH_OFFSET,
-        listener: () => showFilterDialog(database.filter.criterion(quantityProperty.value)),
+        listener: () => showFilterDialog(database.filter.criterion(quantityProperty.value), preferences),
       });
     };
     const xFilterButton = filterButton(model.xQuantityProperty);
@@ -271,7 +276,11 @@ export class PlotBuilderScreenView extends ScreenView {
       { right: bounds.maxX - MARGIN, top: MARGIN, minWidth: RIGHT_WIDTH, maxWidth: RIGHT_WIDTH },
     );
 
-    const summary = new FilterSummaryNode(database.filter, CHART_LEFT + CHART_WIDTH - LEFT_WIDTH - MARGIN - 10);
+    const summary = new FilterSummaryNode(
+      database.filter,
+      preferences,
+      CHART_LEFT + CHART_WIDTH - LEFT_WIDTH - MARGIN - 10,
+    );
     summary.left = LEFT_WIDTH + 2 * MARGIN;
     summary.top = chart.bottom + 12;
 
